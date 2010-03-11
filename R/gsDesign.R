@@ -7,6 +7,9 @@
 #    gsBound1
 #    gsDesign
 #    gsProbability
+#    gsDensity
+#    gsPOS
+#    gsCPOS
 #
 #  Hidden Functions:
 #
@@ -117,13 +120,15 @@
 
 "gsDesign"<-function(k=3, test.type=4, alpha=0.025, beta=0.1, astar=0,  
         delta=0, n.fix=1, timing=1, sfu=sfHSD, sfupar=-4,
-        sfl=sfHSD, sflpar=-2, tol=0.000001, r=18, n.I=0, maxn.IPlan=0) 
+        sfl=sfHSD, sflpar=-2, tol=0.000001, r=18, n.I=0, maxn.IPlan=0, 
+        nFixSurv=0, endpoint=NULL, delta1=1, delta0=0) 
 {
     # Derive a group sequential design and return in a gsDesign structure
     
     # set up class variable x for gsDesign being requested
     x <- list(k=k, test.type=test.type, alpha=alpha, beta=beta, astar=astar,
-            delta=delta, n.fix=n.fix, timing=timing, tol=tol, r=r, n.I=n.I, maxn.IPlan=maxn.IPlan)
+            delta=delta, n.fix=n.fix, timing=timing, tol=tol, r=r, n.I=n.I, maxn.IPlan=maxn.IPlan,
+            nFixSurv=nFixSurv, nSurv=0, endpoint=endpoint, delta1=delta1, delta0=delta0)
     
     class(x) <- "gsDesign"
     
@@ -172,11 +177,11 @@
     {   
         if (!is.function(sfl))
         {     
-            stop("Lower spending function must be a built-in or user-defined function that returns object with class spendfn")
+            stop("Lower spending function must return object with class spendfn")
         }
         else if (is.element(test.type, 3:4)) 
         {
-            x$lower <- sfl(x$beta,x$timing,sflpar)
+            x$lower <- sfl(x$beta, x$timing, sflpar)
         }
         else if (is.element(test.type, 5:6)) 
         {   
@@ -191,13 +196,15 @@
     }
     
     # call appropriate calculation routine according to test.type
-    switch(x$test.type,
+    x <- switch(x$test.type,
             gsDType1(x),
             gsDType2and5(x),
             gsDType3(x),
             gsDType4(x),
             gsDType2and5(x),
             gsDType6(x))
+    if (x$nFixSurv > 0) x$nSurv <- ceiling(x$nFixSurv * x$n.I[x$k] / n.fix / 2) * 2
+    x
 }
 
 "gsProbability" <- function(k=0, theta, n.I, a, b, r=18, d=NULL)
@@ -247,6 +254,63 @@
     x
 }
 
+"gsPOS" <- function(x, theta, wgts)
+{
+    if (class(x) != "gsProbability" && class(x) != "gsDesign")
+        stop("x must have class gsProbability or gsDesign")
+    checkVector(theta, "numeric")
+    checkVector(wgts, "numeric")
+    checkLengths(theta, wgts)    
+    x <- gsProbability(theta = theta, d=x)
+    one <- array(1, x$k)
+    as.real(one %*% x$upper$prob %*% wgts)
+}
+
+"gsCPOS" <- function(i, x, theta, wgts)
+{
+    if (class(x) != "gsProbability" && class(x) != "gsDesign")
+        stop("x must have class gsProbability or gsDesign")
+    checkScalar(i, "integer", c(1, x$k), c(TRUE, FALSE))
+    checkVector(theta, "numeric")
+    checkVector(wgts, "numeric")
+    checkLengths(theta, wgts)    
+    x <- gsProbability(theta = theta, d=x)
+    v <- c(array(1, i), array(0, (x$k - i)))
+    pAi <- 1 - as.real(v %*% (x$upper$prob + x$lower$prob) %*% wgts)
+    v <- 1 - v
+    pAiB <- as.real(v %*% x$upper$prob %*% wgts)
+    pAiB / pAi
+}
+
+"gsDensity" <- function(x, theta=0, i=1, zi=0, r=18)
+{   if (class(x) != "gsDesign" && class(x) != "gsProbability")
+        stop("x must have class gsDesign or gsProbability.")
+    checkVector(theta, "numeric")
+    checkScalar(i, "integer", c(0,x$k), c(FALSE, TRUE))
+    checkVector(zi, "numeric")
+    checkScalar(r, "integer", c(1, 80)) 
+    den <- array(0, length(theta) * length(zi))
+    xx <- .C("gsdensity", den, as.integer(i), length(theta), 
+              as.double(theta), as.double(x$n.I), 
+              as.double(x$lower$bound), as.double(x$upper$bound),
+              as.double(zi), length(zi), as.integer(r))
+    list(zi=zi, theta=theta, density=matrix(xx[[1]], nrow=length(zi), ncol=length(theta)))
+}
+
+#"gsPosterior" <- function(x, theta=NULL, wgts=NULL, i=1, zi=0, r=18)
+#{   if (class(x) != "gsDesign" && class(x) != "gsProbability")
+#        stop("x must have class gsDesign or gsProbability.")
+#    checkVector(theta, "numeric")
+#    checkVector(wgts, "numeric")
+#    checkLengths(
+#    checkScalar(i, "integer", c(0,x$k), c(FALSE, TRUE))
+#    checkVector(zi, "numeric")
+#    checkScalar(r, "integer", c(1, 80)) 
+
+    
+#}
+
+
 ###
 # Hidden Functions
 ###
@@ -277,7 +341,7 @@
         falsepos <- x$upper$spend
         falsepos <- falsepos - c(0, falsepos[1:x$k-1])
         x$upper$spend <- falsepos
-    
+
         # compute upper bound and store in x
         x$upper$bound <- gsBound1(0, x$timing, a, falsepos, x$tol, x$r)$b
     }
@@ -291,7 +355,7 @@
     
     # add boundary crossing probabilities for theta to x
     x$theta <- c(0,x$delta)
-    y <- gsprob(x$theta,x$n.I,a,x$upper$bound,r=x$r)
+    y <- gsprob(x$theta, x$n.I, a, x$upper$bound, r=x$r)
     x$upper$prob <- y$probhi
     x$en <- as.vector(y$en)
 
@@ -340,12 +404,12 @@
         falsepos <- falsepos - c(0,falsepos[1:x$k-1])
         x$upper$spend <- falsepos
         if (x$test.type == 5)
-        {    trueneg <- x$lower$spend
+        {   trueneg <- x$lower$spend
             trueneg <- trueneg - c(0,trueneg[1:x$k-1])
             errno <- 0
         }
         else 
-        {    trueneg <- falsepos
+        {   trueneg <- falsepos
             errno <- 0
         }
         
@@ -409,10 +473,10 @@
     # compute starting bounds under H0 
     k <- x$k
     falsepos <- x$upper$spend
-    falsepos <- falsepos-c(0,falsepos[1:x$k-1])
+    falsepos <- falsepos-c(0, falsepos[1:x$k-1])
     x$upper$spend <- falsepos
-    trueneg <- array((1-x$alpha)/x$k,x$k)
-    x1 <- gsBound(x$timing,trueneg,falsepos,x$tol,x$r)
+    trueneg <- array((1 - x$alpha) / x$k, x$k)
+    x1 <- gsBound(x$timing, trueneg, falsepos, x$tol, x$r)
 
     # get I(max) and lower bound
     I0 <- x$n.fix
@@ -595,7 +659,8 @@
         stop("Wang-Tsiatis, Pocock and O'Brien-Fleming bounds not available for asymmetric testing")       
     }
     
-    if (max(x$n.I) == 0) gsDType4ss(x) else gsDType4a(x)
+    if (length(x$n.I) < x$k) gsDType4ss(x) 
+    else gsDType4a(x)
 }
 
 "gsDType4a" <- function(x)
@@ -610,10 +675,10 @@
     x$upper$spend <- falsepos
 
     # compute upper bound under H0 
-    x1 <- gsBound1(theta = 0, I = x$timing, a = array(-20, x$k), probhi = falsepos, tol = x$tol, r = x$r)
+    x1 <- gsBound1(theta = 0, I = x$n.I, a = array(-20, x$k), probhi = falsepos, tol = x$tol, r = x$r)
 
     # get lower bound
-      x2 <- gsBound1(theta = -x$delta, I = x$n.I, a = -x1$b, probhi = falseneg, tol = x$tol, r = x$r)
+    x2 <- gsBound1(theta = -x$delta, I = x$n.I, a = -x1$b, probhi = falseneg, tol = x$tol, r = x$r)
     if (-x2$b[x2$k] > x1$b[x1$k] - x$tol)
     {
         x2$b[x2$k] <- -x1$b[x1$k]
@@ -692,6 +757,8 @@
         stop("Wang-Tsiatis, Pocock and O'Brien-Fleming bounds not available for asymmetric testing")          
     }
     
+    if (length(x$n.I) == x$k) x$timing <- x$n.I / x$maxn.IPlan
+
     # compute upper bounds with non-binding assumption 
     falsepos <- x$upper$spend
     falsepos <- falsepos-c(0, falsepos[1:x$k-1])
@@ -925,12 +992,12 @@
         {
             stop("maxn.IPlan can only be > 0 if spending functions are used for boundaries")
         }
-        
-        x$timing <- x$n.I[1:(x$k-1)] / x$maxn.IPlan
+
+        x$timing <- x$n.I / x$maxn.IPlan
         
         if (x$n.I[x$k-1] >= x$maxn.IPlan)
         {
-            stop("maxn.IPlan must be > n.I[k-1]")        
+            stop("Only 1 n >= Planned Final n")        
         }
     }
     else if (x$maxn.IPlan > 0)
@@ -954,10 +1021,11 @@
         {
             x$timing <- c(x$timing, 1)
         }
-        else if (x$timing[x$k]!=1)
-        {
-            stop("if analysis timing for final analysis is input, it must be 1")           
-        }
+ # Allowed final analysis timing to be != 1 ; KA 2009/08/15
+ #       else if (x$timing[x$k]!=1)
+ #       {
+ #           stop("if analysis timing for final analysis is input, it must be 1")           
+ #       }
         
         if (min(x$timing - c(0,x$timing[1:x$k-1])) <= 0)
         {
