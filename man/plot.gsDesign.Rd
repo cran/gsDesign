@@ -11,8 +11,8 @@ For objects of type \code{gsProbability} plots are available for z-values at bou
 }
 
 \usage{
-plot.gsProbability(x, plottype=2, ...)
-plot.gsDesign(x, plottype=1, ...)
+plot.gsProbability(x, plottype=2, base=FALSE, ...)
+plot.gsDesign(x, plottype=1, base=FALSE, ...)
 }
 
 \arguments{
@@ -40,6 +40,7 @@ type 1,
 	\code{"CP"} for plot type 4, \code{"sf"} for plot type 5, \code{"ASN"}, 
 \code{"N"} or \code{"n"} for plot type 6, and \code{"B"}, \code{"B-val"} or 
 \code{"B-value"} for plot type 7.}
+	\item{base}{Default is FALSE, which means ggplot2 graphics are used. If true, base graphics are used for plotting.}
 	\item{...}{This allows many optional arguments that are standard when calling \code{plot}.
 
 	Other arguments include: 
@@ -87,7 +88,7 @@ Otherwise, if the input is \code{gsDesign} object conditional power is computed 
 Average sample number/expected sample size is computed using \code{n.I} at each analysis times the probability of crossing a boundary at that analysis.
 If no boundary is crossed at any analysis, this is counted as stopping at the final analysis.
 
-B-values are Z-values multiplied by \code{sqrt(t)=sqrt(x$n.I/n$n.I[x$k])}. 
+B-values are Z-values multiplied by \code{sqrt(t)=sqrt(x$n.I/x$n.I[x$k])}. 
 Thus, the expected value of a B-value at an analysis is the true value of 
 \eqn{theta} multiplied by the proportion of total planned observations at that time.
 See Proschan, Lan and Wittes (2006).
