@@ -4,6 +4,7 @@
 \alias{gsBValue}
 \alias{gsDelta}
 \alias{gsHR}
+\alias{gsRR}
 \alias{gsCPz}
 
 \title{2.8: Bound Summary and Z-transformations}
@@ -19,6 +20,7 @@ Individual transformation of z-value test statistics for interim and final analy
     gsBValue <- function(z, i, x, ylab="B-value", ...)
     gsDelta(z, i, x, ylab=NULL, ...)
     gsHR(z, i, x, ratio=1, ylab="Estimated hazard ratio", ...)
+    gsRR(z, i, x, ratio=1, ylab="Estimated risk ratio",...)
     gsCPz(z, i, x, theta=NULL, ylab=NULL, ...)
     gsBoundSummary(x, upper=TRUE, ratio=1)
     xtable.gsDesign(x, caption=NULL, label=NULL, align=NULL, digits=c(0,0,3,4,4,4,3,3,3,3),
@@ -97,7 +99,7 @@ gsBValue(z=z, i=1:3, x=xs)
 gsHR(z=z, i=1:3, x=xs)
 # conditional power at observed treatment effect
 gsCPz(z=z[1:2], i=1:2, x=xs)
-# conditional pwoer at H1 treatment effect
+# conditional power at H1 treatment effect
 gsCPz(z=z[1:2], i=1:2, x=xs, theta=xs$delta)
 
 # now look at a binomial endpoint; specify H0 treatment difference as p1-p2=.05
@@ -111,4 +113,8 @@ gsBoundSummary(xp)
 # treatment effect at bounds is scaled to these differences
 # in this case, this is the difference in event rates
 gsDelta(z=xp$lower$bound, i=1:3, xp)
+# binomial endpoint with risk ratio estimates
+xrr <- gsDesign(n.fix=np, endpoint="Binomial", delta1=log(2/3))
+gsRR(z=xp$lower$bound, i=1:3, xrr)
+plot(xrr,plottype="RR")
 }
