@@ -34,7 +34,7 @@
 # Exported Functions
 ###
 
-"print.gsProbability" <- function(x, ...)
+"print.gsProbability" <- function(x,...)
 {    
     ntxt <- "N "
     nval <- ceiling(x$n.I)
@@ -90,15 +90,16 @@
     cat("\nLower boundary (futility or Type II Error)\n")
     cat("          Analysis\n")
     print(y)
+  invisible(x)
 }
 
 "print.gsDesign" <- function(x, ...)
 {    
-	if (x$nFixSurv > 0)
-	{	cat("Group sequential design sample size for time-to-event outcome\n", 
-        "with sample size ", x$nSurv, ". The analysis plan below shows events\n",
-        "at each analysis.\n", sep="")
-	}
+    if (x$nFixSurv > 0)
+    {    cat("Group sequential design sample size for time-to-event outcome\n", 
+         "with sample size ", x$nSurv, ". The analysis plan below shows events\n",
+         "at each analysis.\n", sep="")
+    }
     
     if (x$test.type == 1) 
     {
@@ -243,6 +244,7 @@
         cat("          Analysis\n")
         print(y)
     }
+  invisible(x)
 }
 print.nSurvival <- function(x,...){
 	if (class(x) != "nSurvival") stop("print.nSurvival: primary argument must have class nSurvival")
@@ -294,7 +296,7 @@ print.nSurvival <- function(x,...){
 }
 
 "sfprint" <- function(x)
-{    
+{   
     # print spending function information    
     if (x$name == "OF")
     {
@@ -307,6 +309,13 @@ print.nSurvival <- function(x,...){
     else if (x$name == "WT")
     {
         cat("Wang-Tsiatis boundary with Delta =", x$param)
+    }
+    else if (x$name == "Truncated")
+    {   cat(x$param$name,"spending function truncated at",x$param$trange)
+        if (!is.null(x$parname) && !is.null(x$param))
+        {
+            cat("\n with", x$parname, "=", x$param$param)
+        }
     }
     else 
     {   
