@@ -1,4 +1,4 @@
-fd22e8636577d7a93e877b5dbf63727e *DESCRIPTION
+eedad093e2ea6757155df8784f66d87a *DESCRIPTION
 787fbdcd561b1fdeb1cc2795771c153b *NAMESPACE
 1d8f8f3afa7b1ebdb3052c317f65a5d5 *R/gsBinomial.R
 a8f791719295048126c2b036d36e8151 *R/gsBinomialExact.R
@@ -7,7 +7,7 @@ a8f791719295048126c2b036d36e8151 *R/gsBinomialExact.R
 22d0c04863ef43ab233ee40718181570 *R/gsMethods.R
 59f83be2a41cd022fd0d4fb74a6fc817 *R/gsNormalGrid.R
 95e39013a50a1996124303cb96c15d7e *R/gsSimulate.R
-11a3c8293d534f22115496b55d40199a *R/gsSpending.R
+4e38787178a5118079cb54d6f229b14d *R/gsSpending.R
 7bb209d0563f096d1635bf43014f2a77 *R/gsSurvival.R
 af097e93e8dc1d66ca8b8d2e961a6cae *R/gsUtilities.R
 06ac617063a2af99d6c342e2fbc3aeb2 *R/gsWTPT.R
@@ -16,7 +16,7 @@ da143cd0b33f51111f7cb9eda016d4ad *R/nEvents.R
 a052abd47b0e6acc6dca1e9955e3a97d *R/nNormal.R
 13f4af1beda4706152ea20b13d85cf9d *inst/NewTests/gsCPTests.R
 01a3abb578ce362eb010c575c7861b82 *inst/NewTests/sfLinearTest.R
-3230770d2d13904dabc1a2771e4e1fb1 *inst/doc/gsDesignManual.pdf
+e917ab830b94e7038f0a33c47c9fb5ea *inst/doc/gsDesignManual.pdf
 cfcf268d6e26b5895d139422a32e76db *inst/doc/gsDesignOverview.pdf
 072b11e54bd2383c55946dd283a2c2db *inst/unitTests/Makefile
 2c63e764279b337a5a119a35717ee52f *inst/unitTests/doRUnit.R
@@ -61,12 +61,12 @@ b525fc84111946828cd37b43e7f54f5e *man/gsDensity.Rd
 bd591ea0998ab8083c6c803aa4304953 *man/plot.gsDesign.Rd
 5390ef20012d00fd0d12f9eb253b0caf *man/sfHSD.Rd
 a0ff0a1f085bd6d1d9ee414218d94c0c *man/sfLDPocock.Rd
-96376fc56ab7c9907910ee517c065cf1 *man/sfLinear.Rd
+b28625a9c8676f61aa885b340a1127ee *man/sfLinear.Rd
 05ba215b0ce425b75692e52d53a1b261 *man/sfTDist.Rd
 0fa931a1db9d8ada9de6c9724ea1c85c *man/sfTruncated.Rd
 229a423312f7b5647e2734f48ac1639e *man/sfexp.Rd
 00dfb312638eca6472686c1bf74471b2 *man/sflogistic.Rd
-8cb12de3cc3bb9943a3d1b80e4bc966b *man/sfpoints.Rd
+891d94ae6e8a8076cb2600d0ee818e9e *man/sfpoints.Rd
 08e25266dc65b1e9055f974680b0e19e *man/sfpower.Rd
 3b3b924a5376fdb28968cdfd1b15e18e *man/spendingfunctions.Rd
 622f71087fe5f61b3e9c5388345b2e90 *man/testutils.Rd
