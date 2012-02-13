@@ -1,4 +1,4 @@
-eedad093e2ea6757155df8784f66d87a *DESCRIPTION
+4979a51c8812ffbfc7991d4b75873280 *DESCRIPTION
 787fbdcd561b1fdeb1cc2795771c153b *NAMESPACE
 1d8f8f3afa7b1ebdb3052c317f65a5d5 *R/gsBinomial.R
 a8f791719295048126c2b036d36e8151 *R/gsBinomialExact.R
@@ -11,12 +11,12 @@ a8f791719295048126c2b036d36e8151 *R/gsBinomialExact.R
 7bb209d0563f096d1635bf43014f2a77 *R/gsSurvival.R
 af097e93e8dc1d66ca8b8d2e961a6cae *R/gsUtilities.R
 06ac617063a2af99d6c342e2fbc3aeb2 *R/gsWTPT.R
-7c1a799c19763a7b8d82fba0abc6d601 *R/gsqplot.R
+f2d84a7dd33e441772c2cabed4ba684b *R/gsqplot.R
 da143cd0b33f51111f7cb9eda016d4ad *R/nEvents.R
 a052abd47b0e6acc6dca1e9955e3a97d *R/nNormal.R
 13f4af1beda4706152ea20b13d85cf9d *inst/NewTests/gsCPTests.R
 01a3abb578ce362eb010c575c7861b82 *inst/NewTests/sfLinearTest.R
-e917ab830b94e7038f0a33c47c9fb5ea *inst/doc/gsDesignManual.pdf
+8962cb68f91525b098f4b2b7247da5b5 *inst/doc/gsDesignManual.pdf
 cfcf268d6e26b5895d139422a32e76db *inst/doc/gsDesignOverview.pdf
 072b11e54bd2383c55946dd283a2c2db *inst/unitTests/Makefile
 2c63e764279b337a5a119a35717ee52f *inst/unitTests/doRUnit.R
