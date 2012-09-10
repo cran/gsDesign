@@ -1,5 +1,5 @@
 Package: gsDesign
-Version: 2.7-03
+Version: 2.7-04
 Title: Group Sequential Design
 Author: Keaven Anderson
 Maintainer: Keaven Anderson <keaven_anderson@merck.com>
@@ -8,8 +8,9 @@ Description: gsDesign is a package that derives group sequential
         designs and describes their properties.
 License: GPL (>= 2)
 Copyright: Copyright 2010, Merck Research Laboratories
-Packaged: 2012-05-25 02:15:13 UTC; rforge
+Packaged: 2012-09-10 22:19:29 UTC; rforge
 Repository: CRAN
 Repository/R-Forge/Project: gsdesign
-Repository/R-Forge/Revision: 334
-Date/Publication: 2012-07-09 15:39:07
+Repository/R-Forge/Revision: 337
+Repository/R-Forge/DateTimeStamp: 2012-09-10 18:06:11
+Date/Publication: 2012-09-11 14:22:20
