@@ -10,20 +10,16 @@
 \title{Advanced time-to-event sample size calculation}
 \description{\code{nSurv()} is used to calculate the sample size for a clinical trial with a time-to-event endpoint and an assumption of proportional hazards.
 This set of routines is new with version 2.7 and will continue to be modified and refined to improve input error checking and output format with subsequent versions.
-It allows both the Lachin and Foulkes (1986) method as well as the Kim and Tsiatis(1990) method.
-Piecewise exponential survival is supported as well as piecewise uniform enrollment.
+It allows both the Lachin and Foulkes (1986) method (fixed trial duration) as well as the Kim and Tsiatis(1990) method (fixed enrollment rates and either fixed enrollment duration or fixed minimum follow-up).
+Piecewise exponential survival is supported as well as piecewise constant enrollment and dropout rates.
 The methods are for a 2-arm trial with treatment groups referred to as experimental and control.
 A stratified population is allowed as in Lachin and Foulkes (1986); this method has been extended to derive non-inferiority as well as superiority trials.
 Stratification also allows power calculation for meta-analyses.
-The method used for calculation depends on which of the following values are \code{NULL} on input:
-study duration (\code{T}; this also derives total accrual duration), minimum follow-up (\code{minfup}), or power (\code{beta}).
-If none of the above variables are missing, then input accrual rates (\code{gamma}) are adjusted by a constant multiplier to achieve the desired power.
-Otherwise, the missing value is computed based on the other input values.
-The cases calculating \code{T} and \code{minfup} correspond to methods by Kim and Tsiatis (1990), but still use the underlying power equation from Lachin and Foulkes (1986).
-A print method is provided for the returned value from \code{nSurv()}, an object of class \code{nSurv}.
-
 \code{gsSurv()} combines \code{nSurv()} with \code{gsDesign()} to derive a group sequential design for a study with a time-to-event endpoint.
-A print method is provided for the returned value from \code{gsSurv()}, an object of class \code{gsSurv}.
+
+\code{print()}, \code{xtable()} and \code{summary()} methods are provided to operate on the returned value from \code{gsSurv()}, an object of class \code{gsSurv}. \code{print()} is also extended to \code{nSurv} objects.
+The functions \code{\link{gsBoundSummary}} (data frame for tabular output), \code{\link{xprint}} (application of \code{xtable} for tabular output) and \code{summary.gsSurv} (textual summary of \code{gsDesign} or \code{gsSurv} object) may be preferred summary functions; see example in vignettes.
+See also \link{gsDesign print, summary and table summary functions} for output of tabular summaries of bounds for designs produced by \code{gsSurv()}.
 
 Both \code{nEventsIA} and \code{tEventsIA} require a group sequential design for a time-to-event endpoing of class \code{gsSurv} as input.
 \code{nEventsIA} calculates the expected number of events under the alternate hypothesis at a given interim time.
@@ -108,7 +104,7 @@ timing[k]=1}. For \code{tEventsIA}, this is a scalar strictly between 0 and 1 th
 \item{label}{passed through to generic \code{xtable()}.}
 \item{align}{passed through to generic \code{xtable()}.}
 \item{display}{passed through to generic \code{xtable()}.}
-\item{...}{other arguments that may be passed to the generic print or xtable function.}
+\item{...}{other arguments that may be passed to generic functions underlying the methods here.}
 }
 
 \details{
@@ -198,7 +194,7 @@ Other items returned by \code{gsSurv()} are:
 
 }
 
-\seealso{\link{gsDesign package overview}, \link{Plots for group sequential designs}, \code{\link{gsDesign}}, \code{\link{gsHR}}, \code{\link{nSurvival}}}
+\seealso{\code{\link{gsBoundSummary}}, \code{\link{xprint}},\link{gsDesign package overview}, \link{Plots for group sequential designs}, \code{\link{gsDesign}}, \code{\link{gsHR}}, \code{\link{nSurvival}}}
 \author{Keaven Anderson \email{keaven_anderson@merck.com}}
 \references{
 Kim KM and Tsiatis AA (1990), Study duration for clinical trials with survival response and early stopping rule. \emph{Biometrics}, 46, 81-92
@@ -222,10 +218,12 @@ nSurv(lambdaC=log(2)/6, hr=.5, eta=log(2)/40, gamma=6, minfup = 12)
 nSurv(lambdaC=log(2)/6, hr=.5, eta=log(2)/40, gamma=6, R=25)
 
 # piecewise constant enrollment rates (vary accrual duration)
-nSurv(lambdaC=log(2)/6, hr=.5, eta=log(2)/40, gamma=c(1,3,6), R=c(3,6,9), minfup=12)
+nSurv(lambdaC=log(2)/6, hr=.5, eta=log(2)/40, gamma=c(1,3,6), 
+      R=c(3,6,9), minfup=12)
 
 # stratified population (vary accrual duration)
-nSurv(lambdaC=matrix(log(2)/c(6,12),ncol=2), hr=.5, eta=log(2)/40, gamma=matrix(c(2,4),ncol=2), minfup=12)
+nSurv(lambdaC=matrix(log(2)/c(6,12),ncol=2), hr=.5, eta=log(2)/40, 
+      gamma=matrix(c(2,4),ncol=2), minfup=12)
 
 # piecewise exponential failure rates (vary accrual duration)
 nSurv(lambdaC=log(2)/c(6,12), hr=.5, eta=log(2)/40, S=3, gamma=6, minfup = 12)
@@ -236,9 +234,11 @@ nSurv(lambdaC=matrix(log(2)/c(6,12,18,24),ncol=2), hr=.5,
       gamma=matrix(c(3,6,5,7),ncol=2), R=c(5,10), minfup = 12)
 
 # group sequential design (vary accrual rate to obtain power)
-x<-gsSurv(k=4,sfl=sfPower,sflpar=.5,lambdaC=log(2)/6, hr=.5, eta=log(2)/40,gamma=1, T=36,  minfup = 12)
+x<-gsSurv(k=4,sfl=sfPower,sflpar=.5,lambdaC=log(2)/6, hr=.5, 
+          eta=log(2)/40,gamma=1, T=36,  minfup = 12)
 x
-print(xtable(x,footnote="This is a footnote; note that it can be wide.", caption="Caption example."))
+print(xtable(x,footnote="This is a footnote; note that it can be wide.", 
+              caption="Caption example."))
 # find expected number of events at time 12 in the above trial
 nEventsIA(x=x,tIA=10)
 

@@ -17,7 +17,8 @@ nSurvival(lambda1=1/12, lambda2=1/24, Ts=24, Tr=12, eta = 0, ratio = 1,
       alpha = 0.025, beta = 0.10, sided = 1, approx = FALSE,
       type = c("rr", "rd"), entry = c("unif", "expo"), gamma = NA)
 \method{print}{nSurvival}(x,...)
-nEvents(hr = .6, alpha = .025, beta = .1, ratio = 1, sided = 1, hr0 =  1, n = 0, tbl = FALSE)
+nEvents(hr = .6, alpha = .025, beta = .1, ratio = 1, sided = 1, 
+        hr0 =  1, n = 0, tbl = FALSE)
 hrn2z(hr, n, ratio=1, hr0=1, hr1=.7)
 hrz2n(hr, z, ratio=1, hr0=1)
 zn2hr(z, n, ratio=1, hr0=1, hr1=.7)
@@ -98,7 +99,7 @@ That is,
   \item{Ts}{As input.}
   \item{Tr}{As input.}
 
-  \code{nEvents} produces a scalar or vector of sample sizes (or powers) when \code{tbl=FALSE} or, when \code{tbl=TRUE} a matrix of values with the following columns:
+  \code{nEvents} produces a scalar or vector of sample sizes (or powers) when \code{tbl=FALSE} or, when \code{tbl=TRUE} a data frame of values with the following columns:
   \item{hr}{As input.}
   \item{n}{If \code{n[1]=0} on input (default), output contains the number of events need to obtain the input Type I and II error. If \code{n[1]>0} on input, the input value is returned.}
   \item{alpha}{As input.}
@@ -138,11 +139,11 @@ That is,
 
 ss <- nSurvival(lambda1=.2 , lambda2=.1, eta = .1, Ts = 2, Tr = .5,
                 sided=1, alpha=.025)
-ss
 
-#  symmetric, 2-sided design with O'Brien-Fleming-like boundaries
-#  sample size is computed based on a fixed design requiring n=100
-	x<-gsDesign(k = 5, test.type = 2, n.fix=ss$nEvents, nFixSurv=ss$n)
+#  group sequential translation with default bounds
+#  note that delta1 is log hazard ratio; used later in gsBoundSummary summary
+	x<-gsDesign(k = 5, test.type = 2, n.fix=ss$nEvents, nFixSurv=ss$n, 
+      delta1=log(ss$lambda2/ss$lambda1))
 # boundary plot
 	plot(x)
 # effect size plot
@@ -153,6 +154,12 @@ ss
    x$n.I
 # print the design
 x
+# overall design summary
+cat(summary(x))
+# tabular summary of bounds
+gsBoundSummary(x,deltaname="HR",Nname="Events",logdelta=TRUE)
+
+
 
 # approximate number of events required using Schoenfeld's method
 # for 2 different hazard ratios
