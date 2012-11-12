@@ -1,4 +1,4 @@
-73e0e995cdf00d031236dbb75f9ef4bc *DESCRIPTION
+6d9d4dacd3af893ee55135eb5ed9ed6c *DESCRIPTION
 a2abd3a6bf487ec87cbe9c2f196cc3fb *NAMESPACE
 304540d2efb88ae0bcd7a396254d5c19 *R/gsBinomial.R
 01856eecf1bcd1c43a26de920f0ee00a *R/gsBinomialExact.R
@@ -22,13 +22,13 @@ c565d654d5947ed1090dcff346991e59 *R/xtable.R
 13f4af1beda4706152ea20b13d85cf9d *inst/NewTests/gsCPTests.R
 01a3abb578ce362eb010c575c7861b82 *inst/NewTests/sfLinearTest.R
 d062a050065d616811d77b2c105e5685 *inst/NewTests/sfTruncatedTests.R
-0f6a9259d4a4fc40f10df30ddab900e0 *inst/doc/gsDesignManual.pdf
+f7f1fdf4dbb0d8e9bb06da0bd61dbda9 *inst/doc/gsDesignManual.pdf
 cfcf268d6e26b5895d139422a32e76db *inst/doc/gsDesignOverview.pdf
 6245d0280b59b720856a3bcb6a08a9ff *inst/doc/gsSurvTemplate.R
-b2adf736a9f7494cf2800a0ec7942121 *inst/doc/gsSurvTemplate.pdf
+b1a5fae22daa36325b384d820134881e *inst/doc/gsSurvTemplate.pdf
 341c0145c84000045f3153b9a8e67d28 *inst/doc/gsSurvTemplate.rnw
 4f929b6be773d1c6e4d220f51b71e44a *inst/doc/gsSurvTemplateInstructions.R
-da3a12b0ea9f8e438348066c6790d20d *inst/doc/gsSurvTemplateInstructions.pdf
+73c4da8d415eac7bc0d8698da4b78ea4 *inst/doc/gsSurvTemplateInstructions.pdf
 307170627cec48dc08ed0fe110ab7005 *inst/doc/gsSurvTemplateInstructions.rnw
 072b11e54bd2383c55946dd283a2c2db *inst/unitTests/Makefile
 2c63e764279b337a5a119a35717ee52f *inst/unitTests/doRUnit.R
@@ -69,8 +69,8 @@ bcc736354f8a305fd7b0853cefb12e20 *man/gsDesign.Rd
 3470e4affa933e1a467eb32cbd03d0bb *man/gsProbability.Rd
 7943fa2240328a96aa2c31587aa34a0c *man/gsbound.Rd
 45ec1fc8b9b9023b6e98ac6e90954f2b *man/nNormal.Rd
-525511a63cb28b358c002ece2d27f4a0 *man/nSurv.Rd
-4256f1a18fb7aa5319cdebd0a3e4991c *man/nSurvival.Rd
+087ad09393ae908f6ac53b9b4b2812ed *man/nSurv.Rd
+6d13c8552d4fb6141d736b0a0ff6f37c *man/nSurvival.Rd
 6597a25cecc99fc06a825ccecf3917d7 *man/normalGrid.Rd
 bd591ea0998ab8083c6c803aa4304953 *man/plot.gsDesign.Rd
 5390ef20012d00fd0d12f9eb253b0caf *man/sfHSD.Rd
