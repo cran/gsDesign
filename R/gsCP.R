@@ -71,7 +71,7 @@
         anew <- array(-20, knew)
     }
     
-    gsProbability(k=knew, theta=theta, n.I=Inew, a=anew, b=bnew, r=r)
+    gsProbability(k=knew, theta=theta, n.I=Inew, a=anew, b=bnew, r=r, overrun=0)
 }
 
 gsPP <- function(x, i=1, zi=0, theta=c(0,3), wgts=c(.5,.5), r=18, total=TRUE)
@@ -156,9 +156,8 @@ gsPosterior <- function(x=gsDesign(), i=1, zi=NULL, prior=normalGrid(),
     checkVector(prior$gridwgts, "numeric", c(0, Inf), c(TRUE, FALSE))
     checkVector(prior$density, "numeric", c(0, Inf), c(TRUE, FALSE))
     checkVector(prior$z, "numeric", c(-Inf,Inf), c(FALSE, FALSE))
-    cl <- class(x)
-    if (cl != "gsDesign" && cl != "gsProbability")
-        stop("gsPosterior: x must have class gsDesign or gsProbability")
+    if (!(is(x, "gsProbability") || is(x, "gsDesign")))
+      stop("gsPosterior: x must have class gsDesign or gsProbability")
     test.type <- ifelse(is(x, "gsProbability"), 3, x$test.type)
     checkScalar(i, "integer", c(1, x$k-1))
     if (is.null(zi)) zi <- c(x$lower$bound[i],x$upper$bound[i])

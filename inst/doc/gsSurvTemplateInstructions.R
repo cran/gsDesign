@@ -1,9 +1,7 @@
-
-## ----packages, echo=FALSE, results="hide", message=FALSE-----------------
+## ----packages, echo=FALSE, results="hide", message=FALSE----
 options(width=58)
 
-
-## ----enrollment, message=FALSE-------------------------------------------
+## ----enrollment, message=FALSE--------------------------
 require(gsDesign)
 # enrollment period durations; the last of these will be extended if T=NULL below
 R <- c(1,2,3,4)
@@ -18,8 +16,7 @@ minfup <- 12
 # randomization ratio, experimental/control
 ratio <- 1
 
-
-## ----ep------------------------------------------------------------------
+## ----ep-------------------------------------------------
 # median control time-to-event
 median <- 12
 # exponential dropout rate per unit of time
@@ -33,14 +30,12 @@ alpha <-.025
 # Type II error (1-power)
 beta<-.1
 
-
-## ----nsurv,tidy=FALSE----------------------------------------------------
+## ----nsurv,tidy=FALSE-----------------------------------
 x <- nSurv(R=R,gamma=gamma,eta=eta,minfup=minfup,
            T=T,lambdaC=log(2)/median,
            hr=hr,hr0=hr0,beta=beta,alpha=alpha)
 
-
-## ----textstuff,echo=TRUE,results="hide"----------------------------------
+## ----textstuff,echo=TRUE,results="hide"-----------------
 # time units
 timename <- "months"
 timename1 <- "month"
@@ -55,8 +50,7 @@ enrolrates <- paste(c("piecewise constant at rates of ",
        "-",cumsum(x$R),collapse=", "),sep=""),collapse="")
 }
 
-
-## ----sf------------------------------------------------------------------
+## ----sf-------------------------------------------------
 # number of analyses (interim + final)
 k <- 2
 # timing of interim analyses (k-1 increasing numbers >0 and <1)
@@ -70,20 +64,17 @@ sfl <- sfHSD
 # futility bound spending parameter specification
 sflpar <- 2
 
-
-## ----TypeII--------------------------------------------------------------
+## ----TypeII---------------------------------------------
 # Type II error=1-Power
 beta <- .2
 
-
-## ----captext,echo=FALSE,results="hide"-----------------------------------
+## ----captext,echo=FALSE,results="hide"------------------
 # footnote text for table
 footnote <- paste("P\\{Cross\\} is the probability of crossing the given bound (efficacy or futility) at or before the given analysis under the assumed hazard ratio (HR). Design assumes futility bound is discretionary (non-binding), but smaller upper boundary crossing probabilities shown here assume trial stops at first boundary crossing (binding bounds).")
 # caption text for table
 caption <- paste("Overall survival trial design with HR=",hr,", ",100*(1-beta),"\\% power and ",100*alpha,"\\% Type 1 error.",sep="")
 
-
-## ----gsdesign,tidy=FALSE-------------------------------------------------
+## ----gsdesign,tidy=FALSE--------------------------------
 # generate design
 x <- gsSurv(k=k,timing=timing,R=R,gamma=gamma,eta=eta,
             minfup=minfup,T=T,lambdaC=log(2)/median,
@@ -101,25 +92,20 @@ enrolrates <- paste(c("piecewise constant at rates of ",
        "-",cumsum(x$R),collapse=", "),sep=""),collapse="")
 }
 
-
-## ----tab1, results="asis",echo=TRUE,message=FALSE,tidy=FALSE-------------
+## ----tab1, results="asis",echo=TRUE,message=FALSE,tidy=FALSE----
 print(xtable(x,footnote=footnote,caption=caption,
              label="tab1"), 
       include.rownames=F, 
       sanitize.text.function=function(x) x)
 
-
-## ----tab2, results="asis",tidy=FALSE,message=FALSE,tidy=FALSE------------
+## ----tab2, results="asis",tidy=FALSE,message=FALSE,tidy=FALSE----
 xprint(xtable(gsBoundSummary(x, logdelta=TRUE), 
               digits=4, label="tab2", 
               caption=summary(x)))
 
-
-## ----p1, fig.height=3.5,tidy=FALSE,fig.cap="Z-value bound plot"----------
+## ----p1, fig.height=3.5,tidy=FALSE,fig.cap="Z-value bound plot"----
 plot(x,cex=.8,xlab="Number of events")
 
-
-## ----p2, fig.height=3.5,fig.cap="Hazard ratio bound plot"----------------
+## ----p2, fig.height=3.5,fig.cap="Hazard ratio bound plot"----
 plot(x,plottype="hr",cex=.8,xlab="Number of events")
-
 

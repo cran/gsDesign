@@ -104,7 +104,8 @@
               " and ", ceiling(object$n.I[object$k]), " events required, ", sep="")
   }else if ("gsSurv" %in% class(object)){
       out <- paste(out, "time-to-event outcome with sample size ", 
-                   ceiling(object$eNC+object$eNE)[object$k], 
+                   ifelse(object$ratio==1,2*ceiling(object$eNE)[object$k,1],ceiling(object$eNE+object$eNC)[object$k,1]),
+                   #ceiling(object$eNC+object$eNE)[object$k], 
                    " and ", ceiling(object$n.I[object$k]), " events required, ", sep="")
   }else if(information){out <- paste(out," total information ",round(object$n.I[object$k],2),", ",sep="")
   }else out <- paste(out, "sample size ", ceiling(object$n.I[object$k]), ", ",sep="")
@@ -445,8 +446,8 @@ gsBoundSummary <- function(x, deltaname=NULL, logdelta=FALSE, Nname=NULL, digits
     nstat <- 2
   }else{
     nstat <- 4
-    statframe[statframe$Value==statframe$Value[3],]$Analysis <- paste("Events:",ceiling(x$eDC+x$eDE))
-    if (x$ratio==1) N <- 2*ceiling(x$eNE) else N <- ceiling(x$eNE+x$eNC)
+    statframe[statframe$Value==statframe$Value[3],]$Analysis <- paste("Events:",ceiling(rowSums(x$eDC+x$eDE)))
+    if (x$ratio==1) N <- 2*ceiling(rowSums(x$eNE)) else N <- ceiling(rowSums(x$eNE+x$eNC))
     Time <- round(x$T,tdigits)
     statframe[statframe$Value==statframe$Value[4],]$Analysis <- paste(timename,": ",as.character(Time),sep="")
   }

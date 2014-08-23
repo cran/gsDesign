@@ -1,9 +1,7 @@
-
-## ----packages, echo=FALSE, results="hide", message=FALSE-----------------
+## ----packages, echo=FALSE, results="hide", message=FALSE----
 options(width=58)
 
-
-## ----enrollment, message=FALSE, echo=FALSE, results="hide"---------------
+## ----enrollment, message=FALSE, echo=FALSE, results="hide"----
 # code here applies to both fixed and group sequential design sections below.
 require(gsDesign)
 # enrollment period durations; the last of these will be extended if T=NULL below
@@ -47,8 +45,7 @@ enrolrates <- paste(c("piecewise constant at rates of ",
        "-",cumsum(x$R),collapse=", "),sep=""),collapse="")
 }
 
-
-## ----sf,echo=FALSE,results="hide"----------------------------------------
+## ----sf,echo=FALSE,results="hide"-----------------------
 # number of analyses (interim + final)
 k <- 2
 # timing of interim analyses (k-1 increasing numbers >0 and <1)
@@ -79,23 +76,18 @@ enrolrates <- paste(c("piecewise constant at rates of ",
        "-",cumsum(x$R),collapse=", "),sep=""),collapse="")
 }
 
-
-## ----tab1, results="asis",echo=FALSE,message=FALSE,tidy=FALSE------------
+## ----tab1, results="asis",echo=FALSE,message=FALSE,tidy=FALSE----
 print(xtable(x,footnote=footnote,caption=caption,
              label="tab1"), 
       include.rownames=F, 
       sanitize.text.function=function(x) x)
 
-
-## ----tab2, results="asis",echo=FALSE,message=FALSE,tidy=FALSE------------
+## ----tab2, results="asis",echo=FALSE,message=FALSE,tidy=FALSE----
 xprint(xtable(gsBoundSummary(x, logdelta=TRUE), digits=4, label="tab2", caption=summary(x)))
-
 
 ## ----p1, fig.height=3.5,tidy=FALSE,fig.cap="Z-value bound plot",echo=FALSE----
 plot(x,cex=.8,xlab="Number of events")
 
-
-## ----p2, fig.height=3.5,fig.cap="Hazard ratio bound plot",echo=FALSE-----
+## ----p2, fig.height=3.5,fig.cap="Hazard ratio bound plot",echo=FALSE----
 plot(x,plottype="hr",cex=.8,xlab="Number of events")
-
 
