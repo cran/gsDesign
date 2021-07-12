@@ -71,7 +71,7 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' 
 #' \code{nBinomial1Sample} is based on code from Marc Schwartz marc_schwartz@me.com. 
 #' The possible sample size vector \code{n} needs to be selected in such a fashion
-#' that it covers the possible range of values that include the true minima. 
+#' that it covers the possible range of values that include the true minimum. 
 #' NOTE: the one-sided evaluation of significance is more conservative than using the 2-sided exact test in \code{binom.test}.
 #'
 #' @param k Number of analyses planned, including interim and final.
@@ -97,7 +97,7 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' @param x Item of class \code{gsBinomialExact} or \code{binomialSPRT} for
 #' \code{print.gsBinomialExact}. Item of class \code{gsBinomialExact} for
 #' \code{plot.gsBinomialExact}. Item of class \code{binomialSPRT} for item of
-#' class \code{binomialSPRT}.
+#' class \code{plot.binomialSPRT}.
 #' @param plottype 1 produces a plot with counts of response at bounds (for
 #' \code{binomialSPRT}, also produces linear SPRT bounds); 2 produces a plot
 #' with power to reject null and alternate response rates as well as the
@@ -175,8 +175,9 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' class(zz)
 #' 
 #' # because of "gsProbability" class above, following is equivalent to
-#' # print.gsProbability(zz)
+#' # \code{print.gsProbability(zz)}
 #' zz
+#' 
 #' # also plot (see also plots below for \code{binomialSPRT})
 #' # add lines using geom_line()
 #' plot(zz) + 
@@ -217,7 +218,9 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #'  outtype = 2)
 #' 
 #' # what happens if input sample sizes not sufficient?
-#' # nBinomial1Sample(p0 = 0.05, p1 = 0.2, alpha = 0.025, beta = .2, n = 25:30)
+#' \dontrun{ 
+#'   nBinomial1Sample(p0 = 0.05, p1 = 0.2, alpha = 0.025, beta = .2, n = 25:30)
+#' }
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
@@ -388,25 +391,8 @@ plot.gsBinomialExact <- function(x, plottype = 1, ...) {
 }
 
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param x PARAM_DESCRIPTION
-#' @param plottype PARAM_DESCRIPTION, Default: 1
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @author Keaven Anderson, PhD
-#' @details DETAILS
-#' @examples 
-#' \dontrun{
-#' if(interactive()){
-#'  #EXAMPLE1
-#'  }
-#' }
-#' @export 
-#' @rdname plot.binomialSPRT
-#' @seealso 
-#'  \code{\link[ggplot2]{geom_abline}}
 #' @importFrom ggplot2 geom_abline
+#' @rdname gsBinomialExact
 plot.binomialSPRT <- function(x, plottype = 1, ...) {
   p <- plot.gsBinomialExact(x, plottype = plottype, ...)
   if (plottype == 1) {

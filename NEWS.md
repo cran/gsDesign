@@ -1,8 +1,15 @@
+# gsDesign 3.2.1 (July, 2021)
+
+- Changed gt package usage in a vignette due to deprecated gt function
+- Replied to minor comments from CRAN reviewer (no functionality impact)
+- Minor update to DESCRIPTION citing Jennison and Turnbull reference
+
 # gsDesign 3.2.0 (January, 2021)
 
 - Substantially updated unit testing to increase code coverage above 80%
 - Updated error checking messages to print function where check fails
 - Removed dependencies on plyr packages
+- Updated github actions 
  
 # gsDesign 3.1.1 (May, 2020)
 
