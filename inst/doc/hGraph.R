@@ -1,7 +1,14 @@
-## ---- include = FALSE-----------------------------------
+## ---- include=FALSE-------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev = "ragg_png",
+  dpi = 96,
+  fig.retina = 1,
+  fig.width = 7.2916667,
+  fig.asp = 0.618,
+  fig.align = "center",
+  out.width = "80%"
 )
 
 ## ---- echo=FALSE, message=FALSE, warning=FALSE----------
@@ -9,10 +16,10 @@ library(gsDesign)
 library(dplyr)
 library(gridExtra)
 
-## ---- message=FALSE, fig.width=7.5, fig.height=4--------
+## ---- message=FALSE-------------------------------------
 hGraph()
 
-## ---- fig.width=7.5, fig.height=4.5---------------------
+## -------------------------------------------------------
 hGraph(
   nHypotheses = 3,
   nameHypotheses = c("HA\n First", "HC\n Second", "HB\n Third"),
@@ -20,7 +27,7 @@ hGraph(
   wchar = "w" # Character before weights
 )
 
-## ---- message=FALSE, fig.width=8, fig.height=4----------
+## ---- message=FALSE, fig.asp=0.5------------------------
 grid.arrange(
   # Left graph in figure
   hGraph(
@@ -44,7 +51,7 @@ grid.arrange(
   nrow = 1
 )
 
-## ----fig.width=7.5,fig.height=4-------------------------
+## ---- fig.width=9, fig.asp=0.5--------------------------
 grid.arrange(
   # Left graph in figure
   hGraph(
@@ -60,7 +67,7 @@ grid.arrange(
   nrow = 1
 )
 
-## ----fig.width=7.5,fig.height=4-------------------------
+## -------------------------------------------------------
 hGraph(
   nHypotheses = 3,
   fill = c(1, 1, 2),
@@ -70,7 +77,7 @@ hGraph(
   legend.position = c(.75, .25)
 )
 
-## ----fig.width=7.5,fig.height=4-------------------------
+## -------------------------------------------------------
 hGraph(
   nHypotheses = 3,
   m = matrix(c(

@@ -127,7 +127,7 @@
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{gsDesign}}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
 #' Methods with Applications to Clinical Trials}. Boca Raton: Chapman and Hall.
@@ -267,7 +267,7 @@ sfLogistic <- function(alpha, t, param) {
 #' is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.com}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Anderson KM and Clark JB (2009), Fitting spending functions.
@@ -570,7 +570,7 @@ sfExtremeValue2 <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.com}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -687,7 +687,7 @@ sfHSD <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -924,7 +924,7 @@ sfNormal <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -1013,29 +1013,21 @@ sfStep <- function(alpha, t, param) {
   if (max(param) > 1 || min(param) < 0) {
     stop("Timepoints and cumulative proportion of spending must be >= 0 and <= 1 in sfStep")
   }
-  if (k > 1) {
-    inctime <- x$param[1:k] - c(0, x$param[1:(k - 1)])
-    incspend <- x$param[(k + 1):j] - c(0, x$param[(k + 1):(j - 1)])
-    if ((j > 2) && (min(inctime) <= 0)) {
-      stop("Timepoints must be strictly increasing in sfStep")
-    }
-    if ((j > 2) && (min(incspend) < 0)) {
-      stop("Spending must be non-decreasing in sfStep")
-    }
-  }
-  s <- t
-  s[t <= param[1] | t < 0] <- 0
+  inctime <- param[1]
+  if (k>1) inctime <- c(inctime, param[2:k] - param[1:(k-1)])
+  if (min(inctime <= 0)) stop("Timepoints in param must be strictly increasing in sfStep")
+  incspend <- param[k+1]
+  if (k > 1) incspend <- c(incspend, param[(k + 2):j] - param[(k+1):(j-1)])
+  if (min(incspend) < 0) stop("Spending in param must be non-decreasing in sfStep")
+  s <- rep(-3, length(t))
+  s[t < param[1]] <- 0
+  s[t >= param[k]] <- param[j]
   s[t >= 1] <- 1
-  ind <- (0 < t) & (t <= param[1])
-  s[ind] <- param[k + 1]
-  ind <- (1 > t) & (t >= param[k])
-  s[ind] <- param[j]
-  if (k > 1) {
-    for (i in 2:k)
-    {
-      ind <- (param[i - 1] < t) & (t <= param[i])
-      s[ind] <- param[k + i - 1]
-    }
+  if (k > 1){
+     for (i in 1:(k-1)){
+       ind <- (param[i] <= t) & (t < param[i+1])
+       s[ind] <- param[k + i]
+     }
   }
   x$spend <- alpha * s
   x
@@ -1115,7 +1107,7 @@ sfStep <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}, \link{sfLogistic}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -1233,7 +1225,7 @@ sfPoints <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -1354,7 +1346,7 @@ sfPower <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.com}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -1570,7 +1562,7 @@ sfTDist <- function(alpha, t, param) {
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -1591,7 +1583,7 @@ sfTruncated <- function(alpha, t, param) {
   if (param$trange[1] >= 1. | param$trange[2] <= param$trange[1] | param$trange[2] <= 0) {
     stop("param$trange must be a vector of length 2 with 0 <= param$trange[1] < param$trange[2]<=1. See help(sfTruncated)")
   }
-  if (class(param$sf) != "function") stop("param$sf must be a spending function")
+  if (!inherits(param$sf, "function")) stop("param$sf must be a spending function")
   if (!is.numeric(param$param)) stop("param$param must be numeric")
   spend <- as.vector(rep(0, length(t)))
   spend[t >= param$trange[2]] <- alpha
@@ -1628,7 +1620,7 @@ sfTrimmed <- function(alpha, t, param) {
   if (param$trange[1] >= 1. | param$trange[2] <= param$trange[1] | param$trange[2] <= 0) {
     stop("param$trange must be a vector of length 2 with 0 <= param$trange[1] < param$trange[2]<=1. See help(sfTrimmed)")
   }
-  if (class(param$sf) != "function") stop("param$sf must be a spending function")
+  if (!inherits(param$sf, "function")) stop("param$sf must be a spending function")
   if (!is.numeric(param$param)) stop("param$param must be numeric")
   spend <- as.vector(rep(0, length(t)))
   spend[t >= param$trange[2]] <- alpha
@@ -1665,7 +1657,7 @@ sfGapped <- function(alpha, t, param) {
   if (param$trange[1] >= 1. | param$trange[2] <= param$trange[1] | param$trange[2] <= 0 | param$trange[1] <= 0) {
     stop("param$trange must be a vector of length 2 with 0 < param$trange[1] < param$trange[2]<=1. See help(sfTrimmed)")
   }
-  if (class(param$sf) != "function") stop("param$sf must be a spending function")
+  if (!inherits(param$sf, "function")) stop("param$sf must be a spending function")
   if (!is.numeric(param$param)) stop("param$param must be numeric")
   spend <- as.vector(rep(0, length(t)))
   spend[t >= param$trange[2]] <- alpha

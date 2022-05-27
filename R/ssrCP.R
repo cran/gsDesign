@@ -293,7 +293,7 @@ n2sizediff <- function(z1, target, beta = .1, z2 = z2NC,
 #' ggplot2::ggplot(data = y3, ggplot2::aes(x = delta, y = Power, col = CP.effect.size)) + 
 #' ggplot2::geom_line() + 
 #' ggplot2::xlab(expression(delta))
-#' @author Keaven Anderson \email{keaven_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{gsDesign}}
 #' @references Bauer, Peter and Kohne, F., Evaluation of experiments with
 #' adaptive interim analyses, Biometrics, 50:1029-1041, 1994.
@@ -330,7 +330,7 @@ ssrCP <- function(z1, theta = NULL, maxinc = 2, overrun = 0,
                   beta = x$beta, cpadj = c(.5, 1 - beta),
                   x = gsDesign(k = 2, timing = .5),
                   z2 = z2NC, ...) {
-  if (class(x) != "gsDesign") {
+  if (!inherits(x, "gsDesign")) {
     stop("x must be passed as an object of class gsDesign")
   }
   if (2 != x$k) {
@@ -488,7 +488,7 @@ z2Fisher <- function(z1, x, ...) {
 #' @rdname ssrCP
 #' @importFrom stats pnorm dnorm uniroot
 Power.ssrCP <- function(x, theta = NULL, delta = NULL, r = 18) {
-  if (class(x) != "ssrCP") {
+  if (!inherits(x, "ssrCP")) {
     stop("Power.ssrCP must be called with x of class ssrCP")
   }
   if (is.null(theta) & is.null(delta)) {

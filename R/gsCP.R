@@ -185,7 +185,7 @@
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{normalGrid}}, \code{\link{gsDesign}},
 #' \code{\link{gsProbability}}, \code{\link{gsBoundCP}}, \code{\link{ssrCP}},
 #' \code{\link{condPower}}
@@ -217,10 +217,11 @@ gsCP <- function(x, theta = NULL, i = 1, zi = 0, r = 18) {
 
   test.type <- ifelse(inherits(x, "gsProbability"), 3, x$test.type)
 
+  if (!(is.numeric(zi) & (length(zi) == 1))) stop("gsCP: zi must be positive and of length 1")
+
   if (zi > x$upper$bound[i]) {
     stop("gsCP must have x$lower$bound[i] <= zi <= x$upper$bound[i]")
-  }
-  else if (test.type > 1 && zi < x$lower$bound[i]) {
+  } else if (test.type > 1 && zi < x$lower$bound[i]) {
     stop("gsCP must have x$lower$bound[i]<=zi<=x$upper$bound[i]")
   }
 
@@ -262,6 +263,7 @@ gsPP <- function(x, i = 1, zi = 0, theta = c(0, 3), wgts = c(.5, .5), r = 18, to
   if (!(inherits(x, "gsProbability") || inherits(x, "gsDesign"))) {
     stop("gsPP: class(x) must be gsProbability or gsDesign")
   }
+  if (!(is.numeric(zi) & (length(zi) == 1))) stop("gsPP: zi must be positive and of length 1")
   test.type <- ifelse(inherits(x, "gsProbability"), 3, x$test.type)
   checkScalar(i, "integer", c(1, x$k - 1))
   checkScalar(zi, "numeric", c(-Inf, Inf), c(FALSE, FALSE))
@@ -269,6 +271,7 @@ gsPP <- function(x, i = 1, zi = 0, theta = c(0, 3), wgts = c(.5, .5), r = 18, to
   checkVector(theta, "numeric", c(-Inf, Inf), c(FALSE, FALSE))
   checkLengths(theta, wgts)
   checkScalar(r, "integer", c(1, 80))
+  if (!(is.numeric(zi) &  length(zi) == 1)) stop("zi must be single, real value")
   cp <- gsCP(x = x, i = i, theta = theta, zi = zi, r = r)
   gsDen <- stats::dnorm(zi, mean = sqrt(x$n.I[i]) * theta) * wgts
   pp <- cp$upper$prob %*% gsDen / sum(gsDen)
@@ -350,7 +353,7 @@ gsPI <- function(x, i = 1, zi = 0, j = 2, level = .95, theta = c(0, 3), wgts = c
 #' @note The manual is not linked to this help file, but is available in
 #' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
 #' installed.
-#' @author Keaven Anderson \email{keaven\_anderson@@merck.}
+#' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{gsDesign}}, \code{\link{gsProbability}},
 #' \code{\link{gsCP}}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential

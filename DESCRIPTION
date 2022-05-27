@@ -1,5 +1,5 @@
 Package: gsDesign
-Version: 3.2.2
+Version: 3.3.0
 Title: Group Sequential Design
 Description: Derives group sequential clinical trial designs and describes
     their properties. Particular focus on time-to-event, binary, and
@@ -18,13 +18,13 @@ Encoding: UTF-8
 Imports: stats, magrittr, rlang, methods, graphics, tools, dplyr,
         tidyr, xtable
 Suggests: knitr, scales, rmarkdown, gt, testthat, covr, gridExtra,
-        tibble, utils, mvtnorm
+        tibble, utils, mvtnorm, gMCP, kableExtra, ragg
 VignetteBuilder: knitr
 Copyright: Copyright 2010, Merck Research Laboratories
 RoxygenNote: 7.1.2
 NeedsCompilation: yes
-Packaged: 2022-02-02 16:21:34 UTC; xiaonan4
+Packaged: 2022-05-27 14:47:18 UTC; xiaonan4
 Author: Keaven Anderson [aut, cre]
 Maintainer: Keaven Anderson <keaven_anderson@merck.com>
 Repository: CRAN
-Date/Publication: 2022-02-02 23:00:02 UTC
+Date/Publication: 2022-05-27 18:30:02 UTC

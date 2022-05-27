@@ -1,7 +1,14 @@
-## ---- include = FALSE-----------------------------------
+## ---- include=FALSE-------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev = "ragg_png",
+  dpi = 96,
+  fig.retina = 1,
+  fig.width = 7.2916667,
+  fig.asp = 0.618,
+  fig.align = "center",
+  out.width = "80%"
 )
 
 options(width = 58)
@@ -155,7 +162,7 @@ events <- lfgs$n.I
 z <- lfgs$upper$bound
 zn2hr(z = z, n = events) # Schoenfeld approximation to HR
 
-## ----fig.width=6.5, fig.height=4------------------------
+## ---- fig.asp=1-----------------------------------------
 plot(lfgs, pl = "hr", dgt = 4, base = TRUE)
 
 ## -------------------------------------------------------
@@ -166,7 +173,7 @@ tibble::tibble(
 ) %>%
   kable()
 
-## ---- fig.width=6.5, fig.height=4-----------------------
+## ---- fig.asp=1-----------------------------------------
 Month <- seq(0.025, enrollDuration + minfup, .025)
 plot(
   c(0, Month),
