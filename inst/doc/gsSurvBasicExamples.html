@@ -14,7 +14,19 @@
 
 <title>Basic time-to-event group sequential design using gsSurv</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -108,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -148,7 +167,187 @@ div.csl-indent {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -160,21 +359,44 @@ div.csl-indent {
 
 
 
-<h1 class="title toc-ignore">Basic time-to-event group sequential design using gsSurv</h1>
+<h1 class="title toc-ignore">Basic time-to-event group sequential design
+using gsSurv</h1>
 
 
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This article/vignette provides a basic time-to-event endpoint designs for fixed designs using <code>nSurv()</code> and group sequential designs using <code>gsSurv()</code>. Some detail in specification comes with the flexibility allowed by the <span class="citation">Lachin and Foulkes (1986)</span> method for sample size under a proportional hazards model with piecewise constant enrollment, piecewise exponential failure and dropout rates. Users may also be interested in the <a href="https://gsdesign.shinyapps.io/prod/">Shiny interface</a> as a learning tool. We only use the simplest options here with a single stratum and exponential failure and dropout rates; see the help file for <code>gsSurv()</code> for examples with a stratified population or piecewise exponential failure.</p>
-<p>We apply the <span class="citation">Lachin and Foulkes (1986)</span> sample size method and extend it to group sequential design. This method fixes the duration of a study and varies enrollment rates to power a trial. We also use the <span class="citation">Lachin and Foulkes (1986)</span> basic power calculation to compute sample size along the lines of <span class="citation">Kim and Tsiatis (1990)</span> where enrollment rates are fixed and enrollment duration is allowed to vary to enroll a sufficient sample size to power a study.</p>
+<p>This article/vignette provides a basic time-to-event endpoint designs
+for fixed designs using <code>nSurv()</code> and group sequential
+designs using <code>gsSurv()</code>. Some detail in specification comes
+with the flexibility allowed by the <span class="citation">Lachin and
+Foulkes (1986)</span> method for sample size under a proportional
+hazards model with piecewise constant enrollment, piecewise exponential
+failure and dropout rates. Users may also be interested in the <a href="https://gsdesign.shinyapps.io/prod/">Shiny interface</a> as a
+learning tool. We only use the simplest options here with a single
+stratum and exponential failure and dropout rates; see the help file for
+<code>gsSurv()</code> for examples with a stratified population or
+piecewise exponential failure.</p>
+<p>We apply the <span class="citation">Lachin and Foulkes (1986)</span>
+sample size method and extend it to group sequential design. This method
+fixes the duration of a study and varies enrollment rates to power a
+trial. We also use the <span class="citation">Lachin and Foulkes
+(1986)</span> basic power calculation to compute sample size along the
+lines of <span class="citation">Kim and Tsiatis (1990)</span> where
+enrollment rates are fixed and enrollment duration is allowed to vary to
+enroll a sufficient sample size to power a study.</p>
 </div>
 <div id="fixed-design-derivation" class="section level1">
 <h1>Fixed design derivation</h1>
-<p>Since the parameters used for a design with no interim are also used for a group sequential design, we first specify and derive a design with no interim analysis.</p>
+<p>Since the parameters used for a design with no interim are also used
+for a group sequential design, we first specify and derive a design with
+no interim analysis.</p>
 <div id="outcome-and-dropout-distributions" class="section level2">
 <h2>Outcome and dropout distributions</h2>
-<p>We begin with information about the median time-to-event in the control group, dropout rate, hazard ratios under the null and alternate hypotheses for experimental therapy compared to control, and the desired Type I and II error rates.</p>
+<p>We begin with information about the median time-to-event in the
+control group, dropout rate, hazard ratios under the null and alternate
+hypotheses for experimental therapy compared to control, and the desired
+Type I and II error rates.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Median control time-to-event</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>median <span class="ot">&lt;-</span> <span class="dv">12</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Exponential dropout rate per unit of time</span></span>
@@ -191,7 +413,15 @@ div.csl-indent {
 </div>
 <div id="enrollment-and-trial-duration" class="section level2">
 <h2>Enrollment and trial duration</h2>
-<p>Next, we plan the trial duration and the enrollment pattern. There are two basic methods for doing this. The <span class="citation">Lachin and Foulkes (1986)</span> method demonstrated here fixes the enrollment pattern and duration as well as the trial duration and changes the absolute enrollment rates to obtain desired power. The alternate recommended method is along the lines of <span class="citation">Kim and Tsiatis (1990)</span>, fixing the enrollment rates and follow-up duration, varying the total trial duration to power the design; this will also be demonstrated below.</p>
+<p>Next, we plan the trial duration and the enrollment pattern. There
+are two basic methods for doing this. The <span class="citation">Lachin
+and Foulkes (1986)</span> method demonstrated here fixes the enrollment
+pattern and duration as well as the trial duration and changes the
+absolute enrollment rates to obtain desired power. The alternate
+recommended method is along the lines of <span class="citation">Kim and
+Tsiatis (1990)</span>, fixing the enrollment rates and follow-up
+duration, varying the total trial duration to power the design; this
+will also be demonstrated below.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Study duration</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">36</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Follow-up duration of last patient enrolled</span></span>
@@ -205,7 +435,11 @@ div.csl-indent {
 </div>
 <div id="deriving-design-with-no-interim-analyses" class="section level2">
 <h2>Deriving design with no interim analyses</h2>
-<p>The above information is sufficient to design a trial with no interim analyses. Note that when calling <code>nSurv()</code>, we transform the median time-to-event (<span class="math inline">\(m\)</span>) to an exponential event rate (<span class="math inline">\(\lambda\)</span>) with the formula <span class="math display">\[\lambda=\log(2)/m.\]</span></p>
+<p>The above information is sufficient to design a trial with no interim
+analyses. Note that when calling <code>nSurv()</code>, we transform the
+median time-to-event (<span class="math inline">\(m\)</span>) to an
+exponential event rate (<span class="math inline">\(\lambda\)</span>)
+with the formula <span class="math display">\[\lambda=\log(2)/m.\]</span></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">nSurv</span>(</span>
@@ -220,7 +454,9 @@ div.csl-indent {
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> beta,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> alpha</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>A textual summary of this design is given by printing it. For the group sequential design shown later, much more complete formatted output will be shown.</p>
+<p>A textual summary of this design is given by printing it. For the
+group sequential design shown later, much more complete formatted output
+will be shown.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Fixed design, two-arm trial with time-to-event</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; outcome (Lachin and Foulkes, 1986).</span></span>
@@ -249,7 +485,10 @@ div.csl-indent {
 </div>
 <div id="varying-enrollment-duration-to-power-trial" class="section level2">
 <h2>Varying enrollment duration to power trial</h2>
-<p>If we had set <code>T = NULL</code> above, the specified enrollment rates would not be changed but enrollment duration would be adjusted to achieve desired power. For the low enrollment rates specified in <code>gamma</code> above, this would have resulted in a long trial.</p>
+<p>If we had set <code>T = NULL</code> above, the specified enrollment
+rates would not be changed but enrollment duration would be adjusted to
+achieve desired power. For the low enrollment rates specified in
+<code>gamma</code> above, this would have resulted in a long trial.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># THIS CODE IS EXAMPLE ONLY; NOT EXECUTED HERE</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nSurv</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> R,</span>
@@ -270,19 +509,30 @@ div.csl-indent {
 <p>Now we move on to a group sequential design.</p>
 <div id="additional-parameters" class="section level2">
 <h2>Additional parameters</h2>
-<p>All the parameters above are used. We set up the number of analyses, timing and spending function parameters. These deserve careful attention for every trial and tend to be somewhat customized to be fit-for-purpose according to all those involved in designing the trial. Here the choices considered the following:</p>
+<p>All the parameters above are used. We set up the number of analyses,
+timing and spending function parameters. These deserve careful attention
+for every trial and tend to be somewhat customized to be fit-for-purpose
+according to all those involved in designing the trial. Here the choices
+considered the following:</p>
 <ul>
 <li>There is an early look intended primarily for futility
 <ul>
-<li>There is no desire to stop this early for lack of a positive trend</li>
-<li>An earlier interim might be too soon to stop for a meaningful safety problem</li>
-<li>There is no desire to stop for efficacy, so the extreme effect size and p-value required to cross the bound is considered appropriate</li>
+<li>There is no desire to stop this early for lack of a positive
+trend</li>
+<li>An earlier interim might be too soon to stop for a meaningful safety
+problem</li>
+<li>There is no desire to stop for efficacy, so the extreme effect size
+and p-value required to cross the bound is considered appropriate</li>
 </ul></li>
 <li>The second interim is primarily for efficacy
 <ul>
-<li>The data will be relatively mature, but a meaningful length of time before planned final analysis</li>
-<li>The treatment effect at the efficacy bound will likely be at least the treatment effect used to power the trial</li>
-<li>The Lan-DeMets spending function approximating an O’Brien-Fleming bound <span class="citation">Lan and DeMets (1983)</span> is often acceptable to regulators for early stopping</li>
+<li>The data will be relatively mature, but a meaningful length of time
+before planned final analysis</li>
+<li>The treatment effect at the efficacy bound will likely be at least
+the treatment effect used to power the trial</li>
+<li>The Lan-DeMets spending function approximating an O’Brien-Fleming
+bound <span class="citation">Lan and DeMets (1983)</span> is often
+acceptable to regulators for early stopping</li>
 </ul></li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of analyses (interim + final)</span></span>
@@ -299,7 +549,9 @@ div.csl-indent {
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>sfl <span class="ot">&lt;-</span> sfHSD</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Futility bound spending parameter specification</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>sflpar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">7</span></span></code></pre></div>
-<p>Type II error (1-power) may be set up differently than for a fixed design so that more meaningful futility analyses can be performed during the course of the trial.</p>
+<p>Type II error (1-power) may be set up differently than for a fixed
+design so that more meaningful futility analyses can be performed during
+the course of the trial.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Type II error = 1 - Power</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> .<span class="dv">15</span></span></code></pre></div>
 </div>
@@ -318,8 +570,16 @@ div.csl-indent {
 <h2>Textual summary</h2>
 <p>The design summary is:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">summary</span>(x))</span></code></pre></div>
-<p>Asymmetric two-sided group sequential design with non-binding futility bound, 3 analyses, time-to-event outcome with sample size 676 and 443 events required, 85 percent power, 2.5 percent (1-sided) Type I error to detect a hazard ratio of 0.75. Enrollment and total study durations are assumed to be 24 and 36 months, respectively. Efficacy bounds derived using a Lan-DeMets O’Brien-Fleming approximation spending function with none = 1. Futility bounds derived using a Hwang-Shih-DeCani spending function with gamma = -7.</p>
-<p>An important addition not provided above is that the median time-to-event is assumed to be 12 months in the control group.</p>
+<p>Asymmetric two-sided group sequential design with non-binding
+futility bound, 3 analyses, time-to-event outcome with sample size 676
+and 443 events required, 85 percent power, 2.5 percent (1-sided) Type I
+error to detect a hazard ratio of 0.75. Enrollment and total study
+durations are assumed to be 24 and 36 months, respectively. Efficacy
+bounds derived using a Lan-DeMets O’Brien-Fleming approximation spending
+function with none = 1. Futility bounds derived using a
+Hwang-Shih-DeCani spending function with gamma = -7.</p>
+<p>An important addition not provided above is that the median
+time-to-event is assumed to be 12 months in the control group.</p>
 </div>
 <div id="tabular-summaries" class="section level2">
 <h2>Tabular summaries</h2>
@@ -333,12 +593,12 @@ div.csl-indent {
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">&quot;Enrollment rate requirements&quot;</span>)</span></code></pre></div>
-<div id="jduevrsmws" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ayxeocfarz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#jduevrsmws .gt_table {
+#ayxeocfarz .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -363,7 +623,7 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_heading {
+#ayxeocfarz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -375,7 +635,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_title {
+#ayxeocfarz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -387,7 +647,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#jduevrsmws .gt_subtitle {
+#ayxeocfarz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -399,13 +659,13 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#jduevrsmws .gt_bottom_border {
+#ayxeocfarz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_col_headings {
+#ayxeocfarz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -420,7 +680,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_col_heading {
+#ayxeocfarz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -440,7 +700,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#jduevrsmws .gt_column_spanner_outer {
+#ayxeocfarz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -452,15 +712,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#jduevrsmws .gt_column_spanner_outer:first-child {
+#ayxeocfarz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jduevrsmws .gt_column_spanner_outer:last-child {
+#ayxeocfarz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jduevrsmws .gt_column_spanner {
+#ayxeocfarz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -472,7 +732,7 @@ div.csl-indent {
   width: 100%;
 }
 
-#jduevrsmws .gt_group_heading {
+#ayxeocfarz .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -497,7 +757,7 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#jduevrsmws .gt_empty_group_heading {
+#ayxeocfarz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -512,15 +772,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#jduevrsmws .gt_from_md > :first-child {
+#ayxeocfarz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jduevrsmws .gt_from_md > :last-child {
+#ayxeocfarz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jduevrsmws .gt_row {
+#ayxeocfarz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -539,7 +799,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#jduevrsmws .gt_stub {
+#ayxeocfarz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -552,7 +812,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#jduevrsmws .gt_stub_row_group {
+#ayxeocfarz .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -566,11 +826,11 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#jduevrsmws .gt_row_group_first td {
+#ayxeocfarz .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#jduevrsmws .gt_summary_row {
+#ayxeocfarz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -580,16 +840,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#jduevrsmws .gt_first_summary_row {
+#ayxeocfarz .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_first_summary_row.thick {
+#ayxeocfarz .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#jduevrsmws .gt_last_summary_row {
+#ayxeocfarz .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -599,7 +859,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_grand_summary_row {
+#ayxeocfarz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -609,7 +869,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#jduevrsmws .gt_first_grand_summary_row {
+#ayxeocfarz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -619,11 +879,11 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_striped {
+#ayxeocfarz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#jduevrsmws .gt_table_body {
+#ayxeocfarz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -632,7 +892,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_footnotes {
+#ayxeocfarz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -646,7 +906,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_footnote {
+#ayxeocfarz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -655,7 +915,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#jduevrsmws .gt_sourcenotes {
+#ayxeocfarz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -669,7 +929,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#jduevrsmws .gt_sourcenote {
+#ayxeocfarz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -677,85 +937,78 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#jduevrsmws .gt_left {
+#ayxeocfarz .gt_left {
   text-align: left;
 }
 
-#jduevrsmws .gt_center {
+#ayxeocfarz .gt_center {
   text-align: center;
 }
 
-#jduevrsmws .gt_right {
+#ayxeocfarz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#jduevrsmws .gt_font_normal {
+#ayxeocfarz .gt_font_normal {
   font-weight: normal;
 }
 
-#jduevrsmws .gt_font_bold {
+#ayxeocfarz .gt_font_bold {
   font-weight: bold;
 }
 
-#jduevrsmws .gt_font_italic {
+#ayxeocfarz .gt_font_italic {
   font-style: italic;
 }
 
-#jduevrsmws .gt_super {
+#ayxeocfarz .gt_super {
   font-size: 65%;
 }
 
-#jduevrsmws .gt_two_val_uncert {
-  display: inline-block;
-  line-height: 1em;
-  text-align: right;
-  font-size: 60%;
-  vertical-align: -0.25em;
-  margin-left: 0.1em;
-}
-
-#jduevrsmws .gt_footnote_marks {
+#ayxeocfarz .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#jduevrsmws .gt_asterisk {
+#ayxeocfarz .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#jduevrsmws .gt_slash_mark {
-  font-size: 0.7em;
-  line-height: 0.7em;
-  vertical-align: 0.15em;
+#ayxeocfarz .gt_indent_1 {
+  text-indent: 5px;
 }
 
-#jduevrsmws .gt_fraction_numerator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: 0.45em;
+#ayxeocfarz .gt_indent_2 {
+  text-indent: 10px;
 }
 
-#jduevrsmws .gt_fraction_denominator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: -0.05em;
+#ayxeocfarz .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ayxeocfarz .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ayxeocfarz .gt_indent_5 {
+  text-indent: 25px;
 }
 </style>
 <table class="gt_table">
   <thead class="gt_header">
     <tr>
-      <th colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Enrollment rate requirements</th>
+      <td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Enrollment rate requirements</td>
     </tr>
     
   </thead>
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Period</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">Rate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Period</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Rate</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -772,7 +1025,17 @@ div.csl-indent {
   
 </table>
 </div>
-<p>Next we provide a tabular summary of bounds for the design. We have added extensive footnoting to the table, which may or may not be required for your design. However, as seen here it makes many choices for design parameters and properties transparent. No attempt has been made to automate this, but it may be worth considering for a template if you wish to make the same choice across many trials. Note that the <code>exclude</code> argument for <code>gsBoundSummary()</code> allows additional descriptions for design bounds such as conditional or predictive power; see the help file for details or just provide <code>exclude = NULL</code> to <code>gsBoundSummary()</code> to see all options.</p>
+<p>Next we provide a tabular summary of bounds for the design. We have
+added extensive footnoting to the table, which may or may not be
+required for your design. However, as seen here it makes many choices
+for design parameters and properties transparent. No attempt has been
+made to automate this, but it may be worth considering for a template if
+you wish to make the same choice across many trials. Note that the
+<code>exclude</code> argument for <code>gsBoundSummary()</code> allows
+additional descriptions for design bounds such as conditional or
+predictive power; see the help file for details or just provide
+<code>exclude = NULL</code> to <code>gsBoundSummary()</code> to see all
+options.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Footnote text for table</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>footnote1 <span class="ot">&lt;-</span> <span class="st">&quot;P{Cross} is the probability of crossing the given bound (efficacy or futility) at or before the given analysis under the assumed hazard ratio (HR).&quot;</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>footnote2 <span class="ot">&lt;-</span> <span class="st">&quot; Design assumes futility bound is discretionary (non-binding); upper boundary crossing probabilities shown here assume trial stops at first boundary crossed and thus total less than the design Type I error.&quot;</span></span>
@@ -804,12 +1067,12 @@ div.csl-indent {
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(footnoteM, <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="dv">1</span>, <span class="at">rows =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">14</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(footnote1, <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="dv">2</span>, <span class="at">rows =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">15</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_footnote</span>(footnote2, <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">columns =</span> <span class="dv">2</span>, <span class="at">rows =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">14</span>)))</span></code></pre></div>
-<div id="xiwlecrvnk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="dgtbcpeenr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xiwlecrvnk .gt_table {
+#dgtbcpeenr .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -834,7 +1097,7 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_heading {
+#dgtbcpeenr .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -846,7 +1109,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_title {
+#dgtbcpeenr .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -858,7 +1121,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#xiwlecrvnk .gt_subtitle {
+#dgtbcpeenr .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -870,13 +1133,13 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#xiwlecrvnk .gt_bottom_border {
+#dgtbcpeenr .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_col_headings {
+#dgtbcpeenr .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -891,7 +1154,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_col_heading {
+#dgtbcpeenr .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -911,7 +1174,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#xiwlecrvnk .gt_column_spanner_outer {
+#dgtbcpeenr .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -923,15 +1186,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#xiwlecrvnk .gt_column_spanner_outer:first-child {
+#dgtbcpeenr .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xiwlecrvnk .gt_column_spanner_outer:last-child {
+#dgtbcpeenr .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xiwlecrvnk .gt_column_spanner {
+#dgtbcpeenr .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -943,7 +1206,7 @@ div.csl-indent {
   width: 100%;
 }
 
-#xiwlecrvnk .gt_group_heading {
+#dgtbcpeenr .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -968,7 +1231,7 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#xiwlecrvnk .gt_empty_group_heading {
+#dgtbcpeenr .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -983,15 +1246,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#xiwlecrvnk .gt_from_md > :first-child {
+#dgtbcpeenr .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xiwlecrvnk .gt_from_md > :last-child {
+#dgtbcpeenr .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xiwlecrvnk .gt_row {
+#dgtbcpeenr .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1010,7 +1273,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#xiwlecrvnk .gt_stub {
+#dgtbcpeenr .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1023,7 +1286,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#xiwlecrvnk .gt_stub_row_group {
+#dgtbcpeenr .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1037,11 +1300,11 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#xiwlecrvnk .gt_row_group_first td {
+#dgtbcpeenr .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xiwlecrvnk .gt_summary_row {
+#dgtbcpeenr .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1051,16 +1314,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#xiwlecrvnk .gt_first_summary_row {
+#dgtbcpeenr .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_first_summary_row.thick {
+#dgtbcpeenr .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xiwlecrvnk .gt_last_summary_row {
+#dgtbcpeenr .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1070,7 +1333,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_grand_summary_row {
+#dgtbcpeenr .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1080,7 +1343,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#xiwlecrvnk .gt_first_grand_summary_row {
+#dgtbcpeenr .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1090,11 +1353,11 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_striped {
+#dgtbcpeenr .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xiwlecrvnk .gt_table_body {
+#dgtbcpeenr .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1103,7 +1366,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_footnotes {
+#dgtbcpeenr .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1117,7 +1380,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_footnote {
+#dgtbcpeenr .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1126,7 +1389,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#xiwlecrvnk .gt_sourcenotes {
+#dgtbcpeenr .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1140,7 +1403,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#xiwlecrvnk .gt_sourcenote {
+#dgtbcpeenr .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1148,87 +1411,80 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#xiwlecrvnk .gt_left {
+#dgtbcpeenr .gt_left {
   text-align: left;
 }
 
-#xiwlecrvnk .gt_center {
+#dgtbcpeenr .gt_center {
   text-align: center;
 }
 
-#xiwlecrvnk .gt_right {
+#dgtbcpeenr .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xiwlecrvnk .gt_font_normal {
+#dgtbcpeenr .gt_font_normal {
   font-weight: normal;
 }
 
-#xiwlecrvnk .gt_font_bold {
+#dgtbcpeenr .gt_font_bold {
   font-weight: bold;
 }
 
-#xiwlecrvnk .gt_font_italic {
+#dgtbcpeenr .gt_font_italic {
   font-style: italic;
 }
 
-#xiwlecrvnk .gt_super {
+#dgtbcpeenr .gt_super {
   font-size: 65%;
 }
 
-#xiwlecrvnk .gt_two_val_uncert {
-  display: inline-block;
-  line-height: 1em;
-  text-align: right;
-  font-size: 60%;
-  vertical-align: -0.25em;
-  margin-left: 0.1em;
-}
-
-#xiwlecrvnk .gt_footnote_marks {
+#dgtbcpeenr .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#xiwlecrvnk .gt_asterisk {
+#dgtbcpeenr .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xiwlecrvnk .gt_slash_mark {
-  font-size: 0.7em;
-  line-height: 0.7em;
-  vertical-align: 0.15em;
+#dgtbcpeenr .gt_indent_1 {
+  text-indent: 5px;
 }
 
-#xiwlecrvnk .gt_fraction_numerator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: 0.45em;
+#dgtbcpeenr .gt_indent_2 {
+  text-indent: 10px;
 }
 
-#xiwlecrvnk .gt_fraction_denominator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: -0.05em;
+#dgtbcpeenr .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#dgtbcpeenr .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#dgtbcpeenr .gt_indent_5 {
+  text-indent: 25px;
 }
 </style>
 <table class="gt_table">
   <thead class="gt_header">
     <tr>
-      <th colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Time-to-event group sequential design</th>
+      <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Time-to-event group sequential design</td>
     </tr>
     
   </thead>
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Analysis</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Efficacy<sup class="gt_footnote_marks">1</sup></th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Futility<sup class="gt_footnote_marks">2</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Analysis</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Efficacy<sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Futility<sup class="gt_footnote_marks">2</sup></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -1319,8 +1575,17 @@ div.csl-indent {
 </div>
 <div id="summary-plots" class="section level2">
 <h2>Summary plots</h2>
-<p>Several plots are available to summarize a design; see help for <code>plot.gsDesign()</code>; one easy way to see how to generate each is by checking plots and code generated by the <a href="https://gsdesign.shinyapps.io/prod/">Shiny interface</a>. The power plot is information-rich, but also requires some explanation; thus, we demonstrate here.</p>
-<p>The solid black line represents the trial power by effect size. Power at interim 1 is represented by the black dotted line. Cumulative power at interim 2 is represented by the black dashed line. The red dotted line is 1 minus the probability of crossing the futility bound on the percentage scale. The red dashed line is 1 minus the cumulative probability of crossing the futility bound by interim 2.</p>
+<p>Several plots are available to summarize a design; see help for
+<code>plot.gsDesign()</code>; one easy way to see how to generate each
+is by checking plots and code generated by the <a href="https://gsdesign.shinyapps.io/prod/">Shiny interface</a>. The
+power plot is information-rich, but also requires some explanation;
+thus, we demonstrate here.</p>
+<p>The solid black line represents the trial power by effect size. Power
+at interim 1 is represented by the black dotted line. Cumulative power
+at interim 2 is represented by the black dashed line. The red dotted
+line is 1 minus the probability of crossing the futility bound on the
+percentage scale. The red dashed line is 1 minus the cumulative
+probability of crossing the futility bound by interim 2.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1331,18 +1596,36 @@ div.csl-indent {
 </div>
 <div id="update-bounds-at-time-of-analysis" class="section level1">
 <h1>Update bounds at time of analysis</h1>
-<p>Analyses rarely occur at exactly the number of events which are planned. The advantage of the spending function approach to design is that bounds can be updated to account for the actual number of events observed at each analysis. In fact, analyses can be added or deleted noting that any changes in timing or analyses should not be made with knowledge of unblinded study results. We suggest tables and a plot that may be of particular use. We also present computation of conditional and predictive power.</p>
-<p>First, we update the actual number of events for interims 1 and 2 and assume the final analysis event count is still as originally planned:</p>
+<p>Analyses rarely occur at exactly the number of events which are
+planned. The advantage of the spending function approach to design is
+that bounds can be updated to account for the actual number of events
+observed at each analysis. In fact, analyses can be added or deleted
+noting that any changes in timing or analyses should not be made with
+knowledge of unblinded study results. We suggest tables and a plot that
+may be of particular use. We also present computation of conditional and
+predictive power.</p>
+<p>First, we update the actual number of events for interims 1 and 2 and
+assume the final analysis event count is still as originally
+planned:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of events (final is still planned number)</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>n.I <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">115</span>, <span class="dv">364</span>, <span class="fu">ceiling</span>(x<span class="sc">$</span>n.I[x<span class="sc">$</span>k]))</span></code></pre></div>
-<p>The simple updates to Z-values and p-values for the design based on information fraction just requires the fraction of final events planned, but does not include the number of events or treatment effect in the output:</p>
+<p>The simple updates to Z-values and p-values for the design based on
+information fraction just requires the fraction of final events planned,
+but does not include the number of events or treatment effect in the
+output:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>xu <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> x<span class="sc">$</span>alpha, <span class="at">beta =</span> x<span class="sc">$</span>beta, <span class="at">test.type =</span> x<span class="sc">$</span>test.type,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxn.IPlan =</span> x<span class="sc">$</span>n.I[x<span class="sc">$</span>k], <span class="at">n.I =</span> n.I,</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfu, <span class="at">sfupar =</span> sfupar, <span class="at">sfl =</span> sfl, <span class="at">sflpar =</span> sflpar,</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> x<span class="sc">$</span>delta, <span class="at">delta1 =</span> x<span class="sc">$</span>delta1, <span class="at">delta0 =</span> x<span class="sc">$</span>delta0</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Now we print the design summary, selecting minimal calculations for a table to provide guidance for review of results. If you wish to see all possible summaries of bounds, change to <code>exclude = NULL</code> below. Here we have assumed futility guidance is based on the hazard ratio at interim analysis; this is not generally the case, but is an option as these bounds are guidance rather than having strict inferential interpretation.</p>
+<p>Now we print the design summary, selecting minimal calculations for a
+table to provide guidance for review of results. If you wish to see all
+possible summaries of bounds, change to <code>exclude = NULL</code>
+below. Here we have assumed futility guidance is based on the hazard
+ratio at interim analysis; this is not generally the case, but is an
+option as these bounds are guidance rather than having strict
+inferential interpretation.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  xu,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">deltaname =</span> <span class="st">&quot;HR&quot;</span>,</span>
@@ -1371,12 +1654,12 @@ div.csl-indent {
 <span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;HR bounds are approximations; decisions on crossing are based solely on p-values.&quot;</span>,</span>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">column =</span> <span class="dv">2</span>, <span class="at">rows =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">9</span>))</span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<div id="oeoqvdqsqo" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="lskasiyjfc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#oeoqvdqsqo .gt_table {
+#lskasiyjfc .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1401,7 +1684,7 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_heading {
+#lskasiyjfc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1413,7 +1696,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_title {
+#lskasiyjfc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1425,7 +1708,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#oeoqvdqsqo .gt_subtitle {
+#lskasiyjfc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1437,13 +1720,13 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#oeoqvdqsqo .gt_bottom_border {
+#lskasiyjfc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_col_headings {
+#lskasiyjfc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1458,7 +1741,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_col_heading {
+#lskasiyjfc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1478,7 +1761,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#oeoqvdqsqo .gt_column_spanner_outer {
+#lskasiyjfc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1490,15 +1773,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#oeoqvdqsqo .gt_column_spanner_outer:first-child {
+#lskasiyjfc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#oeoqvdqsqo .gt_column_spanner_outer:last-child {
+#lskasiyjfc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#oeoqvdqsqo .gt_column_spanner {
+#lskasiyjfc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1510,7 +1793,7 @@ div.csl-indent {
   width: 100%;
 }
 
-#oeoqvdqsqo .gt_group_heading {
+#lskasiyjfc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1535,7 +1818,7 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#oeoqvdqsqo .gt_empty_group_heading {
+#lskasiyjfc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1550,15 +1833,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#oeoqvdqsqo .gt_from_md > :first-child {
+#lskasiyjfc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#oeoqvdqsqo .gt_from_md > :last-child {
+#lskasiyjfc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#oeoqvdqsqo .gt_row {
+#lskasiyjfc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1577,7 +1860,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#oeoqvdqsqo .gt_stub {
+#lskasiyjfc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1590,7 +1873,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oeoqvdqsqo .gt_stub_row_group {
+#lskasiyjfc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1604,11 +1887,11 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#oeoqvdqsqo .gt_row_group_first td {
+#lskasiyjfc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#oeoqvdqsqo .gt_summary_row {
+#lskasiyjfc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1618,16 +1901,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oeoqvdqsqo .gt_first_summary_row {
+#lskasiyjfc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_first_summary_row.thick {
+#lskasiyjfc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#oeoqvdqsqo .gt_last_summary_row {
+#lskasiyjfc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1637,7 +1920,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_grand_summary_row {
+#lskasiyjfc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1647,7 +1930,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oeoqvdqsqo .gt_first_grand_summary_row {
+#lskasiyjfc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1657,11 +1940,11 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_striped {
+#lskasiyjfc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#oeoqvdqsqo .gt_table_body {
+#lskasiyjfc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1670,7 +1953,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_footnotes {
+#lskasiyjfc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1684,7 +1967,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_footnote {
+#lskasiyjfc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1693,7 +1976,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oeoqvdqsqo .gt_sourcenotes {
+#lskasiyjfc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1707,7 +1990,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#oeoqvdqsqo .gt_sourcenote {
+#lskasiyjfc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1715,89 +1998,82 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#oeoqvdqsqo .gt_left {
+#lskasiyjfc .gt_left {
   text-align: left;
 }
 
-#oeoqvdqsqo .gt_center {
+#lskasiyjfc .gt_center {
   text-align: center;
 }
 
-#oeoqvdqsqo .gt_right {
+#lskasiyjfc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#oeoqvdqsqo .gt_font_normal {
+#lskasiyjfc .gt_font_normal {
   font-weight: normal;
 }
 
-#oeoqvdqsqo .gt_font_bold {
+#lskasiyjfc .gt_font_bold {
   font-weight: bold;
 }
 
-#oeoqvdqsqo .gt_font_italic {
+#lskasiyjfc .gt_font_italic {
   font-style: italic;
 }
 
-#oeoqvdqsqo .gt_super {
+#lskasiyjfc .gt_super {
   font-size: 65%;
 }
 
-#oeoqvdqsqo .gt_two_val_uncert {
-  display: inline-block;
-  line-height: 1em;
-  text-align: right;
-  font-size: 60%;
-  vertical-align: -0.25em;
-  margin-left: 0.1em;
-}
-
-#oeoqvdqsqo .gt_footnote_marks {
+#lskasiyjfc .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#oeoqvdqsqo .gt_asterisk {
+#lskasiyjfc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#oeoqvdqsqo .gt_slash_mark {
-  font-size: 0.7em;
-  line-height: 0.7em;
-  vertical-align: 0.15em;
+#lskasiyjfc .gt_indent_1 {
+  text-indent: 5px;
 }
 
-#oeoqvdqsqo .gt_fraction_numerator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: 0.45em;
+#lskasiyjfc .gt_indent_2 {
+  text-indent: 10px;
 }
 
-#oeoqvdqsqo .gt_fraction_denominator {
-  font-size: 0.6em;
-  line-height: 0.6em;
-  vertical-align: -0.05em;
+#lskasiyjfc .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#lskasiyjfc .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#lskasiyjfc .gt_indent_5 {
+  text-indent: 25px;
 }
 </style>
 <table class="gt_table">
   <thead class="gt_header">
     <tr>
-      <th colspan="4" class="gt_heading gt_title gt_font_normal" style>Time-to-event group sequential bound guidance</th>
+      <td colspan="4" class="gt_heading gt_title gt_font_normal" style>Time-to-event group sequential bound guidance</td>
     </tr>
     <tr>
-      <th colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Bounds updated based on event counts through IA2</th>
+      <td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Bounds updated based on event counts through IA2</td>
     </tr>
   </thead>
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Analysis</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Efficacy</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Futility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Analysis</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Efficacy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Futility</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -1854,15 +2130,26 @@ div.csl-indent {
 </div>
 <div id="evaluating-interim-results" class="section level2">
 <h2>Evaluating interim results</h2>
-<p>We recommend 3 things to present to summarize results in addition to standard summaries such as the logrank p-value, hazard ratio based on the Cox model, median time-to-event and Kaplan-Meier curves by treatment group.</p>
+<p>We recommend 3 things to present to summarize results in addition to
+standard summaries such as the logrank p-value, hazard ratio based on
+the Cox model, median time-to-event and Kaplan-Meier curves by treatment
+group.</p>
 <ul>
-<li>Conditional power at the current trend, under the null hypothesis of no treatment difference (conditional error), and under the alternative hypothesis.</li>
-<li>Predictive power, which is conditional power averaged over a posterior distribution for the treatment effect.</li>
-<li>A B-value plot to evaluate the trend in test statistics towards a positive conclusion.</li>
+<li>Conditional power at the current trend, under the null hypothesis of
+no treatment difference (conditional error), and under the alternative
+hypothesis.</li>
+<li>Predictive power, which is conditional power averaged over a
+posterior distribution for the treatment effect.</li>
+<li>A B-value plot to evaluate the trend in test statistics towards a
+positive conclusion.</li>
 </ul>
-<p>For these summaries, we will assume the updated interim event counts used above along with interim Z-values of 0.25 and 2 at interim 1 and interim 2, respectively.</p>
+<p>For these summaries, we will assume the updated interim event counts
+used above along with interim Z-values of 0.25 and 2 at interim 1 and
+interim 2, respectively.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="dv">2</span>)</span></code></pre></div>
-<p>Conditional power at interim analysis 2 is computed for the current trend, under the null hypothesis (HR=1), and under the alternate hypothesis (HR=0.75 in this case) as follows:</p>
+<p>Conditional power at interim analysis 2 is computed for the current
+trend, under the null hypothesis (HR=1), and under the alternate
+hypothesis (HR=0.75 in this case) as follows:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsCP</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> xu, <span class="co"># Updated design</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">i =</span> <span class="dv">2</span>, <span class="co"># Interim analysis 2</span></span>
@@ -1870,7 +2157,18 @@ div.csl-indent {
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)<span class="sc">$</span>upper<span class="sc">$</span>prob</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           [,1]     [,2]      [,3]</span></span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.6599398 0.301728 0.7764629</span></span></code></pre></div>
-<p>Predictive power incorporates uncertainty into the above conditional power evaluation. The computation assumes a prior distribution for the treatment effect and then updates to a posterior distribution for the treatment effect based on the most recent interim result. The conditional probability of a positive finding is then averaged according to this posterior. We specify a normal prior for the standardized effect size using the <code>gsDesign::normalGrid()</code> function. We select a weak prior with mean half-way between the alternative (<code>x$delta</code>) and null (0) hypotheses and a variance equivalent to observing 5% (=1/20) of the targeted events at the final analysis; the following shows that the standard deviation for the prior is well over twice the mean, so the prior is relatively weak.</p>
+<p>Predictive power incorporates uncertainty into the above conditional
+power evaluation. The computation assumes a prior distribution for the
+treatment effect and then updates to a posterior distribution for the
+treatment effect based on the most recent interim result. The
+conditional probability of a positive finding is then averaged according
+to this posterior. We specify a normal prior for the standardized effect
+size using the <code>gsDesign::normalGrid()</code> function. We select a
+weak prior with mean half-way between the alternative
+(<code>x$delta</code>) and null (0) hypotheses and a variance equivalent
+to observing 5% (=1/20) of the targeted events at the final analysis;
+the following shows that the standard deviation for the prior is well
+over twice the mean, so the prior is relatively weak.</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">normalGrid</span>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> x<span class="sc">$</span>delta <span class="sc">/</span> <span class="dv">2</span>,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fu">sqrt</span>(<span class="dv">20</span> <span class="sc">/</span> <span class="fu">max</span>(x<span class="sc">$</span>n.I))</span>
@@ -1881,7 +2179,8 @@ div.csl-indent {
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>))</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Prior mean: 0.072 </span></span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  Prior standard deviation 0.215</span></span></code></pre></div>
-<p>Now based on the interim 2 result, we compute the predictive power of a positive final analysis.</p>
+<p>Now based on the interim 2 result, we compute the predictive power of
+a positive final analysis.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsPP</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> xu, <span class="co"># Updated design</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">i =</span> <span class="dv">2</span>, <span class="co"># Interim analysis 2</span></span>
@@ -1890,7 +2189,23 @@ div.csl-indent {
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">wgts =</span> prior<span class="sc">$</span>wgts <span class="co"># Weights for averaging over grid</span></span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6407376</span></span></code></pre></div>
-<p>A B-value (<span class="citation">Proschan, Lan, and Wittes (2006)</span>) is a Z-value multiplied by the square root of the information fraction (interim information divided by final planned information. In the plot below on the B-value scale, we present the efficacy bounds at each analysis in black, futility guidance in red, the observed interim tests in blue connected by solid lines, and a dashed blue line to project the final result. Under a constant treatment effect (proportional hazards for a time-to-event outcome tested with a logrank test) the blue line behaves like observations from a Brownian motion with a linear trend (“constant drift”). While a comparable Z-value plot would have the effect increasing with the square root of the number of events, the B-value plot trend is linear in the event count. The trend is proportional to the logarithm of the underlying hazard ratio. The projected final test is based on the dashed line which represents a linear trend based on the most recent B-value computed; this projection is what was used in the conditional power calculation under the current trend that was computed above.</p>
+<p>A B-value (<span class="citation">Proschan, Lan, and Wittes
+(2006)</span>) is a Z-value multiplied by the square root of the
+information fraction (interim information divided by final planned
+information. In the plot below on the B-value scale, we present the
+efficacy bounds at each analysis in black, futility guidance in red, the
+observed interim tests in blue connected by solid lines, and a dashed
+blue line to project the final result. Under a constant treatment effect
+(proportional hazards for a time-to-event outcome tested with a logrank
+test) the blue line behaves like observations from a Brownian motion
+with a linear trend (“constant drift”). While a comparable Z-value plot
+would have the effect increasing with the square root of the number of
+events, the B-value plot trend is linear in the event count. The trend
+is proportional to the logarithm of the underlying hazard ratio. The
+projected final test is based on the dashed line which represents a
+linear trend based on the most recent B-value computed; this projection
+is what was used in the conditional power calculation under the current
+trend that was computed above.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>maxx <span class="ot">&lt;-</span> <span class="dv">450</span> <span class="co"># Max for x-axis specified by user</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">3</span>) <span class="co"># User-specified y-axis limits</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>analysis <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># Current analysis specified by user</span></span>
@@ -1919,16 +2234,24 @@ div.csl-indent {
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-KimTsiatis" class="csl-entry">
-Kim, Kyungmann, and Anastasios A. Tsiatis. 1990. <span>“Study Duration for Clinical Trials with Survival Response and Early Stopping Rule.”</span> <em>Biometrics</em> 46: 81–92.
+Kim, Kyungmann, and Anastasios A. Tsiatis. 1990. <span>“Study Duration
+for Clinical Trials with Survival Response and Early Stopping
+Rule.”</span> <em>Biometrics</em> 46: 81–92.
 </div>
 <div id="ref-LachinFoulkes" class="csl-entry">
-Lachin, John M., and Mary A. Foulkes. 1986. <span>“Evaluation of Sample Size and Power for Analyses of Survival with Allowance for Nonuniform Patient Entry, Losses to Follow-up, Noncompliance, and Stratification.”</span> <em>Biometrics</em> 42: 507–19.
+Lachin, John M., and Mary A. Foulkes. 1986. <span>“Evaluation of Sample
+Size and Power for Analyses of Survival with Allowance for Nonuniform
+Patient Entry, Losses to Follow-up, Noncompliance, and
+Stratification.”</span> <em>Biometrics</em> 42: 507–19.
 </div>
 <div id="ref-LanDeMets" class="csl-entry">
-Lan, K. K. G., and David L. DeMets. 1983. <span>“Discrete Sequential Boundaries for Clinical Trials.”</span> <em>Biometrika</em> 70: 659–63.
+Lan, K. K. G., and David L. DeMets. 1983. <span>“Discrete Sequential
+Boundaries for Clinical Trials.”</span> <em>Biometrika</em> 70: 659–63.
 </div>
 <div id="ref-PLWBook" class="csl-entry">
-Proschan, Michael A., K. K. Gordon Lan, and Janet Turk Wittes. 2006. <em>Statistical Monitoring of Clinical Trials: A Unified Approach</em>. New York, NY: Springer.
+Proschan, Michael A., K. K. Gordon Lan, and Janet Turk Wittes. 2006.
+<em>Statistical Monitoring of Clinical Trials: A Unified Approach</em>.
+New York, NY: Springer.
 </div>
 </div>
 </div>

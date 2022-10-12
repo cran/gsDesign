@@ -14,7 +14,19 @@
 
 <title>Two-sample normal sample size</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -108,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -148,7 +167,187 @@ div.csl-indent {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -166,35 +365,82 @@ div.csl-indent {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Limited support is provided for 2-sample design with a normally distributed random variable as the outcome. Users are encouraged to look at guidance such as in <span class="citation">Jennison and Turnbull (2000)</span>. We provide a tool where for a large sample case where a reasonable estimate of standard deviation is available, a reasonable sample size can be computed based straightforward distribution theory outlined below.</p>
+<p>Limited support is provided for 2-sample design with a normally
+distributed random variable as the outcome. Users are encouraged to look
+at guidance such as in <span class="citation">Jennison and Turnbull
+(2000)</span>. We provide a tool where for a large sample case where a
+reasonable estimate of standard deviation is available, a reasonable
+sample size can be computed based straightforward distribution theory
+outlined below.</p>
 </div>
 <div id="the-problem-considered" class="section level1">
 <h1>The problem considered</h1>
-<p>The overall sample size notation used for <strong>gsDesign</strong> is to consider a standardized effect size parameter which is referred to as <span class="math inline">\(\theta\)</span> in <span class="citation">Jennison and Turnbull (2000)</span>. We begin with the 2-sample normal problem where we assume a possibly different standard deviation in each treatment group. For <span class="math inline">\(j = 1, 2\)</span>, we let <span class="math inline">\(X_{j, i}\)</span>, <span class="math inline">\(i = 1, 2, \ldots n_j\)</span> represent independent and identically distributed observations following a normal distribution with mean <span class="math inline">\(\mu_j\)</span> and standard deviation <span class="math inline">\(\sigma_j\)</span>. The natural parameter for comparing the two distributions is</p>
+<p>The overall sample size notation used for <strong>gsDesign</strong>
+is to consider a standardized effect size parameter which is referred to
+as <span class="math inline">\(\theta\)</span> in <span class="citation">Jennison and Turnbull (2000)</span>. We begin with the
+2-sample normal problem where we assume a possibly different standard
+deviation in each treatment group. For <span class="math inline">\(j =
+1, 2\)</span>, we let <span class="math inline">\(X_{j, i}\)</span>,
+<span class="math inline">\(i = 1, 2, \ldots n_j\)</span> represent
+independent and identically distributed observations following a normal
+distribution with mean <span class="math inline">\(\mu_j\)</span> and
+standard deviation <span class="math inline">\(\sigma_j\)</span>. The
+natural parameter for comparing the two distributions is</p>
 <p><span class="math display">\[\delta = \mu_2 - \mu_1\]</span></p>
-<p>and we wish to test if <span class="math inline">\(\delta &gt; 0\)</span> in a one-sided testing scenario to test for superiority of treatment 2 over treatment 1. We could also consider testing, say, <span class="math inline">\(\delta &gt; \delta_0\)</span> for a non-inferiority scenario with <span class="math inline">\(\delta_0&lt;0\)</span> or <strong>super superiority</strong> if <span class="math inline">\(\delta_0&gt;0\)</span>. While normally a t-test would be used for this, for large sample sizes this would be nearly equivalent to a Z-test defined by:</p>
-<p><span class="math display">\[Z=\frac{\bar X_2 - \bar X_1-\delta_0}{\sqrt{\sigma^2_2/n_2 + \sigma_1^2/n_1}}\approx \frac{\bar X_2 - \bar X_1}{\sqrt{s^2_2/n_2 + s_1^2/n_1}}=t\]</span> where <span class="math inline">\(\bar X_j\)</span> is the sample mean and <span class="math inline">\(s_j^2\)</span> is the sample variance for group <span class="math inline">\(j=1,2\)</span>. The far right hand side of this is Welch’s t-test. For our examples we use this <span class="math inline">\(t\)</span>-test and show that the sample size computation based on the <span class="math inline">\(Z\)</span>-test above works well for the chosen problems.</p>
+<p>and we wish to test if <span class="math inline">\(\delta &gt;
+0\)</span> in a one-sided testing scenario to test for superiority of
+treatment 2 over treatment 1. We could also consider testing, say, <span class="math inline">\(\delta &gt; \delta_0\)</span> for a
+non-inferiority scenario with <span class="math inline">\(\delta_0&lt;0\)</span> or <strong>super
+superiority</strong> if <span class="math inline">\(\delta_0&gt;0\)</span>. While normally a t-test
+would be used for this, for large sample sizes this would be nearly
+equivalent to a Z-test defined by:</p>
+<p><span class="math display">\[Z=\frac{\bar X_2 - \bar
+X_1-\delta_0}{\sqrt{\sigma^2_2/n_2 + \sigma_1^2/n_1}}\approx \frac{\bar
+X_2 - \bar X_1}{\sqrt{s^2_2/n_2 + s_1^2/n_1}}=t\]</span> where <span class="math inline">\(\bar X_j\)</span> is the sample mean and <span class="math inline">\(s_j^2\)</span> is the sample variance for group
+<span class="math inline">\(j=1,2\)</span>. The far right hand side of
+this is Welch’s t-test. For our examples we use this <span class="math inline">\(t\)</span>-test and show that the sample size
+computation based on the <span class="math inline">\(Z\)</span>-test
+above works well for the chosen problems.</p>
 </div>
 <div id="sample-size" class="section level1">
 <h1>Sample size</h1>
-<p>Thus, <span class="math inline">\(n_2=rn/(1+r)\)</span>, <span class="math inline">\(n_1=n/(1+r)\)</span> and when <span class="math inline">\(r=1\)</span> we have <span class="math inline">\(n_1=n_2=n/2\)</span>. Now that we have completed needed notation, those not interested in the theory behind the sample size and power calculation used may skip the rest of this section.</p>
-<p>We let <span class="math display">\[\sigma^2=(1+r)(\sigma_1^2+\sigma_2^2/r)\]</span> and define <span class="math display">\[ \theta= (\delta -\delta_0)/\sigma.\]</span> Under the given assumptions, <span class="math display">\[Z \sim \hbox{Normal}\left(\sqrt n\theta,1\right).\]</span> Under the null hypothesis that <span class="math inline">\(\delta=\delta_0\)</span>, we have <span class="math inline">\(Z\sim \hbox{Normal}(0,1)\)</span>. Thus, regardless of <span class="math inline">\(n\)</span> we have <span class="math display">\[P_0[Z\ge \Phi^{-1}(1-\alpha)]=\alpha.\]</span> Under the alternate hypothesis that <span class="math inline">\(\delta=\delta_1\)</span> and we denote a corresponding <span class="math inline">\(\theta_1\)</span>. We define the type II error <span class="math inline">\(\beta\)</span> and power <span class="math inline">\(1-\beta\)</span> by</p>
+<p>Thus, <span class="math inline">\(n_2=rn/(1+r)\)</span>, <span class="math inline">\(n_1=n/(1+r)\)</span> and when <span class="math inline">\(r=1\)</span> we have <span class="math inline">\(n_1=n_2=n/2\)</span>. Now that we have completed
+needed notation, those not interested in the theory behind the sample
+size and power calculation used may skip the rest of this section.</p>
+<p>We let <span class="math display">\[\sigma^2=(1+r)(\sigma_1^2+\sigma_2^2/r)\]</span>
+and define <span class="math display">\[ \theta= (\delta
+-\delta_0)/\sigma.\]</span> Under the given assumptions, <span class="math display">\[Z \sim \hbox{Normal}\left(\sqrt
+n\theta,1\right).\]</span> Under the null hypothesis that <span class="math inline">\(\delta=\delta_0\)</span>, we have <span class="math inline">\(Z\sim \hbox{Normal}(0,1)\)</span>. Thus,
+regardless of <span class="math inline">\(n\)</span> we have <span class="math display">\[P_0[Z\ge \Phi^{-1}(1-\alpha)]=\alpha.\]</span>
+Under the alternate hypothesis that <span class="math inline">\(\delta=\delta_1\)</span> and we denote a
+corresponding <span class="math inline">\(\theta_1\)</span>. We define
+the type II error <span class="math inline">\(\beta\)</span> and power
+<span class="math inline">\(1-\beta\)</span> by</p>
 <p><span class="math display">\[
 \begin{align}
 1-\beta =&amp; P_1[Z\ge \Phi^{-1}(1-\alpha)]\\
 =&amp; P[Z-\sqrt n\theta_1\ge \Phi^{-1}(1-\alpha)-\sqrt n\theta_1]\\
 =&amp;\Phi(\Phi^{-1}(1-\alpha)-\sqrt n\theta_1)).
 \end{align}\]</span></p>
-<p>If the power <span class="math inline">\(1-\beta\)</span> is fixed, we can invert this formula to compute sample size with:</p>
-<p><span class="math display">\[n= \left(\frac{\Phi^{-1}(1-\beta)+\Phi^{-1}(1-\alpha)}{\theta_1}\right)^2.\]</span></p>
+<p>If the power <span class="math inline">\(1-\beta\)</span> is fixed,
+we can invert this formula to compute sample size with:</p>
+<p><span class="math display">\[n=
+\left(\frac{\Phi^{-1}(1-\beta)+\Phi^{-1}(1-\alpha)}{\theta_1}\right)^2.\]</span></p>
 <p>For 2-sided testing, we simply substitute <span class="math inline">\(\alpha/2\)</span> for <span class="math inline">\(\alpha\)</span> in the above two formulas.</p>
 </div>
 <div id="examples" class="section level1">
 <h1>Examples</h1>
-<p>We consider two examples to check the above formulas vs. <code>nNormal()</code>. We then confirm that the approximation is working well by simulating and confirming that the power and Type I error approximations are useful. Finally, we provide a simple group sequential design example.</p>
+<p>We consider two examples to check the above formulas
+vs. <code>nNormal()</code>. We then confirm that the approximation is
+working well by simulating and confirming that the power and Type I
+error approximations are useful. Finally, we provide a simple group
+sequential design example.</p>
 <div id="sample-size-1" class="section level2">
 <h2>Sample size</h2>
-<p>We consider an example with <span class="math inline">\(\sigma_2=1.25\)</span>, <span class="math inline">\(\sigma_1=1.6\)</span>, <span class="math inline">\(\delta=0.8\)</span> and <span class="math inline">\(\delta_0=0\)</span>. We let the sample size ratio be 2 experimental group observations per control observation. We compute sample size with <code>nNormal()</code> assuming one-sided Type I error <span class="math inline">\(\alpha=0.025\)</span> and 90% power (<span class="math inline">\(1-\beta=0.9\)</span>).</p>
+<p>We consider an example with <span class="math inline">\(\sigma_2=1.25\)</span>, <span class="math inline">\(\sigma_1=1.6\)</span>, <span class="math inline">\(\delta=0.8\)</span> and <span class="math inline">\(\delta_0=0\)</span>. We let the sample size ratio
+be 2 experimental group observations per control observation. We compute
+sample size with <code>nNormal()</code> assuming one-sided Type I error
+<span class="math inline">\(\alpha=0.025\)</span> and 90% power (<span class="math inline">\(1-\beta=0.9\)</span>).</p>
 <p>Checking using the sample size formula above, we have:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="dv">2</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((<span class="dv">1</span> <span class="sc">+</span> r) <span class="sc">*</span> (<span class="fl">1.6</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fl">1.25</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> r))</span>
@@ -204,19 +450,22 @@ div.csl-indent {
 </div>
 <div id="power" class="section level2">
 <h2>Power</h2>
-<p>Now, assume we let the sample size be 200 and compute power under the same scenario.</p>
+<p>Now, assume we let the sample size be 200 and compute power under the
+same scenario.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nNormal</span>(<span class="at">delta1 =</span> <span class="fl">0.8</span>, <span class="at">sd =</span> <span class="fl">1.6</span>, <span class="at">sd2 =</span> <span class="fl">1.25</span>, <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="at">n =</span> <span class="dv">200</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9466825</span></span></code></pre></div>
 <p>From the power formula above, we duplicate this with:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pwr <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="fu">qnorm</span>(.<span class="dv">975</span>) <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">200</span>) <span class="sc">*</span> theta, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pwr</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9466825</span></span></code></pre></div>
-<p>If we want to plot power for a variety of sample sizes, we can input <code>n</code> as a vector:</p>
+<p>If we want to plot power for a variety of sample sizes, we can input
+<code>n</code> as a vector:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">:</span><span class="dv">200</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pwrn <span class="ot">&lt;-</span> <span class="fu">nNormal</span>(<span class="at">delta1 =</span> <span class="fl">0.8</span>, <span class="at">sd =</span> <span class="fl">1.6</span>, <span class="at">sd2 =</span> <span class="fl">1.25</span>, <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="at">n =</span> n, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(n, pwrn, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>)</span></code></pre></div>
 <p><img src="data:image/png;base64,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" width="80%" style="display: block; margin: auto;" /></p>
-<p>Alternatively, you could fix sample size at 200 and plot power under different treatment effect assumptions:</p>
+<p>Alternatively, you could fix sample size at 200 and plot power under
+different treatment effect assumptions:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>delta1 <span class="ot">&lt;-</span> <span class="fu">seq</span>(.<span class="dv">5</span>, <span class="dv">1</span>, .<span class="dv">025</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pwrdelta1 <span class="ot">&lt;-</span> <span class="fu">nNormal</span>(<span class="at">delta1 =</span> delta1, <span class="at">sd =</span> <span class="fl">1.6</span>, <span class="at">sd2 =</span> <span class="fl">1.25</span>, <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="at">n =</span> <span class="dv">200</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(delta1, pwrdelta1, <span class="at">type =</span> <span class="st">&quot;l&quot;</span>)</span></code></pre></div>
@@ -224,11 +473,16 @@ div.csl-indent {
 </div>
 <div id="verification-with-simulation" class="section level2">
 <h2>Verification with simulation</h2>
-<p>Rather than simulate individual observations, we will take advantage of the fact that for <span class="math inline">\(j=1,2\)</span></p>
-<p><span class="math display">\[\bar X_j\sim \hbox{Normal}(\mu_j,\sigma_j^2/n_j)\]</span></p>
+<p>Rather than simulate individual observations, we will take advantage
+of the fact that for <span class="math inline">\(j=1,2\)</span></p>
+<p><span class="math display">\[\bar X_j\sim
+\hbox{Normal}(\mu_j,\sigma_j^2/n_j)\]</span></p>
 <p>and</p>
-<p><span class="math display">\[(n_j-1)s_j^2/\sigma_j^2=\sum_{i=1}^{n_j} (X_{ij}-\bar X_j)/\sigma^2 \sim \chi ^2_{n_j-1}\]</span></p>
-<p>are independent. Thus, we can simulate trial power with <span class="math inline">\(n=200\)</span> 1 million times with a t-statistic with unequal variances quickly as follows under the alternate hypothesis:</p>
+<p><span class="math display">\[(n_j-1)s_j^2/\sigma_j^2=\sum_{i=1}^{n_j}
+(X_{ij}-\bar X_j)/\sigma^2 \sim \chi ^2_{n_j-1}\]</span></p>
+<p>are independent. Thus, we can simulate trial power with <span class="math inline">\(n=200\)</span> 1 million times with a t-statistic
+with unequal variances quickly as follows under the alternate
+hypothesis:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">1000000</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sd1 <span class="ot">&lt;-</span> <span class="fl">1.6</span></span>
@@ -243,15 +497,20 @@ div.csl-indent {
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> deltahat <span class="sc">/</span> s</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(z <span class="sc">&gt;=</span> <span class="fu">qnorm</span>(.<span class="dv">975</span>))</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.946256</span></span></code></pre></div>
-<p>The standard error for this simulation power calculation is approximately</p>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.94623</span></span></code></pre></div>
+<p>The standard error for this simulation power calculation is
+approximately</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(pwr <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pwr) <span class="sc">/</span> nsim)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0002246659</span></span></code></pre></div>
-<p>suggesting we should be within less than about 0.001 if the actual power, which suggests the normal power approximation is reasonable for this scenario.</p>
+<p>suggesting we should be within less than about 0.001 if the actual
+power, which suggests the normal power approximation is reasonable for
+this scenario.</p>
 </div>
 <div id="group-sequential-design" class="section level2">
 <h2>Group sequential design</h2>
-<p>Now we derive a group sequential design under the above scenario. We will largely use default parameters and show two methods. For the first, we plug in the fixed sample size above as follows:</p>
+<p>Now we derive a group sequential design under the above scenario. We
+will largely use default parameters and show two methods. For the first,
+we plug in the fixed sample size above as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">2</span>,</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.fix =</span> <span class="fu">nNormal</span>(<span class="at">delta1 =</span> <span class="fl">0.8</span>, <span class="at">sd =</span> <span class="fl">1.6</span>, <span class="at">sd2 =</span> <span class="fl">1.25</span>, <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="at">beta =</span> .<span class="dv">1</span>, <span class="at">ratio =</span> <span class="dv">2</span>),</span>
@@ -262,162 +521,85 @@ div.csl-indent {
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Analysis
-</th>
-<th style="text-align:left;">
-Value
-</th>
-<th style="text-align:right;">
-Efficacy
-</th>
-<th style="text-align:right;">
-Futility
-</th>
+<tr class="header">
+<th align="left">Analysis</th>
+<th align="left">Value</th>
+<th align="right">Efficacy</th>
+<th align="right">Futility</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-IA 1: 50%
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-2.7500
-</td>
-<td style="text-align:right;">
-0.4122
-</td>
+<tr class="odd">
+<td align="left">IA 1: 50%</td>
+<td align="left">Z</td>
+<td align="right">2.7500</td>
+<td align="right">0.4122</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-N: 86
-</td>
-<td style="text-align:left;">
-p (1-sided)
-</td>
-<td style="text-align:right;">
-0.0030
-</td>
-<td style="text-align:right;">
-0.3401
-</td>
+<tr class="even">
+<td align="left">N: 86</td>
+<td align="left">p (1-sided)</td>
+<td align="right">0.0030</td>
+<td align="right">0.3401</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-~Mean difference at bound
-</td>
-<td style="text-align:right;">
-0.9399
-</td>
-<td style="text-align:right;">
-0.1409
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">~Mean difference at bound</td>
+<td align="right">0.9399</td>
+<td align="right">0.1409</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0
-</td>
-<td style="text-align:right;">
-0.0030
-</td>
-<td style="text-align:right;">
-0.6599
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0</td>
+<td align="right">0.0030</td>
+<td align="right">0.6599</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0.8
-</td>
-<td style="text-align:right;">
-0.3412
-</td>
-<td style="text-align:right;">
-0.0269
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0.8</td>
+<td align="right">0.3412</td>
+<td align="right">0.0269</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-Final
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.9811
-</td>
-<td style="text-align:right;">
-1.9811
-</td>
+<tr class="even">
+<td align="left">Final</td>
+<td align="left">Z</td>
+<td align="right">1.9811</td>
+<td align="right">1.9811</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-N: 172
-</td>
-<td style="text-align:left;">
-p (1-sided)
-</td>
-<td style="text-align:right;">
-0.0238
-</td>
-<td style="text-align:right;">
-0.0238
-</td>
+<tr class="odd">
+<td align="left">N: 172</td>
+<td align="left">p (1-sided)</td>
+<td align="right">0.0238</td>
+<td align="right">0.0238</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-~Mean difference at bound
-</td>
-<td style="text-align:right;">
-0.4788
-</td>
-<td style="text-align:right;">
-0.4788
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">~Mean difference at bound</td>
+<td align="right">0.4788</td>
+<td align="right">0.4788</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0
-</td>
-<td style="text-align:right;">
-0.0239
-</td>
-<td style="text-align:right;">
-0.9761
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0</td>
+<td align="right">0.0239</td>
+<td align="right">0.9761</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0.8
-</td>
-<td style="text-align:right;">
-0.9000
-</td>
-<td style="text-align:right;">
-0.1000
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0.8</td>
+<td align="right">0.9000</td>
+<td align="right">0.1000</td>
 </tr>
 </tbody>
 </table>
 <p>A textual summary of the design is given by:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">summary</span>(d))</span></code></pre></div>
-<p>Asymmetric two-sided group sequential design with non-binding futility bound, 2 analyses, sample size 172, 90 percent power, 2.5 percent (1-sided) Type I error. Efficacy bounds derived using a Hwang-Shih-DeCani spending function with gamma = -4. Futility bounds derived using a Hwang-Shih-DeCani spending function with gamma = -2.</p>
-<p>We can get the same answer by plugging in the standardized effect size we computed above:</p>
+<p>Asymmetric two-sided group sequential design with non-binding
+futility bound, 2 analyses, sample size 172, 90 percent power, 2.5
+percent (1-sided) Type I error. Efficacy bounds derived using a
+Hwang-Shih-DeCani spending function with gamma = -4. Futility bounds
+derived using a Hwang-Shih-DeCani spending function with gamma = -2.</p>
+<p>We can get the same answer by plugging in the standardized effect
+size we computed above:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsDesign</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">2</span>,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> theta,</span>
@@ -427,166 +609,87 @@ P(Cross) if Mean difference=0.8
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table>
 <thead>
-<tr>
-<th style="text-align:left;">
-Analysis
-</th>
-<th style="text-align:left;">
-Value
-</th>
-<th style="text-align:right;">
-Efficacy
-</th>
-<th style="text-align:right;">
-Futility
-</th>
+<tr class="header">
+<th align="left">Analysis</th>
+<th align="left">Value</th>
+<th align="right">Efficacy</th>
+<th align="right">Futility</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-IA 1: 50%
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-2.7500
-</td>
-<td style="text-align:right;">
-0.4122
-</td>
+<tr class="odd">
+<td align="left">IA 1: 50%</td>
+<td align="left">Z</td>
+<td align="right">2.7500</td>
+<td align="right">0.4122</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-N: 86
-</td>
-<td style="text-align:left;">
-p (1-sided)
-</td>
-<td style="text-align:right;">
-0.0030
-</td>
-<td style="text-align:right;">
-0.3401
-</td>
+<tr class="even">
+<td align="left">N: 86</td>
+<td align="left">p (1-sided)</td>
+<td align="right">0.0030</td>
+<td align="right">0.3401</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-~Mean difference at bound
-</td>
-<td style="text-align:right;">
-0.9399
-</td>
-<td style="text-align:right;">
-0.1409
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">~Mean difference at bound</td>
+<td align="right">0.9399</td>
+<td align="right">0.1409</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0
-</td>
-<td style="text-align:right;">
-0.0030
-</td>
-<td style="text-align:right;">
-0.6599
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0</td>
+<td align="right">0.0030</td>
+<td align="right">0.6599</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0.8
-</td>
-<td style="text-align:right;">
-0.3412
-</td>
-<td style="text-align:right;">
-0.0269
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0.8</td>
+<td align="right">0.3412</td>
+<td align="right">0.0269</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-Final
-</td>
-<td style="text-align:left;">
-Z
-</td>
-<td style="text-align:right;">
-1.9811
-</td>
-<td style="text-align:right;">
-1.9811
-</td>
+<tr class="even">
+<td align="left">Final</td>
+<td align="left">Z</td>
+<td align="right">1.9811</td>
+<td align="right">1.9811</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-N: 172
-</td>
-<td style="text-align:left;">
-p (1-sided)
-</td>
-<td style="text-align:right;">
-0.0238
-</td>
-<td style="text-align:right;">
-0.0238
-</td>
+<tr class="odd">
+<td align="left">N: 172</td>
+<td align="left">p (1-sided)</td>
+<td align="right">0.0238</td>
+<td align="right">0.0238</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-~Mean difference at bound
-</td>
-<td style="text-align:right;">
-0.4788
-</td>
-<td style="text-align:right;">
-0.4788
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">~Mean difference at bound</td>
+<td align="right">0.4788</td>
+<td align="right">0.4788</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0
-</td>
-<td style="text-align:right;">
-0.0239
-</td>
-<td style="text-align:right;">
-0.9761
-</td>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0</td>
+<td align="right">0.0239</td>
+<td align="right">0.9761</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-P(Cross) if Mean difference=0.8
-</td>
-<td style="text-align:right;">
-0.9000
-</td>
-<td style="text-align:right;">
-0.1000
-</td>
+<tr class="even">
+<td align="left"></td>
+<td align="left">P(Cross) if Mean difference=0.8</td>
+<td align="right">0.9000</td>
+<td align="right">0.1000</td>
 </tr>
 </tbody>
 </table>
-<p>We leave it to the reader to verify the properties of the above design using simulation as in the fixed design example.</p>
+<p>We leave it to the reader to verify the properties of the above
+design using simulation as in the fixed design example.</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-JTBook" class="csl-entry">
-Jennison, Christopher, and Bruce W. Turnbull. 2000. <em>Group Sequential Methods with Applications to Clinical Trials</em>. Boca Raton, FL: Chapman; Hall/CRC.
+Jennison, Christopher, and Bruce W. Turnbull. 2000. <em>Group Sequential
+Methods with Applications to Clinical Trials</em>. Boca Raton, FL:
+Chapman; Hall/CRC.
 </div>
 </div>
 </div>
