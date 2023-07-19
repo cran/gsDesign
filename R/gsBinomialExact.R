@@ -15,7 +15,7 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' ratio test (SPRT) which is a specific instance of an exact binomial group
 #' sequential design for a single arm trial with a binary outcome.
 #'
-#' %\code{gsBinomialPP} computes a truncated binomial (group) sequential design
+#' \code{gsBinomialPP} computes a truncated binomial (group) sequential design
 #' based on predictive probability.
 #'
 #' \code{nBinomial1Sample} uses exact binomial calculations to compute power
@@ -221,9 +221,8 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' \dontrun{ 
 #'   nBinomial1Sample(p0 = 0.05, p1 = 0.2, alpha = 0.025, beta = .2, n = 25:30)
 #' }
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Jon Hartzel, Yevgen Tymofyeyev and Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{gsProbability}}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -446,3 +445,6 @@ binomialPP <- function(a = .2, b = .8, theta = c(.2, .4), p1 = .4, PP = c(.025, 
   class(y) <- c("binomialPP", "gsBinomialExact", "gsProbability")
   return(y)
 }
+
+
+

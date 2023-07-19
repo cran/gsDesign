@@ -19,7 +19,7 @@ function will be computed.}
 
 \item{param}{A single, positive value specifying the \eqn{\rho}{rho}
 parameter for which Kim-DeMets spending is to be computed; allowable range
-is (0,15]}
+is (0,50]}
 }
 \value{
 An object of type \code{spendfn}. See \link{Spending_Function_Overview} for further details.
@@ -41,9 +41,8 @@ passed in \code{param}. See examples below for a range of values of
 documented there).
 }
 \note{
-The manual is not linked to this help file, but is available in
-library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-installed.
+The gsDesign technical manual is available at
+  \url{https://keaven.github.io/gsd-tech-manual/}.
 }
 \examples{
 library(ggplot2)

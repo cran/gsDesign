@@ -240,7 +240,7 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
@@ -266,7 +266,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Code');
+      showCodeText.text('Show');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -478,17 +478,17 @@ library(dplyr)</code></pre>
 exact binomial method of <span class="citation">Chan and Bohidar
 (1998)</span> by a time-to-event design using the method of <span class="citation">Lachin and Foulkes (1986)</span>. This allows use of
 spending functions to derive boundaries for the exact method. The
-time-to-event design can not only be used to set approximate boundaries
-for the <span class="citation">Chan and Bohidar (1998)</span> method,
-but to allow specification of enrollment duration and study duration to
-determine enrollment rates and sample size required. This also allows us
-to illustrate the concept of super-superiority often used in prevention
+time-to-event design can not only be used to set boundaries for the
+<span class="citation">Chan and Bohidar (1998)</span> method, but to
+allow specification of enrollment duration and study duration to
+determine enrollment rates and sample size required. This vignette also
+illustrates the concept of super-superiority often used in prevention
 studies.</p>
 </div>
 <div id="parameterization" class="section level1">
 <h1>Parameterization</h1>
 <p>We begin with the assumption that we will a require a large sample
-size due to a endpoint with a small incidence rate. This could apply to
+size due to an endpoint with a small incidence rate. This could apply to
 a vaccine study or other prevention study with a relatively small number
 of events expected.</p>
 <div id="exact-binomial-approach" class="section level2">
@@ -500,7 +500,7 @@ participant assigned to control; for the experimental treatment group,
 these are labelled <span class="math inline">\(N_E, P_E\)</span>.
 Vaccine efficacy is defined as</p>
 <p><span class="math display">\[\pi = 1 - P_E/P_C.\]</span></p>
-<p>The parameter <span class="math inline">\(\pi\)</span> is also often
+<p>The parameter <span class="math inline">\(\pi\)</span> is often
 labelled as <span class="math inline">\(VE\)</span> for vaccine
 efficacy. Taking into account the randomization ratio <span class="math inline">\(r\)</span> (experimental / control) the
 approximate probability that any given event is in the experimental
@@ -513,13 +513,13 @@ p &amp;= rP_E/(rP_E+ P_C)\\
 \end{aligned}
 \]</span></p>
 <p>This can be inverted to obtain</p>
-<p><span class="math display">\[\pi = 1- \frac{1}{r(1/p-1)}.
+<p><span class="math display">\[\pi = 1 - \frac{1}{r(1/p-1)}.
 \]</span></p>
 <p>For our example of interest, we begin with an alternate hypothesis
 vaccine efficacy <span class="math inline">\(\pi_1 = 0.7\)</span> and
-<span class="math inline">\(r=3\)</span>. This converts to an alternate
-hypothesis approximate probability that any event is in the experimental
-group of</p>
+experimental:control randomization ratio <span class="math inline">\(r=3\)</span>. This converts to an alternate
+hypothesis (approximate) probability that any event is in the
+experimental group of</p>
 <pre class="r"><code>pi1 &lt;- .7
 ratio &lt;- 3
 p1 &lt;- ratio / (ratio + 1 / (1 - pi1))
@@ -529,11 +529,485 @@ p1</code></pre>
 <pre class="r"><code>1 - 1 / (ratio * (1 / p1 - 1))</code></pre>
 <pre><code>#&gt; [1] 0.7</code></pre>
 <p>Letting the null hypothesis vaccine efficacy be <span class="math inline">\(\pi_0 = 0.3\)</span>, our exact binomial null
-hypothesis probability is</p>
+hypothesis probability that an event is in the experimental group is</p>
 <pre class="r"><code>pi0 &lt;- .3
 p0 &lt;- ratio / (ratio + 1 / (1 - pi0))
 p0</code></pre>
 <pre><code>#&gt; [1] 0.6774194</code></pre>
+<p>We also translate several vaccine efficacy values to proportion of
+events in the experimental group:</p>
+<pre class="r"><code>ve &lt;- c(.5, .6, .65, .7, .75, .8)
+prob_experimental &lt;- ratio / (ratio + 1 / (1 - ve))
+tibble(VE = ve, &quot;P(Experimental)&quot; = prob_experimental) %&gt;%
+  gt() %&gt;%
+  tab_options(data_row.padding = px(1)) %&gt;%
+  fmt_number(columns = 2, decimals = 3)</code></pre>
+<div id="eshxgkkkry" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eshxgkkkry table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#eshxgkkkry thead, #eshxgkkkry tbody, #eshxgkkkry tfoot, #eshxgkkkry tr, #eshxgkkkry td, #eshxgkkkry th {
+  border-style: none;
+}
+
+#eshxgkkkry p {
+  margin: 0;
+  padding: 0;
+}
+
+#eshxgkkkry .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#eshxgkkkry .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#eshxgkkkry .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#eshxgkkkry .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#eshxgkkkry .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#eshxgkkkry .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#eshxgkkkry .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#eshxgkkkry .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#eshxgkkkry .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#eshxgkkkry .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#eshxgkkkry .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#eshxgkkkry .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#eshxgkkkry .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#eshxgkkkry .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#eshxgkkkry .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eshxgkkkry .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#eshxgkkkry .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#eshxgkkkry .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#eshxgkkkry .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eshxgkkkry .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#eshxgkkkry .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eshxgkkkry .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#eshxgkkkry .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eshxgkkkry .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#eshxgkkkry .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#eshxgkkkry .gt_left {
+  text-align: left;
+}
+
+#eshxgkkkry .gt_center {
+  text-align: center;
+}
+
+#eshxgkkkry .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#eshxgkkkry .gt_font_normal {
+  font-weight: normal;
+}
+
+#eshxgkkkry .gt_font_bold {
+  font-weight: bold;
+}
+
+#eshxgkkkry .gt_font_italic {
+  font-style: italic;
+}
+
+#eshxgkkkry .gt_super {
+  font-size: 65%;
+}
+
+#eshxgkkkry .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#eshxgkkkry .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#eshxgkkkry .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#eshxgkkkry .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#eshxgkkkry .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#eshxgkkkry .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#eshxgkkkry .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="VE">VE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="P(Experimental)">P(Experimental)</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="VE" class="gt_row gt_right">0.50</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.600</td></tr>
+    <tr><td headers="VE" class="gt_row gt_right">0.60</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.545</td></tr>
+    <tr><td headers="VE" class="gt_row gt_right">0.65</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.512</td></tr>
+    <tr><td headers="VE" class="gt_row gt_right">0.70</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.474</td></tr>
+    <tr><td headers="VE" class="gt_row gt_right">0.75</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.429</td></tr>
+    <tr><td headers="VE" class="gt_row gt_right">0.80</td>
+<td headers="P(Experimental)" class="gt_row gt_right">0.375</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
 <p>Chapter 12 of <span class="citation">Jennison and Turnbull
 (2000)</span> walks through how to design and analyze such a study using
 a fixed or group sequential design. This may have advantages and
@@ -547,12 +1021,13 @@ sample size and study duration approximations.</p>
 <p>For a time-to-event formulation with exponential failure rates <span class="math inline">\(\lambda_C\)</span> for control and <span class="math inline">\(\lambda_E\)</span> for experimental group assigned
 participants, we would define</p>
 <p><span class="math display">\[\pi = 1 - \lambda_E /
-\lambda_E\]</span></p>
+\lambda_C\]</span></p>
 <p>which is 1 minus the hazard ratio often used in time-to-event
 studies. In the following we examine how closely the time-to-event
 method using asymptotic distributional assumptions can approximate an
-appropriate exact binomial design.</p>
-<p>We will also define a planned number of events at each of <span class="math inline">\(K\)</span> planned analyses by <span class="math inline">\(D_k, 1\le k\le K\)</span>.</p>
+appropriate exact binomial design. We will also define a planned number
+of events at each of <span class="math inline">\(K\)</span> planned
+analyses by <span class="math inline">\(D_k, 1\le k\le K\)</span>.</p>
 </div>
 <div id="generating-a-design" class="section level1">
 <h1>Generating a design</h1>
@@ -560,58 +1035,96 @@ appropriate exact binomial design.</p>
 <code>beta</code> parameters will not be met exactly due to the discrete
 group sequential probability calculations performed. Thus, you may need
 to adjust these parameters slightly to ensure your final design
-operating characteristics are within the targeted range. The current
-version includes only designs that use non-binding futility bounds. The
-design is generated by first using asymptotic theory for a time-to-event
-design with specified spending functions. This design is then adapted to
-a design using the exact binomial method of <span class="citation">Chan
-and Bohidar (1998)</span>. The randomization ratio
-(experiemental/control) was assumed to be 3:1 as in the <span class="citation">Logunov et al. (2021)</span> trial.</p>
+operating characteristics are within a targeted range. The current
+version includes only designs that use non-binding futility bounds or no
+futility bounds. The design is generated by first using asymptotic
+theory for a time-to-event design with specified spending functions.
+This design is then adapted to a design using the exact binomial method
+of <span class="citation">Chan and Bohidar (1998)</span>. The
+randomization ratio (experimental/control) was assumed to be 3:1 as in
+the <span class="citation">Logunov et al. (2021)</span> trial.</p>
 <pre class="r"><code>alpha &lt;- 0.023 # Type I error; this was adjusted from .025 to ensure Type I error control
 beta &lt;- 0.09 # Type II error (1 - power); this was reduced from .1 to .09 to ensure power
 k &lt;- 3 # number of analyses in group sequential design
-timing &lt;- c(.5, .8) # Relative timing of interim analyses compared to final
-sfu &lt;- sfLDOF # Efficacy bound spending function (O&#39;Brien-Fleming-like here)
-sfupar &lt;- 0 # Parameter for efficacy spending function
-sfl &lt;- sfHSD # Futility bound spending function (Hwang-Shih-DeCani here)
-sflpar &lt;- -12 # Futility bound spending function parameter (conservative)
+timing &lt;- c(.45, .7) # Relative timing of interim analyses compared to final
+sfu &lt;- sfHSD # Efficacy bound spending function (Hwang-Shih-DeCani)
+sfupar &lt;- -4 # Parameter for efficacy spending function
+sfl &lt;- sfLDOF # Futility bound spending function (O&#39;Brien-Fleming-like here)
+sflpar &lt;- 1 # Futility bound spending function parameter; this is the standard O&#39;Brien-Fleming
 timename &lt;- &quot;Month&quot; # Time unit
 failRate &lt;- .002 # Exponential failure rate
 dropoutRate &lt;- .0001 # Exponential dropout rate
-enrollDuration &lt;- 4 # Enrollment duration
-trialDuration &lt;- 8 # Planned trial duration
+enrollDuration &lt;- 8 # Enrollment duration
+trialDuration &lt;- 24 # Planned trial duration
 VE1 &lt;- .7 # Alternate hypothesis vaccine efficacy
 VE0 &lt;- .3 # Null hypothesis vaccine efficacy
-ratio &lt;- 3 # Experimental/Control enrollment ratio</code></pre>
+ratio &lt;- 3 # Experimental/Control enrollment ratio
+test.type &lt;- 4 # 1 for one-sided, 4 for non-binding futility</code></pre>
 <div id="the-time-to-event-design" class="section level2">
 <h2>The time-to-event design</h2>
 <p>Now we generate the design. If resulting alpha and beta do not
 satisfy requirements, adjust parameters above until a satisfactory
-result is obtained. Press the code button below to review detailed code,
-which should not require user alteration.</p>
+result is obtained.</p>
 <pre class="r"><code># Derive Group Sequential Design
 # This determines final sample size
 x &lt;- gsSurv(
-  k = k, test.type = 4, alpha = alpha, beta = beta, timing = timing,
+  k = k, test.type = test.type, alpha = alpha, beta = beta, timing = timing,
   sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar,
   lambdaC = failRate, eta = dropoutRate,
   # Translate vaccine efficacy to HR
   hr = 1 - VE1, hr0 = 1 - VE0,
   R = enrollDuration, T = trialDuration,
   minfup = trialDuration - enrollDuration, ratio = ratio
-)
-
-gsBoundSummary(x, tdigits = 1) %&gt;%
+)</code></pre>
+<p>Now we convert this to a design with integer event counts at
+analyses. This is achieved by rounding interim analysis event counts
+from the above design and rounding up the final analysis event count.
+This will result in a slight change in event fractions at interim
+analyses as well as a slight change from the targeted 90% power. We now
+explain the rationale behind the spending function choices. Recall that
+the hazard ratio (HR) is 1 minus the VE. The <code>~HR at bound</code>
+represents the approximate hazard ratio required to cross a bound. Thus,
+small HR’s at the interim analyses along with small cumulative efficacy
+spending suggest crossing an interim efficacy bound would provide a
+result strong enough to potentially justify the new treatment. The
+hazard ratio of ~0.7 (VE ~ 0.3) for the interim 1 futility bound mean
+that the efficacy trend would be no better than the null hypothesis if
+the futility bound were crossed. The second analysis futility bound with
+approximate VE of 0.5 would be worth discussion with a data monitoring
+committee as well as other planners for the trial; a custom spending
+function could be used to set both the first and second interim bounds
+to desired levels.</p>
+<pre class="r"><code>xx &lt;- toInteger(x)
+gsBoundSummary(xx,
+  tdigits = 1, logdelta = TRUE, deltaname = &quot;HR&quot;, Nname = &quot;Events&quot;,
+  exclude = c(&quot;B-value&quot;, &quot;CP&quot;, &quot;CP H1&quot;, &quot;PP&quot;)
+) %&gt;%
   gt() %&gt;%
-  tab_header(title = &quot;Initial group sequential approximation&quot;)</code></pre>
-<div id="jrpyqnnydz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+  tab_header(
+    title = &quot;Initial group sequential approximation&quot;,
+    subtitle = &quot;Integer event counts at analyses&quot;
+  ) %&gt;%
+  tab_options(data_row.padding = px(1))</code></pre>
+<div id="wcdugxfklj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wcdugxfklj table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#jrpyqnnydz .gt_table {
+#wcdugxfklj thead, #wcdugxfklj tbody, #wcdugxfklj tfoot, #wcdugxfklj tr, #wcdugxfklj td, #wcdugxfklj th {
+  border-style: none;
+}
+
+#wcdugxfklj p {
+  margin: 0;
+  padding: 0;
+}
+
+#wcdugxfklj .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -634,19 +1147,12 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   border-left-color: #D3D3D3;
 }
 
-#jrpyqnnydz .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
+#wcdugxfklj .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
-#jrpyqnnydz .gt_title {
+#wcdugxfklj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -658,25 +1164,37 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   border-bottom-width: 0;
 }
 
-#jrpyqnnydz .gt_subtitle {
+#wcdugxfklj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#jrpyqnnydz .gt_bottom_border {
+#wcdugxfklj .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wcdugxfklj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#jrpyqnnydz .gt_col_headings {
+#wcdugxfklj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -691,7 +1209,7 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#jrpyqnnydz .gt_col_heading {
+#wcdugxfklj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -711,7 +1229,7 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   overflow-x: hidden;
 }
 
-#jrpyqnnydz .gt_column_spanner_outer {
+#wcdugxfklj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -723,15 +1241,15 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   padding-right: 4px;
 }
 
-#jrpyqnnydz .gt_column_spanner_outer:first-child {
+#wcdugxfklj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#jrpyqnnydz .gt_column_spanner_outer:last-child {
+#wcdugxfklj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#jrpyqnnydz .gt_column_spanner {
+#wcdugxfklj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -743,7 +1261,11 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   width: 100%;
 }
 
-#jrpyqnnydz .gt_group_heading {
+#wcdugxfklj .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#wcdugxfklj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -766,9 +1288,10 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   border-right-width: 1px;
   border-right-color: #D3D3D3;
   vertical-align: middle;
+  text-align: left;
 }
 
-#jrpyqnnydz .gt_empty_group_heading {
+#wcdugxfklj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -783,17 +1306,17 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   vertical-align: middle;
 }
 
-#jrpyqnnydz .gt_from_md > :first-child {
+#wcdugxfklj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#jrpyqnnydz .gt_from_md > :last-child {
+#wcdugxfklj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#jrpyqnnydz .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
+#wcdugxfklj .gt_row {
+  padding-top: 1px;
+  padding-bottom: 1px;
   padding-left: 5px;
   padding-right: 5px;
   margin: 10px;
@@ -810,7 +1333,7 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   overflow-x: hidden;
 }
 
-#jrpyqnnydz .gt_stub {
+#wcdugxfklj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -823,518 +1346,7 @@ gsBoundSummary(x, tdigits = 1) %&gt;%
   padding-right: 5px;
 }
 
-#jrpyqnnydz .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#jrpyqnnydz .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#jrpyqnnydz .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jrpyqnnydz .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#jrpyqnnydz .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jrpyqnnydz .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#jrpyqnnydz .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jrpyqnnydz .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#jrpyqnnydz .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#jrpyqnnydz .gt_left {
-  text-align: left;
-}
-
-#jrpyqnnydz .gt_center {
-  text-align: center;
-}
-
-#jrpyqnnydz .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#jrpyqnnydz .gt_font_normal {
-  font-weight: normal;
-}
-
-#jrpyqnnydz .gt_font_bold {
-  font-weight: bold;
-}
-
-#jrpyqnnydz .gt_font_italic {
-  font-style: italic;
-}
-
-#jrpyqnnydz .gt_super {
-  font-size: 65%;
-}
-
-#jrpyqnnydz .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
-  font-size: 75%;
-  vertical-align: 0.4em;
-}
-
-#jrpyqnnydz .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#jrpyqnnydz .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#jrpyqnnydz .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#jrpyqnnydz .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#jrpyqnnydz .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#jrpyqnnydz .gt_indent_5 {
-  text-indent: 25px;
-}
-</style>
-<table class="gt_table">
-  <thead class="gt_header">
-    <tr>
-      <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Initial group sequential approximation</td>
-    </tr>
-    
-  </thead>
-  <thead class="gt_col_headings">
-    <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Analysis</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Efficacy</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Futility</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">IA 1: 50%</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">3.0105</td>
-<td class="gt_row gt_right">-1.1284</td></tr>
-    <tr><td class="gt_row gt_left">N: 12111</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0013</td>
-<td class="gt_row gt_right">0.8704</td></tr>
-    <tr><td class="gt_row gt_left">Events: 35</td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.2138</td>
-<td class="gt_row gt_right">1.0919</td></tr>
-    <tr><td class="gt_row gt_left">Month: 5</td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0013</td>
-<td class="gt_row gt_right">0.1296</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.2653</td>
-<td class="gt_row gt_right">0.0002</td></tr>
-    <tr><td class="gt_row gt_left">IA 2: 80%</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">2.3042</td>
-<td class="gt_row gt_right">0.6115</td></tr>
-    <tr><td class="gt_row gt_left">N: 12111</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0106</td>
-<td class="gt_row gt_right">0.2704</td></tr>
-    <tr><td class="gt_row gt_left">Events: 55</td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.3415</td>
-<td class="gt_row gt_right">0.5786</td></tr>
-    <tr><td class="gt_row gt_left">Month: 6.8</td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0110</td>
-<td class="gt_row gt_right">0.7298</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.7632</td>
-<td class="gt_row gt_right">0.0082</td></tr>
-    <tr><td class="gt_row gt_left">Final</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">2.0610</td>
-<td class="gt_row gt_right">2.0610</td></tr>
-    <tr><td class="gt_row gt_left">N: 12111</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0196</td>
-<td class="gt_row gt_right">0.0196</td></tr>
-    <tr><td class="gt_row gt_left">Events: 69</td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.3942</td>
-<td class="gt_row gt_right">0.3942</td></tr>
-    <tr><td class="gt_row gt_left">Month: 8</td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0230</td>
-<td class="gt_row gt_right">0.9770</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.9100</td>
-<td class="gt_row gt_right">0.0900</td></tr>
-  </tbody>
-  
-  
-</table>
-</div>
-<p>Now we change the event counts at each analysis by rounding down to
-move away from the continuous, unrounded event counts above. There are
-small changes from the above design.</p>
-<pre class="r fold-hide"><code># Round up event counts and update spending based on slightly updated timing and then re-derive bounds.
-# This will then be used to set event counts and bounds for the exact binomial bounds
-
-counts &lt;- round(x$n.I) # Round for interim counts
-counts[k] &lt;- ceiling(x$n.I[k]) # Round up for final count
-timing &lt;- counts / max(counts)
-xx &lt;- gsDesign(
-  k = k, test.type = 4, n.I = counts, maxn.IPlan = x$n.I[k],
-  alpha = alpha, beta = beta,
-  delta = x$delta, delta1 = x$delta1, delta0 = x$delta0,
-  sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar,
-  usTime = timing,
-  lsTime = timing
-)
-zupper &lt;- xx$upper$bound # Updated upper bounds
-zlower &lt;- xx$lower$bound # Updated lower bounds
-# For non-inferiority and super-superiority trials
-xx$hr0 &lt;- x$hr0</code></pre>
-<pre class="r"><code>xxsum &lt;- gsBoundSummary(xx, deltaname = &quot;HR&quot;, logdelta = TRUE, Nname = &quot;Events&quot;)
-xxsum %&gt;%
-  gt() %&gt;%
-  tab_header(title = &quot;Updated design with spending based on integer event counts&quot;)</code></pre>
-<div id="igxirrwlud" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
-}
-
-#igxirrwlud .gt_table {
-  display: table;
-  border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#igxirrwlud .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#igxirrwlud .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#igxirrwlud .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#igxirrwlud .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#igxirrwlud .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#igxirrwlud .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#igxirrwlud .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#igxirrwlud .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#igxirrwlud .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#igxirrwlud .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#igxirrwlud .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#igxirrwlud .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#igxirrwlud .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#igxirrwlud .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#igxirrwlud .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#igxirrwlud .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#igxirrwlud .gt_stub_row_group {
+#wcdugxfklj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1348,11 +1360,15 @@ xxsum %&gt;%
   vertical-align: top;
 }
 
-#igxirrwlud .gt_row_group_first td {
+#wcdugxfklj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#igxirrwlud .gt_summary_row {
+#wcdugxfklj .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#wcdugxfklj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1362,16 +1378,16 @@ xxsum %&gt;%
   padding-right: 5px;
 }
 
-#igxirrwlud .gt_first_summary_row {
+#wcdugxfklj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#igxirrwlud .gt_first_summary_row.thick {
+#wcdugxfklj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#igxirrwlud .gt_last_summary_row {
+#wcdugxfklj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1381,7 +1397,7 @@ xxsum %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#igxirrwlud .gt_grand_summary_row {
+#wcdugxfklj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1391,7 +1407,7 @@ xxsum %&gt;%
   padding-right: 5px;
 }
 
-#igxirrwlud .gt_first_grand_summary_row {
+#wcdugxfklj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1401,11 +1417,21 @@ xxsum %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#igxirrwlud .gt_striped {
+#wcdugxfklj .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wcdugxfklj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#igxirrwlud .gt_table_body {
+#wcdugxfklj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1414,7 +1440,7 @@ xxsum %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#igxirrwlud .gt_footnotes {
+#wcdugxfklj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1428,30 +1454,8 @@ xxsum %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#igxirrwlud .gt_footnote {
+#wcdugxfklj .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#igxirrwlud .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#igxirrwlud .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1459,256 +1463,843 @@ xxsum %&gt;%
   padding-right: 5px;
 }
 
-#igxirrwlud .gt_left {
+#wcdugxfklj .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wcdugxfklj .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wcdugxfklj .gt_left {
   text-align: left;
 }
 
-#igxirrwlud .gt_center {
+#wcdugxfklj .gt_center {
   text-align: center;
 }
 
-#igxirrwlud .gt_right {
+#wcdugxfklj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#igxirrwlud .gt_font_normal {
+#wcdugxfklj .gt_font_normal {
   font-weight: normal;
 }
 
-#igxirrwlud .gt_font_bold {
+#wcdugxfklj .gt_font_bold {
   font-weight: bold;
 }
 
-#igxirrwlud .gt_font_italic {
+#wcdugxfklj .gt_font_italic {
   font-style: italic;
 }
 
-#igxirrwlud .gt_super {
+#wcdugxfklj .gt_super {
   font-size: 65%;
 }
 
-#igxirrwlud .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#wcdugxfklj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-#igxirrwlud .gt_asterisk {
+#wcdugxfklj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#igxirrwlud .gt_indent_1 {
+#wcdugxfklj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#igxirrwlud .gt_indent_2 {
+#wcdugxfklj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#igxirrwlud .gt_indent_3 {
+#wcdugxfklj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#igxirrwlud .gt_indent_4 {
+#wcdugxfklj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#igxirrwlud .gt_indent_5 {
+#wcdugxfklj .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table">
-  <thead class="gt_header">
-    <tr>
-      <td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Updated design with spending based on integer event counts</td>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_title gt_font_normal" style>Initial group sequential approximation</td>
     </tr>
-    
-  </thead>
-  <thead class="gt_col_headings">
-    <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Analysis</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col">Value</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Efficacy</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col">Futility</th>
+    <tr class="gt_heading">
+      <td colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Integer event counts at analyses</td>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Analysis">Analysis</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Value">Value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td class="gt_row gt_left">IA 1: 49%</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">3.0355</td>
-<td class="gt_row gt_right">-1.1640</td></tr>
-    <tr><td class="gt_row gt_left">Events: 34</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0012</td>
-<td class="gt_row gt_right">0.8778</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.2471</td>
-<td class="gt_row gt_right">1.0435</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0012</td>
-<td class="gt_row gt_right">0.1222</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.2532</td>
-<td class="gt_row gt_right">0.0002</td></tr>
-    <tr><td class="gt_row gt_left">IA 2: 80%</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">2.3082</td>
-<td class="gt_row gt_right">0.5995</td></tr>
-    <tr><td class="gt_row gt_left">Events: 55</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0105</td>
-<td class="gt_row gt_right">0.2744</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.3756</td>
-<td class="gt_row gt_right">0.5955</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0109</td>
-<td class="gt_row gt_right">0.7258</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.7621</td>
-<td class="gt_row gt_right">0.0079</td></tr>
-    <tr><td class="gt_row gt_left">Final</td>
-<td class="gt_row gt_left">Z</td>
-<td class="gt_row gt_right">2.0601</td>
-<td class="gt_row gt_right">2.0601</td></tr>
-    <tr><td class="gt_row gt_left">Events: 69</td>
-<td class="gt_row gt_left">p (1-sided)</td>
-<td class="gt_row gt_right">0.0197</td>
-<td class="gt_row gt_right">0.0197</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">~HR at bound</td>
-<td class="gt_row gt_right">0.4263</td>
-<td class="gt_row gt_right">0.4263</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.7</td>
-<td class="gt_row gt_right">0.0230</td>
-<td class="gt_row gt_right">0.9770</td></tr>
-    <tr><td class="gt_row gt_left"></td>
-<td class="gt_row gt_left">P(Cross) if HR=0.3</td>
-<td class="gt_row gt_right">0.9112</td>
-<td class="gt_row gt_right">0.0888</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">IA 1: 44%</td>
+<td headers="Value" class="gt_row gt_left">Z</td>
+<td headers="Efficacy" class="gt_row gt_right">2.8613</td>
+<td headers="Futility" class="gt_row gt_right">0.0106</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 3832</td>
+<td headers="Value" class="gt_row gt_left">p (1-sided)</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0021</td>
+<td headers="Futility" class="gt_row gt_right">0.4958</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 32</td>
+<td headers="Value" class="gt_row gt_left">~HR at bound</td>
+<td headers="Efficacy" class="gt_row gt_right">0.2177</td>
+<td headers="Futility" class="gt_row gt_right">0.6970</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Month: 12.8</td>
+<td headers="Value" class="gt_row gt_left">Spending</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0021</td>
+<td headers="Futility" class="gt_row gt_right">0.0110</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.7</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0021</td>
+<td headers="Futility" class="gt_row gt_right">0.5042</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.3</td>
+<td headers="Efficacy" class="gt_row gt_right">0.2878</td>
+<td headers="Futility" class="gt_row gt_right">0.0110</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">IA 2: 69%</td>
+<td headers="Value" class="gt_row gt_left">Z</td>
+<td headers="Efficacy" class="gt_row gt_right">2.5509</td>
+<td headers="Futility" class="gt_row gt_right">1.1093</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 3832</td>
+<td headers="Value" class="gt_row gt_left">p (1-sided)</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0054</td>
+<td headers="Futility" class="gt_row gt_right">0.1336</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 51</td>
+<td headers="Value" class="gt_row gt_left">~HR at bound</td>
+<td headers="Efficacy" class="gt_row gt_right">0.3043</td>
+<td headers="Futility" class="gt_row gt_right">0.4873</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Month: 17.9</td>
+<td headers="Value" class="gt_row gt_left">Spending</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0044</td>
+<td headers="Futility" class="gt_row gt_right">0.0309</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.7</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0065</td>
+<td headers="Futility" class="gt_row gt_right">0.8700</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.3</td>
+<td headers="Efficacy" class="gt_row gt_right">0.6372</td>
+<td headers="Futility" class="gt_row gt_right">0.0419</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Final</td>
+<td headers="Value" class="gt_row gt_left">Z</td>
+<td headers="Efficacy" class="gt_row gt_right">2.0393</td>
+<td headers="Futility" class="gt_row gt_right">2.0393</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 3832</td>
+<td headers="Value" class="gt_row gt_left">p (1-sided)</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0207</td>
+<td headers="Futility" class="gt_row gt_right">0.0207</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Events: 72</td>
+<td headers="Value" class="gt_row gt_left">~HR at bound</td>
+<td headers="Efficacy" class="gt_row gt_right">0.4018</td>
+<td headers="Futility" class="gt_row gt_right">0.4018</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left">Month: 24.1</td>
+<td headers="Value" class="gt_row gt_left">Spending</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0165</td>
+<td headers="Futility" class="gt_row gt_right">0.0481</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.7</td>
+<td headers="Efficacy" class="gt_row gt_right">0.0214</td>
+<td headers="Futility" class="gt_row gt_right">0.9786</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_left"></td>
+<td headers="Value" class="gt_row gt_left">P(Cross) if HR=0.3</td>
+<td headers="Efficacy" class="gt_row gt_right">0.9110</td>
+<td headers="Futility" class="gt_row gt_right">0.0890</td></tr>
   </tbody>
   
   
 </table>
 </div>
+<p>A textual summary for the design is:</p>
+<pre class="r"><code>cat(summary(xx, timeunit = &quot;months&quot;))</code></pre>
+<p>Asymmetric two-sided group sequential design with non-binding
+futility bound, 3 analyses, time-to-event outcome with sample size 3832
+and 72 events required, 91 percent power, 2.3 percent (1-sided) Type I
+error to detect a hazard ratio of 0.3 with a null hypothesis hazard
+ratio of 0.7. Enrollment and total study durations are assumed to be 8
+and 24.1 months, respectively. Efficacy bounds derived using a
+Hwang-Shih-DeCani spending function with gamma = -4. Futility bounds
+derived using a Lan-DeMets O’Brien-Fleming approximation spending
+function with none = 1.</p>
 </div>
 </div>
 <div id="converting-to-an-exact-binomial-design" class="section level1">
 <h1>Converting to an exact binomial design</h1>
-<p>Now we invert the upper and lower bounds based on the inverse
-binomial distribution to get <span class="math inline">\(a_k&lt;b_k,
-1\le k\le K\)</span> where <span class="math inline">\(N_{E,k}\le
-a_k\)</span> results in a positive finding in favor of the experimental
-arm and <span class="math inline">\(N_{E,k}\ge b_k\)</span> results in
-futility, <span class="math inline">\(1\le k\le K\)</span>:</p>
-<pre class="r"><code># Translate vaccine efficacy to exact binomial probabilities
+<p>We now convert this to an exact binomial design. The bound counts are
+described in this initial table displayed. <code>N</code> is the total
+event count, <code>a</code> the maximum number of events in the
+experimental group to cross the efficacy bound. For example, if 13 or
+fewer of 32 events at interim 1 are in the experimental group the
+efficacy bound has been crossed. The futility bound is in
+<code>b</code>; at the first interim, if 22 or more of 32 total events
+are in the experimental group then the futility bound would be crossed
+and the alternate hypothesis could be rejected. The second and third
+tables below give probabilities of crossing the upper (futility) and
+lower (efficacy) bounds under the null (<code>Theta</code> =
+0.6774<code>) and alternate (</code>Theta` = 0.4737) hypotheses,
+respectively; these calculations are done under the exact binomial
+distribution assumptions. Total Type I error of 0.0187 (third table,
+next to last row) is below the targeted 0.025. Total power of 0.9145
+(third table, last row) is above the targeted 90%.</p>
+<pre class="r"><code>xb &lt;- toBinomialExact(x)</code></pre>
+<div id="combined-summary-table" class="section level2">
+<h2>Combined summary table</h2>
+<pre class="r"><code># Function to print summary table for VE design
+veTable &lt;- function(xbDesign, tteDesign, ve) {
+  # Analysis, N, Time, Total Cases, Success(Cases, VE, VE lower CI, Spend), Futility (Cases, VE, Spend), Type I Error, Power table
+  ratio &lt;- tteDesign$ratio
+  prob_experimental &lt;- ratio / (ratio + 1 / (1 - ve))
+  power_table &lt;- gsBinomialExact(
+    k = xbDesign$k, theta = prob_experimental,
+    n.I = xbDesign$n.I, a = xbDesign$lower$bound,
+    b = xbDesign$upper$bound
+  )$lower$prob
+  # Cumulative sum within rows
+  power_table &lt;- apply(power_table, 2, cumsum)
+  colnames(power_table) &lt;- paste(ve * 100, &quot;%&quot;, sep = &quot;&quot;)
+  out_tab &lt;- tibble(
+    Analysis = 1:tteDesign$k,
+    Time = tteDesign$T,
+    N = as.vector(round(tteDesign$eNC + tteDesign$eNE)),
+    Cases = xbDesign$n.I,
+    Success = xb$lower$bound,
+    Futility = xb$upper$bound,
+    ve_efficacy = 1 - 1 / (ratio * (xbDesign$n.I / xbDesign$lower$bound - 1)), # Efficacy bound
+    ve_futility = 1 - 1 / (ratio * (xbDesign$n.I / xbDesign$upper$bound - 1)), # Futility bound
+    alpha = as.vector(cumsum(
+      gsBinomialExact(
+        k = k, theta = xbDesign$theta[1], n.I = xbDesign$n.I,
+        a = xbDesign$lower$bound, b = xbDesign$n.I + 1
+      )$lower$prob
+    )),
+    beta = as.vector(cumsum(xbDesign$upper$prob[, 2]))
+  )
+  out_tab &lt;- cbind(out_tab, power_table)
+}</code></pre>
+<pre class="r"><code>veTable(xb, x, ve) %&gt;%
+  gt() %&gt;%
+  fmt_number(columns = 2, decimals = 1) %&gt;%
+  fmt_number(columns = c(7:8, 11:16), decimals = 2) %&gt;%
+  fmt_number(columns = 9:10, decimals = 4) %&gt;%
+  tab_spanner(label = &quot;Experimental Cases at Bound&quot;, columns = 5:6, id = &quot;cases&quot;) %&gt;%
+  tab_spanner(label = &quot;Power by Vaccine Efficacy&quot;, columns = 11:16, id = &quot;power&quot;) %&gt;%
+  tab_spanner(label = &quot;Error Spending&quot;, columns = 9:10, id = &quot;spend&quot;) %&gt;%
+  tab_spanner(label = &quot;Vaccine Efficacy at Bound&quot;, columns = 7:8, id = &quot;vebound&quot;) %&gt;%
+  cols_label(
+    ve_efficacy = &quot;Efficacy&quot;,
+    ve_futility = &quot;Futility&quot;
+  ) %&gt;%
+  tab_footnote(
+    footnote = &quot;Cumulative spending at each analysis&quot;,
+    locations = cells_column_spanners(spanners = &quot;spend&quot;)
+  ) %&gt;%
+  tab_footnote(
+    footnote = &quot;Experimental case counts to cross between success and futility counts do not stop trial&quot;,
+    locations = cells_column_spanners(spanners = &quot;cases&quot;)
+  ) %&gt;%
+  tab_footnote(
+    footnote = &quot;Exact vaccine efficacy required to cross bound&quot;,
+    locations = cells_column_spanners(spanners = &quot;vebound&quot;)
+  ) %&gt;%
+  tab_footnote(
+    footnote = &quot;Cumulative power at each analysis by underlying vaccine efficacy&quot;,
+    locations = cells_column_spanners(spanners = &quot;power&quot;)
+  ) %&gt;%
+  tab_footnote(
+    footnote = &quot;Efficacy spending ignores non-binding futility bound&quot;,
+    location = cells_column_labels(columns = alpha)
+  ) %&gt;%
+  tab_header(&quot;Design Bounds and Operating Characteristics&quot;)</code></pre>
+<div id="pedqjpbhqg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#pedqjpbhqg table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-p0 &lt;- (1 - VE0) * ratio / (1 + (1 - VE0) * ratio)
-p1 &lt;- (1 - VE1) * ratio / (1 + (1 - VE1) * ratio)
+#pedqjpbhqg thead, #pedqjpbhqg tbody, #pedqjpbhqg tfoot, #pedqjpbhqg tr, #pedqjpbhqg td, #pedqjpbhqg th {
+  border-style: none;
+}
 
-# Lower bound probabilities are for efficacy and Type I error should be controlled under p0
-a &lt;- qbinom(p = pnorm(-zupper), size = counts, prob = p0)
-a[k] &lt;- a[k] - 1
-# Upper bound probabilities are for futility and spending should be under p1
-b &lt;- qbinom(p = pnorm(zlower), size = counts, prob = p0, lower.tail = FALSE)
-# a &lt; b required for each analysis; subtracting 1 makes one bound or the other
-# cross at the end
-xxx &lt;- gsBinomialExact(k = k, theta = c(p0, p1), n.I = counts, a = a, b = b)
-xxx</code></pre>
-<pre><code>#&gt;              Bounds
-#&gt;   Analysis   N   a   b
-#&gt;          1  34  14  26
-#&gt;          2  55  29  35
-#&gt;          3  69  38  39
-#&gt; 
-#&gt; Boundary crossing probabilities and expected sample size assume
-#&gt; any cross stops the trial
-#&gt; 
-#&gt; Upper boundary
-#&gt;           Analysis
-#&gt;    Theta      1      2      3  Total E{N}
-#&gt;   0.6774 0.1838 0.6053 0.1869 0.9760 53.9
-#&gt;   0.4737 0.0005 0.0107 0.0624 0.0737 51.2
-#&gt; 
-#&gt; Lower boundary
-#&gt;           Analysis
-#&gt;    Theta      1      2      3  Total
-#&gt;   0.6774 0.0013 0.0134 0.0094 0.0240
-#&gt;   0.4737 0.2918 0.5332 0.1013 0.9263</code></pre>
-<p>Now we make comparisons between the asymptotic, time-to-event design
-in <code>xx</code> to the exact binomial design in <code>xxx</code>. We
-begin with comparison of nominal one-sided p-values for each of the
-bounds.</p>
-<pre class="r"><code># Nominal p-values at efficacy bounds
+#pedqjpbhqg p {
+  margin: 0;
+  padding: 0;
+}
 
-pnorm(-xx$upper$bound) # Asymptotic</code></pre>
-<pre><code>#&gt; [1] 0.001200857 0.010493965 0.019695361</code></pre>
-<pre class="r"><code>pbinom(xxx$lower$bound, prob = p0, size = xxx$n.I) # Exact binomial</code></pre>
-<pre><code>#&gt; [1] 0.001274188 0.014367258 0.018708455</code></pre>
-<pre class="r"><code># Nominal p-values for futility bounds
-pnorm(-xx$lower$bound) # Asymptotic</code></pre>
-<pre><code>#&gt; [1] 0.87779020 0.27443463 0.01969536</code></pre>
-<pre class="r"><code>pbinom(xxx$upper$bound, prob = p0, size = xxx$n.I) # Exact binomial</code></pre>
-<pre><code>#&gt; [1] 0.90142900 0.30177551 0.03325157</code></pre>
-<p>Next we examine cumulative non-binding <span class="math inline">\(\alpha\)</span>-spending for efficacy bounds.
-While the cumulative interim spending is slightly higher than planned,
-the cumulative final spending is controlled at the targeted 0.025. If it
-is desired to lower interim spending to the target, slight adjustments
-could be made; for the purpose of this example we do not dive into this
-further.</p>
-<pre class="r"><code># Cumulative non-binding alpha-spending at lower bounds
-cumsum(xx$upper$spend) # Asymptotic design</code></pre>
-<pre><code>#&gt; [1] 0.001200857 0.010884213 0.023000000</code></pre>
-<pre class="r"><code># Exact binomial design
-# Compute by removing futility bounds
-balt &lt;- xxx$n.I + 1
-xxxalt &lt;- gsBinomialExact(k = k, theta = c(p0, p1), n.I = counts, a = a, b = balt)
-cumsum(xxxalt$lower$prob[, 1])</code></pre>
-<pre><code>#&gt; Analysis  1 Analysis  2 Analysis  3 
-#&gt; 0.001274188 0.014663600 0.024088556</code></pre>
-<p>Next we look at <span class="math inline">\(\beta\)</span>-spending
-for the two bounds. The exact bounds control <span class="math inline">\(\beta\)</span>-spending close to the asymptotic
-target at interims and fully controls the complete <span class="math inline">\(\beta=0.10\)</span> at the final analysis,
-ensuring power is achieved with the exact design.</p>
-<pre class="r"><code># Cumulative non-binding beta-spending at lower bounds
+#pedqjpbhqg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#pedqjpbhqg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pedqjpbhqg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pedqjpbhqg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pedqjpbhqg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pedqjpbhqg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pedqjpbhqg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pedqjpbhqg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pedqjpbhqg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#pedqjpbhqg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#pedqjpbhqg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pedqjpbhqg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pedqjpbhqg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pedqjpbhqg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pedqjpbhqg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pedqjpbhqg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#pedqjpbhqg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#pedqjpbhqg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#pedqjpbhqg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pedqjpbhqg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#pedqjpbhqg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pedqjpbhqg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pedqjpbhqg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pedqjpbhqg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pedqjpbhqg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pedqjpbhqg .gt_left {
+  text-align: left;
+}
+
+#pedqjpbhqg .gt_center {
+  text-align: center;
+}
+
+#pedqjpbhqg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pedqjpbhqg .gt_font_normal {
+  font-weight: normal;
+}
+
+#pedqjpbhqg .gt_font_bold {
+  font-weight: bold;
+}
+
+#pedqjpbhqg .gt_font_italic {
+  font-style: italic;
+}
+
+#pedqjpbhqg .gt_super {
+  font-size: 65%;
+}
+
+#pedqjpbhqg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#pedqjpbhqg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#pedqjpbhqg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#pedqjpbhqg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#pedqjpbhqg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#pedqjpbhqg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#pedqjpbhqg .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="16" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Design Bounds and Operating Characteristics</td>
+    </tr>
+    
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Analysis">Analysis</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Time">Time</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="N">N</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Cases">Cases</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Experimental Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Experimental Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Vaccine Efficacy at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Vaccine Efficacy at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span></span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span></span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="6" scope="colgroup" id="Power by Vaccine Efficacy&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Power by Vaccine Efficacy<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span></span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Success">Success</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="50%">50%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="60%">60%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="65%">65%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="70%">70%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="75%">75%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="80%">80%</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Analysis" class="gt_row gt_right">1</td>
+<td headers="Time" class="gt_row gt_right">12.9</td>
+<td headers="N" class="gt_row gt_right">3831</td>
+<td headers="Cases" class="gt_row gt_right">32</td>
+<td headers="Success" class="gt_row gt_right">13</td>
+<td headers="Futility" class="gt_row gt_right">23</td>
+<td headers="ve_efficacy" class="gt_row gt_right">0.77</td>
+<td headers="ve_futility" class="gt_row gt_right">0.15</td>
+<td headers="alpha" class="gt_row gt_right">0.0014</td>
+<td headers="beta" class="gt_row gt_right">0.0044</td>
+<td headers="50%" class="gt_row gt_right">0.02</td>
+<td headers="60%" class="gt_row gt_right">0.08</td>
+<td headers="65%" class="gt_row gt_right">0.15</td>
+<td headers="70%" class="gt_row gt_right">0.28</td>
+<td headers="75%" class="gt_row gt_right">0.47</td>
+<td headers="80%" class="gt_row gt_right">0.71</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_right">2</td>
+<td headers="Time" class="gt_row gt_right">17.9</td>
+<td headers="N" class="gt_row gt_right">3831</td>
+<td headers="Cases" class="gt_row gt_right">50</td>
+<td headers="Success" class="gt_row gt_right">24</td>
+<td headers="Futility" class="gt_row gt_right">31</td>
+<td headers="ve_efficacy" class="gt_row gt_right">0.69</td>
+<td headers="ve_futility" class="gt_row gt_right">0.46</td>
+<td headers="alpha" class="gt_row gt_right">0.0038</td>
+<td headers="beta" class="gt_row gt_right">0.0278</td>
+<td headers="50%" class="gt_row gt_right">0.06</td>
+<td headers="60%" class="gt_row gt_right">0.23</td>
+<td headers="65%" class="gt_row gt_right">0.39</td>
+<td headers="70%" class="gt_row gt_right">0.60</td>
+<td headers="75%" class="gt_row gt_right">0.82</td>
+<td headers="80%" class="gt_row gt_right">0.95</td></tr>
+    <tr><td headers="Analysis" class="gt_row gt_right">3</td>
+<td headers="Time" class="gt_row gt_right">24.0</td>
+<td headers="N" class="gt_row gt_right">3831</td>
+<td headers="Cases" class="gt_row gt_right">72</td>
+<td headers="Success" class="gt_row gt_right">40</td>
+<td headers="Futility" class="gt_row gt_right">41</td>
+<td headers="ve_efficacy" class="gt_row gt_right">0.58</td>
+<td headers="ve_futility" class="gt_row gt_right">0.56</td>
+<td headers="alpha" class="gt_row gt_right">0.0214</td>
+<td headers="beta" class="gt_row gt_right">0.0720</td>
+<td headers="50%" class="gt_row gt_right">0.25</td>
+<td headers="60%" class="gt_row gt_right">0.60</td>
+<td headers="65%" class="gt_row gt_right">0.79</td>
+<td headers="70%" class="gt_row gt_right">0.93</td>
+<td headers="75%" class="gt_row gt_right">0.99</td>
+<td headers="80%" class="gt_row gt_right">1.00</td></tr>
+  </tbody>
+  
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Experimental case counts to cross between success and futility counts do not stop trial</td>
+    </tr>
+    <tr>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
+    </tr>
+    <tr>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span> Cumulative spending at each analysis</td>
+    </tr>
+    <tr>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
+    </tr>
+    <tr>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span> Efficacy spending ignores non-binding futility bound</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<p>Next, we look at <span class="math inline">\(\alpha\)</span>- and
+<span class="math inline">\(\beta\)</span>-spending for the
+time-to-event design to compare to the exact bound restricted by the
+discrete possible counts at bounds. For both <span class="math inline">\(\alpha\)</span>- and <span class="math inline">\(\beta\)</span>-spending, the exact binomial design
+has no more spending at each analysis than allowed by each spending
+function.</p>
+<pre class="r"><code># Cumulative beta-spending at lower bounds
 cumsum(xx$lower$spend) # Asymptotic design</code></pre>
-<pre><code>#&gt; [1] 0.0002039565 0.0078850068 0.0900000000</code></pre>
-<pre class="r"><code>cumsum(xxx$upper$prob[, 2]) # Exact binomial design</code></pre>
-<pre><code>#&gt; Analysis  1 Analysis  2 Analysis  3 
-#&gt; 0.000523268 0.011250067 0.073694635</code></pre>
-<p>Now we examine the approximate vaccine efficacy at efficacy and
-futility bounds for the asymptotic design vs. the exact vaccine efficacy
-for the exact binomial design. We begin using the inversion formula from
-above to convert the proportion of events in the experimental group at
-the bounds to vaccine efficacy at the bounds.</p>
-<pre class="r"><code>p_lower &lt;- xxx$lower$bound / xxx$n.I
-p_upper &lt;- xxx$upper$bound / xxx$n.I
-p_lower</code></pre>
-<pre><code>#&gt; [1] 0.4117647 0.5272727 0.5507246</code></pre>
-<pre class="r"><code>p_upper</code></pre>
-<pre><code>#&gt; [1] 0.7647059 0.6363636 0.5652174</code></pre>
-<p>Now we convert to observed vaccine efficacy at each bound</p>
-<pre class="r"><code>1 - 1 / (ratio * (1 / p_lower - 1)) # Efficacy bound</code></pre>
-<pre><code>#&gt; [1] 0.7666667 0.6282051 0.5913978</code></pre>
-<pre class="r"><code>1 - 1 / (ratio * (1 / p_upper - 1)) # Futility bound</code></pre>
-<pre><code>#&gt; [1] -0.08333333  0.41666667  0.56666667</code></pre>
-<p>This is approximated reasonably by the approximations using the
-time-to-event design:</p>
-<pre class="r"><code># Translate ~HR at efficacy bound to VE for asymptotic design
-1 - xxsum[c(3, 8, 13), 3] # Efficacy bound</code></pre>
-<pre><code>#&gt; [1] 0.7529 0.6244 0.5737</code></pre>
-<pre class="r"><code>1 - xxsum[c(3, 8, 13), 4] # Futility bound</code></pre>
-<pre><code>#&gt; [1] -0.0435  0.4045  0.5737</code></pre>
+<pre><code>#&gt; [1] 0.01098749 0.04190350 0.09000000</code></pre>
+<pre class="r"><code># Cumulative alpha-spending at efficacy bounds
+cumsum(gsProbability(k = xx$k, n.I = xx$n.I, a = rep(-20, xx$k), b = xx$upper$bound, theta = 0)$upper$prob)</code></pre>
+<pre><code>#&gt; [1] 0.002109848 0.006472510 0.023000001</code></pre>
+</div>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
@@ -1716,10 +2307,10 @@ time-to-event design:</p>
 spending function bounds can be derived in a two-step process that
 delivers sample size and bounds by 1) deriving a related time-to-event
 design using asymptotic methods and then 2) converting to an exact
-binomial design. Small adjustments were made to target Type I and Type
-II error probabilities in the asymptotic approximation to ensure the
-exact binomial Type I and Type II error rates were achieve. The method
-seems a reasonable and straightforward approach to develop a complete
+binomial design. Adjustments were made to target Type I and Type II
+error probabilities in the asymptotic approximation to ensure the exact
+binomial Type I and Type II error rates were achieved. The method seems
+a reasonable and straightforward approach to develop a complete
 design.</p>
 </div>
 <div id="references" class="section level1 unnumbered">

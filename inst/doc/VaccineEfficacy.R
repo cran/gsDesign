@@ -33,28 +33,37 @@ p0 <- ratio / (ratio + 1 / (1 - pi0))
 p0
 
 ## -------------------------------------------------------
+ve <- c(.5, .6, .65, .7, .75, .8)
+prob_experimental <- ratio / (ratio + 1 / (1 - ve))
+tibble(VE = ve, "P(Experimental)" = prob_experimental) %>%
+  gt() %>%
+  tab_options(data_row.padding = px(1)) %>%
+  fmt_number(columns = 2, decimals = 3)
+
+## -------------------------------------------------------
 alpha <- 0.023 # Type I error; this was adjusted from .025 to ensure Type I error control
 beta <- 0.09 # Type II error (1 - power); this was reduced from .1 to .09 to ensure power
 k <- 3 # number of analyses in group sequential design
-timing <- c(.5, .8) # Relative timing of interim analyses compared to final
-sfu <- sfLDOF # Efficacy bound spending function (O'Brien-Fleming-like here)
-sfupar <- 0 # Parameter for efficacy spending function
-sfl <- sfHSD # Futility bound spending function (Hwang-Shih-DeCani here)
-sflpar <- -12 # Futility bound spending function parameter (conservative)
+timing <- c(.45, .7) # Relative timing of interim analyses compared to final
+sfu <- sfHSD # Efficacy bound spending function (Hwang-Shih-DeCani)
+sfupar <- -4 # Parameter for efficacy spending function
+sfl <- sfLDOF # Futility bound spending function (O'Brien-Fleming-like here)
+sflpar <- 1 # Futility bound spending function parameter; this is the standard O'Brien-Fleming
 timename <- "Month" # Time unit
 failRate <- .002 # Exponential failure rate
 dropoutRate <- .0001 # Exponential dropout rate
-enrollDuration <- 4 # Enrollment duration
-trialDuration <- 8 # Planned trial duration
+enrollDuration <- 8 # Enrollment duration
+trialDuration <- 24 # Planned trial duration
 VE1 <- .7 # Alternate hypothesis vaccine efficacy
 VE0 <- .3 # Null hypothesis vaccine efficacy
 ratio <- 3 # Experimental/Control enrollment ratio
+test.type <- 4 # 1 for one-sided, 4 for non-binding futility
 
 ## -------------------------------------------------------
 # Derive Group Sequential Design
 # This determines final sample size
 x <- gsSurv(
-  k = k, test.type = 4, alpha = alpha, beta = beta, timing = timing,
+  k = k, test.type = test.type, alpha = alpha, beta = beta, timing = timing,
   sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar,
   lambdaC = failRate, eta = dropoutRate,
   # Translate vaccine efficacy to HR
@@ -63,88 +72,98 @@ x <- gsSurv(
   minfup = trialDuration - enrollDuration, ratio = ratio
 )
 
-gsBoundSummary(x, tdigits = 1) %>%
+## -------------------------------------------------------
+xx <- toInteger(x)
+gsBoundSummary(xx,
+  tdigits = 1, logdelta = TRUE, deltaname = "HR", Nname = "Events",
+  exclude = c("B-value", "CP", "CP H1", "PP")
+) %>%
   gt() %>%
-  tab_header(title = "Initial group sequential approximation")
+  tab_header(
+    title = "Initial group sequential approximation",
+    subtitle = "Integer event counts at analyses"
+  ) %>%
+  tab_options(data_row.padding = px(1))
 
-## ---- class.source = 'fold-hide'------------------------
-# Round up event counts and update spending based on slightly updated timing and then re-derive bounds.
-# This will then be used to set event counts and bounds for the exact binomial bounds
-
-counts <- round(x$n.I) # Round for interim counts
-counts[k] <- ceiling(x$n.I[k]) # Round up for final count
-timing <- counts / max(counts)
-xx <- gsDesign(
-  k = k, test.type = 4, n.I = counts, maxn.IPlan = x$n.I[k],
-  alpha = alpha, beta = beta,
-  delta = x$delta, delta1 = x$delta1, delta0 = x$delta0,
-  sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar,
-  usTime = timing,
-  lsTime = timing
-)
-zupper <- xx$upper$bound # Updated upper bounds
-zlower <- xx$lower$bound # Updated lower bounds
-# For non-inferiority and super-superiority trials
-xx$hr0 <- x$hr0
+## ---- results='asis'------------------------------------
+cat(summary(xx, timeunit = "months"))
 
 ## -------------------------------------------------------
-xxsum <- gsBoundSummary(xx, deltaname = "HR", logdelta = TRUE, Nname = "Events")
-xxsum %>%
+xb <- toBinomialExact(x)
+
+## -------------------------------------------------------
+# Function to print summary table for VE design
+veTable <- function(xbDesign, tteDesign, ve) {
+  # Analysis, N, Time, Total Cases, Success(Cases, VE, VE lower CI, Spend), Futility (Cases, VE, Spend), Type I Error, Power table
+  ratio <- tteDesign$ratio
+  prob_experimental <- ratio / (ratio + 1 / (1 - ve))
+  power_table <- gsBinomialExact(
+    k = xbDesign$k, theta = prob_experimental,
+    n.I = xbDesign$n.I, a = xbDesign$lower$bound,
+    b = xbDesign$upper$bound
+  )$lower$prob
+  # Cumulative sum within rows
+  power_table <- apply(power_table, 2, cumsum)
+  colnames(power_table) <- paste(ve * 100, "%", sep = "")
+  out_tab <- tibble(
+    Analysis = 1:tteDesign$k,
+    Time = tteDesign$T,
+    N = as.vector(round(tteDesign$eNC + tteDesign$eNE)),
+    Cases = xbDesign$n.I,
+    Success = xb$lower$bound,
+    Futility = xb$upper$bound,
+    ve_efficacy = 1 - 1 / (ratio * (xbDesign$n.I / xbDesign$lower$bound - 1)), # Efficacy bound
+    ve_futility = 1 - 1 / (ratio * (xbDesign$n.I / xbDesign$upper$bound - 1)), # Futility bound
+    alpha = as.vector(cumsum(
+      gsBinomialExact(
+        k = k, theta = xbDesign$theta[1], n.I = xbDesign$n.I,
+        a = xbDesign$lower$bound, b = xbDesign$n.I + 1
+      )$lower$prob
+    )),
+    beta = as.vector(cumsum(xbDesign$upper$prob[, 2]))
+  )
+  out_tab <- cbind(out_tab, power_table)
+}
+
+## -------------------------------------------------------
+veTable(xb, x, ve) %>%
   gt() %>%
-  tab_header(title = "Updated design with spending based on integer event counts")
+  fmt_number(columns = 2, decimals = 1) %>%
+  fmt_number(columns = c(7:8, 11:16), decimals = 2) %>%
+  fmt_number(columns = 9:10, decimals = 4) %>%
+  tab_spanner(label = "Experimental Cases at Bound", columns = 5:6, id = "cases") %>%
+  tab_spanner(label = "Power by Vaccine Efficacy", columns = 11:16, id = "power") %>%
+  tab_spanner(label = "Error Spending", columns = 9:10, id = "spend") %>%
+  tab_spanner(label = "Vaccine Efficacy at Bound", columns = 7:8, id = "vebound") %>%
+  cols_label(
+    ve_efficacy = "Efficacy",
+    ve_futility = "Futility"
+  ) %>%
+  tab_footnote(
+    footnote = "Cumulative spending at each analysis",
+    locations = cells_column_spanners(spanners = "spend")
+  ) %>%
+  tab_footnote(
+    footnote = "Experimental case counts to cross between success and futility counts do not stop trial",
+    locations = cells_column_spanners(spanners = "cases")
+  ) %>%
+  tab_footnote(
+    footnote = "Exact vaccine efficacy required to cross bound",
+    locations = cells_column_spanners(spanners = "vebound")
+  ) %>%
+  tab_footnote(
+    footnote = "Cumulative power at each analysis by underlying vaccine efficacy",
+    locations = cells_column_spanners(spanners = "power")
+  ) %>%
+  tab_footnote(
+    footnote = "Efficacy spending ignores non-binding futility bound",
+    location = cells_column_labels(columns = alpha)
+  ) %>%
+  tab_header("Design Bounds and Operating Characteristics")
 
 ## -------------------------------------------------------
-# Translate vaccine efficacy to exact binomial probabilities
-
-p0 <- (1 - VE0) * ratio / (1 + (1 - VE0) * ratio)
-p1 <- (1 - VE1) * ratio / (1 + (1 - VE1) * ratio)
-
-# Lower bound probabilities are for efficacy and Type I error should be controlled under p0
-a <- qbinom(p = pnorm(-zupper), size = counts, prob = p0)
-a[k] <- a[k] - 1
-# Upper bound probabilities are for futility and spending should be under p1
-b <- qbinom(p = pnorm(zlower), size = counts, prob = p0, lower.tail = FALSE)
-# a < b required for each analysis; subtracting 1 makes one bound or the other
-# cross at the end
-xxx <- gsBinomialExact(k = k, theta = c(p0, p1), n.I = counts, a = a, b = b)
-xxx
-
-## -------------------------------------------------------
-# Nominal p-values at efficacy bounds
-
-pnorm(-xx$upper$bound) # Asymptotic
-pbinom(xxx$lower$bound, prob = p0, size = xxx$n.I) # Exact binomial
-
-# Nominal p-values for futility bounds
-pnorm(-xx$lower$bound) # Asymptotic
-pbinom(xxx$upper$bound, prob = p0, size = xxx$n.I) # Exact binomial
-
-## -------------------------------------------------------
-# Cumulative non-binding alpha-spending at lower bounds
-cumsum(xx$upper$spend) # Asymptotic design
-# Exact binomial design
-# Compute by removing futility bounds
-balt <- xxx$n.I + 1
-xxxalt <- gsBinomialExact(k = k, theta = c(p0, p1), n.I = counts, a = a, b = balt)
-cumsum(xxxalt$lower$prob[, 1])
-
-## -------------------------------------------------------
-# Cumulative non-binding beta-spending at lower bounds
+# Cumulative beta-spending at lower bounds
 cumsum(xx$lower$spend) # Asymptotic design
-cumsum(xxx$upper$prob[, 2]) # Exact binomial design
-
-## -------------------------------------------------------
-p_lower <- xxx$lower$bound / xxx$n.I
-p_upper <- xxx$upper$bound / xxx$n.I
-p_lower
-p_upper
-
-## -------------------------------------------------------
-1 - 1 / (ratio * (1 / p_lower - 1)) # Efficacy bound
-1 - 1 / (ratio * (1 / p_upper - 1)) # Futility bound
-
-## -------------------------------------------------------
-# Translate ~HR at efficacy bound to VE for asymptotic design
-1 - xxsum[c(3, 8, 13), 3] # Efficacy bound
-1 - xxsum[c(3, 8, 13), 4] # Futility bound
+# Cumulative alpha-spending at efficacy bounds
+cumsum(gsProbability(k = xx$k, n.I = xx$n.I, a = rep(-20, xx$k), b = xx$upper$bound, theta = 0)$upper$prob)
 

@@ -124,9 +124,8 @@
 #' # from the others
 #' param <- c(.25, .5, .05, .1)
 #' plotsf(.025, t, param)
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \code{\link{gsDesign}}
 #' @references Jennison C and Turnbull BW (2000), \emph{Group Sequential
@@ -262,11 +261,9 @@ sfLogistic <- function(alpha, t, param) {
 #'   )
 #' )
 #' text(x = .59, y = .95 * .025, labels = "<--approximates O'Brien-Fleming")
-#' @note The manual shows how to use \code{sfExponential()} to closely
-#' approximate an O'Brien-Fleming design. An example is given below. The manual
-#' is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual shows how to use \code{sfExponential()}
+#'   to closely approximate an O'Brien-Fleming design. An example is given below.
+#'   The manual is available at <https://keaven.github.io/gsd-tech-manual/>.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -567,9 +564,8 @@ sfExtremeValue2 <- function(alpha, t, param) {
 #'   x = c(.0, .375), y = .025 * c(.8, 1), lty = 1:3,
 #'   legend = c("gamma= -4", "gamma= -2", "gamma= 1")
 #' )
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -684,9 +680,8 @@ sfHSD <- function(alpha, t, param) {
 #'   geom_line()+
 #'   guides(col=guide_legend(expression(rho)))+
 #'   ggtitle("Generalized Lan-DeMets O'Brien-Fleming Spending Function")
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -921,9 +916,8 @@ sfNormal <- function(alpha, t, param) {
 #' sum(z1alt >= x$upper$bound[1] | z2alt >= x$upper$bound[2]) / 1000000
 #' 
 #' @aliases sfLinear
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -1104,9 +1098,8 @@ sfStep <- function(alpha, t, param) {
 #' )
 #' x
 #' 
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}, \link{sfLogistic}
@@ -1186,7 +1179,7 @@ sfPoints <- function(alpha, t, param) {
 #' function will be computed.
 #' @param param A single, positive value specifying the \eqn{\rho}{rho}
 #' parameter for which Kim-DeMets spending is to be computed; allowable range
-#' is (0,15]
+#' is (0,50]
 #' @return An object of type \code{spendfn}. See \link{Spending_Function_Overview} for further details.
 #' @examples
 #' library(ggplot2)
@@ -1222,9 +1215,8 @@ sfPoints <- function(alpha, t, param) {
 #'   x = c(.0, .357), y = .025 * c(.65, .85), lty = 1:3, bty = "n", col = 2,
 #'   legend = c("gamma= -4", "gamma= -2", "gamma=1")
 #' )
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -1235,9 +1227,9 @@ sfPoints <- function(alpha, t, param) {
 #' @export
 # sfPower function [sinew] ----
 sfPower <- function(alpha, t, param) {
-  # K. Wills 12/11/08: restrict param range
-  # checkScalar(param, "numeric", c(0, Inf), c(FALSE, TRUE))
-  checkScalar(param, "numeric", c(0, 15), c(FALSE, TRUE))
+  # K. Wills 12/11/08: restrict param range to (0, 15]
+  # K. Anderson 6/11/23: restrict param range to (0, 50]
+  checkScalar(param, "numeric", c(0, 50), c(FALSE, TRUE))
 
   checkScalar(alpha, "numeric", c(0, Inf), c(FALSE, FALSE))
   checkVector(t, "numeric", c(0, Inf), c(TRUE, FALSE))
@@ -1343,9 +1335,8 @@ sfPower <- function(alpha, t, param) {
 #'   x = c(.0, .3), y = .025 * c(.7, 1), lty = 1:5,
 #'   legend = c("df = 1", "df = 1.5", "df = 3", "df = 10", "df = 100")
 #' )
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}
@@ -1559,9 +1550,8 @@ sfTDist <- function(alpha, t, param) {
 #' # note that by setting trange[1] to .2, the spend at t=.2 is used for the first
 #' # interim at or after 20 percent of information
 #' x <- gsDesign(n.fix = 100, sfl = sfGapped, sflpar = list(trange = c(.2, .9), sf = sfHSD, param = 1))
-#' @note The manual is not linked to this help file, but is available in
-#' library/gsdesign/doc/gsDesignManual.pdf in the directory where R is
-#' installed.
+#' @note The gsDesign technical manual is available at
+#'   \url{https://keaven.github.io/gsd-tech-manual/}.
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #' @seealso \link{Spending_Function_Overview}, \code{\link{gsDesign}},
 #' \link{gsDesign package overview}

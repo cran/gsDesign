@@ -1,4 +1,4 @@
-## ---- include=FALSE-----------------------------------------------------------
+## ---- include=FALSE-------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,14 +11,14 @@ knitr::opts_chunk$set(
   out.width = "80%"
 )
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE--------------------------------
+## ---- echo=FALSE, message=FALSE, warning=FALSE----------
 library(gsDesign)
 library(dplyr)
 library(tibble)
 library(ggplot2)
 library(gt)
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 # Control group assumptions for three Poisson mixture cure models
 cure_rate <- c(.5, .35, .55)
 # Second time point for respective models
@@ -33,14 +33,14 @@ study_duration <- c(48, 48, 56)
 # Number of bins for piecewise approximation
 bins <- 5
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 # This code should be updated by user for their scenario
 # Enrollment duration by scenario
 enroll_duration <- c(12, 12, 20)
 # Dropout rate (exponential failure rate per time unit) by scenario
 dropout_rate <- c(.002, .001, .001)
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 # Poisson mixture survival
 pPM <- function(x = 0:20, cure_rate = .5, t1 = 10, s1 = .6) {
   theta <- -log(cure_rate)
@@ -54,7 +54,7 @@ hPM <- function(x = 0:20, cure_rate = .5, t1 = 10, s1 = .6) {
   return(theta * lambda * exp(-lambda * x))
 }
 
-## ---- warning=FALSE, message=FALSE, echo=FALSE--------------------------------
+## ---- warning=FALSE, message=FALSE, echo=FALSE----------
 t <- seq(0, study_duration[1] + 12, (study_duration[1] + 12) / bins)
 survival <- NULL
 for (scenario in 1:length(cure_rate)) {
@@ -84,7 +84,7 @@ ggplot(survival, aes(x = Time, y = Survival, lty = Treatment, col = Scenario)) +
   ggtitle("Poisson Mixture Model with Proportional Hazards") +
   theme(legend.position = "bottom")
 
-## ---- echo = FALSE------------------------------------------------------------
+## ---- echo = FALSE--------------------------------------
 hazard <- survival %>%
   filter(Time > 0) %>%
   group_by(Scenario, Treatment) %>%
@@ -110,7 +110,7 @@ ggplot() +
   geom_line(data = hazardC1, aes(x = time_lagged, y = hazard_rate), lty = 2) +
   annotate(geom = "text", x = 35, y = .02, label = "Dashed line shows actual hazard rate")
 
-## ---- echo=FALSE, echo=FALSE--------------------------------------------------
+## ---- echo=FALSE, echo=FALSE----------------------------
 # DO NOT ALTER CODE
 event_accrual <- NULL
 for (scenario in 1:length(cure_rate)) {
@@ -160,7 +160,7 @@ ggplot(event_accrual, aes(x = Time, y = EF, color = Scenario, lty = Hypothesis))
   ) +
   theme(legend.position = "bottom")
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 h1s1_EF <- event_accrual %>%
   filter(Scenario == 1 & Hypothesis == "H1" & Time %in% c(12, 24, 36)) %>%
   select(Time, EF)
@@ -169,7 +169,7 @@ h1s1_EF
 timing <- h1s1_EF$EF
 timing_calendar <- h1s1_EF$Time / study_duration
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 # Get hazard rate info for Scenario 1 control group
 control <- hazard %>% filter(Scenario == 1, Treatment == "Control")
 # Failure rates
@@ -194,7 +194,7 @@ dropout_rate <- 0.002
 # Experimental / control randomization ratio
 ratio <- 1
 
-## -----------------------------------------------------------------------------
+## -------------------------------------------------------
 design_calendar <-
   gsSurv(
     k = length(timing) + 1,
