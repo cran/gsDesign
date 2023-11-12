@@ -81,10 +81,10 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' length k.
 #' @param a Number of "successes" required to cross lower bound cutoffs to
 #' reject \code{p1} in favor of \code{p0} at each analysis; vector of length k;
-#' -1 means no lower bound.
+#' -1 (minimum allowed) means no lower bound.
 #' @param b Number of "successes" required to cross upper bound cutoffs for
 #' rejecting \code{p0} in favor of \code{p1} at each analysis; vector of length
-#' k.
+#' k; value > n.I means no upper bound.
 #' @param p0 Lower of the two response (event) rates hypothesized.
 #' @param p1 Higher of the two response (event) rates hypothesized.
 #' @param alpha Nominal probability of rejecting response (event) rate
@@ -167,7 +167,7 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' library(ggplot2)
 #' 
 #' zz <- gsBinomialExact(
-#'   k = 3, theta = seq(0, 1, 0.1), n.I = c(12, 24, 36),
+#'   k = 3, theta = seq(0.1, 0.9, 0.1), n.I = c(12, 24, 36),
 #'   a = c(-1, 0, 11), b = c(5, 9, 12)
 #' )
 #' 
@@ -197,7 +197,7 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' # sample size for single arm exact binomial
 #' 
 #' # plot of table of power by sample size
-#' # note that outtype need no be specified if beta is NULL
+#' # note that outtype need not be specified if beta is NULL
 #' nb1 <- nBinomial1Sample(p0 = 0.05, p1=0.2,alpha = 0.025, beta=NULL, n = 25:40)
 #' nb1
 #' library(scales)
@@ -216,7 +216,15 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 #' # print out more information for the selected derived sample size
 #' nBinomial1Sample(p0 = 0.05, p1 = 0.2, alpha = 0.025, beta = .2, n = 25:40, conservative = TRUE,
 #'  outtype = 2)
-#' 
+#' # Reproduce realized Type I error alphaR
+#' stats::pbinom(q = 5, size = 39, prob = .05, lower.tail = FALSE)
+#' # Reproduce realized power
+#' stats::pbinom(q = 5, size = 39, prob = 0.2, lower.tail = FALSE)
+#' # Reproduce critical value for positive finding
+#' stats::qbinom(p = 1 - .025, size = 39, prob = .05) + 1
+#' # Compute p-value for 7 successes
+#' stats::pbinom(q = 6, size = 39, prob = .05, lower.tail = FALSE)
+
 #' # what happens if input sample sizes not sufficient?
 #' \dontrun{ 
 #'   nBinomial1Sample(p0 = 0.05, p1 = 0.2, alpha = 0.025, beta = .2, n = 25:30)
@@ -237,9 +245,9 @@ utils::globalVariables(c("N", "EN", "Bound", "rr", "Percent", "Outcome"))
 # gsBinomialExact function [sinew] ----
 gsBinomialExact <- function(k = 2, theta = c(.1, .2), n.I = c(50, 100), a = c(3, 7), b = c(20, 30)) {
   checkScalar(k, "integer", c(2, Inf), inclusion = c(TRUE, FALSE))
-  checkVector(theta, "numeric", interval = 0:1, inclusion = c(TRUE, TRUE))
+  checkVector(theta, "numeric", interval = 0:1, inclusion = c(FALSE, FALSE))
   checkVector(n.I, "integer", interval = c(1, Inf), inclusion = c(TRUE, FALSE))
-  checkVector(a, "integer", interval = c(-Inf, Inf), inclusion = c(FALSE, FALSE))
+  checkVector(a, "integer", interval = c(-1, Inf), inclusion = c(TRUE, FALSE))
   checkVector(b, "integer", interval = c(1, Inf), inclusion = c(FALSE, FALSE))
   ntheta <- as.integer(length(theta))
   theta <- as.double(theta)
@@ -247,12 +255,14 @@ gsBinomialExact <- function(k = 2, theta = c(.1, .2), n.I = c(50, 100), a = c(3,
     stop("Lengths of n.I, a, and b must equal k on input")
   }
   m <- c(n.I[1], diff(n.I))
-  if (min(m) < 1) stop("n.I must must contain an increasing sequence of positive integers")
-  if (min(n.I - a) < 0) stop("Input a-vector must be less than n.I")
-  if (min(b - a) <= 0) stop("Input b-vector must be strictly greater than a")
-  if (min(diff(a)) < 0) stop("a must contain a non-decreasing sequence of integers")
-  if (min(diff(b)) < 0) stop("b must contain a non-decreasing sequence of integers")
-  if (min(diff(n.I - b)) < 0) stop("n.I - b must be non-decreasing")
+  if (min(m) < 1) stop(paste("n.I must contain an increasing sequence of positive integers\n n.I = ", paste(n.I, collapse = ", ")))
+  if (min(n.I - a) <= 0) stop(paste("Input a-vector must be strictly less than n.I\n a = ", paste(a, collapse = ", "), "\n n.I = ", paste(n.I, collapse = ", ")))
+  if (min(b - a) <= 0) stop(paste("Input b-vector must be strictly greater than a\n a = ", paste(a, collapse = ", "), "\n b = ", paste(b, collapse = ", ")))
+  if (min(diff(a)) < 0) stop(paste("a must contain a non-decreasing sequence of non-negative integers\n a =", paste(a, collapse = ", ")))
+  if (min(diff(b)) < 0) stop(paste("b must contain a non-decreasing sequence of non-negative integers\n b =", paste(b, collapse = ", ")))
+  if (min(diff(n.I - b)) < 0) stop(paste("n.I - b must be non-decreasing\n n.I =", 
+                                         paste(n.I, collapse=", "), "\n b = ", paste(b, collapse=", "),
+                                         "\n n.I - b = ", paste(n.I - b, collapse=", ")))
 
   plo <- matrix(nrow = k, ncol = ntheta)
   rownames(plo) <- paste(rep("Analysis ", k), 1:k)

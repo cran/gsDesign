@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 options(width = 58)
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE----------
+## ----echo=FALSE, message=FALSE, warning=FALSE-----------
 library(gsDesign)
 library(tidyr)
 library(knitr)
@@ -55,7 +55,7 @@ Schoenfeld %>%
   gsBoundSummary(deltaname = "HR", logdelta = TRUE) %>%
   kable(row.names = FALSE)
 
-## ---- eval=FALSE----------------------------------------
+## ----eval=FALSE-----------------------------------------
 #  Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr))
 
 ## -------------------------------------------------------
@@ -162,7 +162,7 @@ events <- lfgs$n.I
 z <- lfgs$upper$bound
 zn2hr(z = z, n = events) # Schoenfeld approximation to HR
 
-## ---- fig.asp=1-----------------------------------------
+## ----fig.asp=1------------------------------------------
 plot(lfgs, pl = "hr", dgt = 4, base = TRUE)
 
 ## -------------------------------------------------------
@@ -173,7 +173,7 @@ tibble::tibble(
 ) %>%
   kable()
 
-## ---- fig.asp=1-----------------------------------------
+## ----fig.asp=1------------------------------------------
 Month <- seq(0.025, enrollDuration + minfup, .025)
 plot(
   c(0, Month),

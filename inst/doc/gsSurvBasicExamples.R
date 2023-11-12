@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -28,7 +28,7 @@ alpha <- .025
 # Type II error (1-power)
 beta <- .1
 
-## ---- message=FALSE-------------------------------------
+## ----message=FALSE--------------------------------------
 # Study duration
 T <- 36
 # Follow-up duration of last patient enrolled
@@ -40,7 +40,7 @@ gamma <- c(1, 1.5, 2.5, 4)
 # Randomization ratio, experimental/control
 ratio <- 1
 
-## ---- warning=FALSE, message=FALSE----------------------
+## ----warning=FALSE, message=FALSE-----------------------
 library(gsDesign)
 
 x <- nSurv(
@@ -59,7 +59,7 @@ x <- nSurv(
 ## -------------------------------------------------------
 x
 
-## ---- eval=FALSE----------------------------------------
+## ----eval=FALSE-----------------------------------------
 #  # THIS CODE IS EXAMPLE ONLY; NOT EXECUTED HERE
 #  nSurv(
 #    R = R,
@@ -103,10 +103,10 @@ x <- gsSurv(
   sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar
 )
 
-## ---- results="asis"------------------------------------
+## ----results="asis"-------------------------------------
 cat(summary(x))
 
-## ---- warning=FALSE-------------------------------------
+## ----warning=FALSE--------------------------------------
 library(gt)
 library(tibble)
 
@@ -140,7 +140,7 @@ caption <- paste(
   sep = ""
 )
 
-## ---- echo=TRUE, message=FALSE--------------------------
+## ----echo=TRUE, message=FALSE---------------------------
 gsBoundSummary(x) %>%
   gt() %>%
   tab_header(title = "Time-to-event group sequential design") %>%
@@ -152,7 +152,7 @@ gsBoundSummary(x) %>%
   tab_footnote(footnote1, locations = cells_body(columns = 2, rows = c(4, 5, 9, 10, 14, 15))) %>%
   tab_footnote(footnote2, locations = cells_body(columns = 2, rows = c(4, 9, 14)))
 
-## ---- warning=FALSE, message=FALSE----------------------
+## ----warning=FALSE, message=FALSE-----------------------
 library(ggplot2)
 library(scales)
 
@@ -230,7 +230,7 @@ gsPP(
   wgts = prior$wgts # Weights for averaging over grid
 )
 
-## ---- fig.asp=1-----------------------------------------
+## ----fig.asp=1------------------------------------------
 maxx <- 450 # Max for x-axis specified by user
 ylim <- c(-1, 3) # User-specified y-axis limits
 analysis <- 2 # Current analysis specified by user

@@ -12,7 +12,7 @@
 
 
 
-<title>Multiplicity graphs</title>
+<title>Spending function overview</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -42,6 +42,28 @@ ul.task-list{list-style: none;}
 
 
 
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
 
 <style type="text/css">body {
 background-color: #fff;
@@ -235,12 +257,51 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Multiplicity graphs</h1>
+<h1 class="title toc-ignore">Spending function overview</h1>
 
 
 
-<p>The content of this vignette has been moved to the gMCPLite package:
-<a href="https://merck.github.io/gMCPLite/articles/hGraph.html" class="uri">https://merck.github.io/gMCPLite/articles/hGraph.html</a>.</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Spending functions are used to set boundaries for group sequential
+designs. Using the spending function approach to design offers a natural
+way to provide interim testing boundaries when unplanned interim
+analyses are added or when the timing of an interim analysis changes.
+Many standard and investigational spending functions are provided in the
+gsDesign package. These offer a great deal of flexibility in setting up
+stopping boundaries for a design.</p>
+<p>Spending functions have three arguments and return an object of type
+<code>spendfn</code>. The <code>summary()</code> function for
+<code>spendfn</code> objects provides a brief textual summary of a
+spending function or boundary used for a design. Normally a spending
+function will be passed to <code>gsDesign()</code> in the parameter
+<code>sfu</code> for the upper bound and <code>sfl</code> for the lower
+bound to specify a spending function family for a design. In this case,
+the user does not need to know the calling sequence — only how to
+specify the parameter(s) for the spending function. The calling sequence
+is useful when the user wishes to plot a spending function as
+demonstrated below in examples. In addition to using supplied spending
+functions, a user can write code for a spending function. See
+examples.</p>
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<p>See <code>spendingFunction()</code> for the input and output
+specification of spending functions. It also contains two code examples
+showing how to use an implemented spending function and create new
+spending functions. For more detailed examples, see the <a href="https://keaven.github.io/gsd-tech-manual/spendfn.html">spending
+functions</a> chapter in the gsDesign technical manual.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-JTBook" class="csl-entry">
+Jennison, Christopher, and Bruce W. Turnbull. 2000. <em>Group Sequential
+Methods with Applications to Clinical Trials</em>. Boca Raton, FL:
+Chapman; Hall/CRC.
+</div>
+</div>
+</div>
 
 
 

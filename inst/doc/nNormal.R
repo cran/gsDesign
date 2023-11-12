@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
   out.width = "80%"
 )
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE----------
+## ----echo=FALSE, message=FALSE, warning=FALSE-----------
 library(gsDesign)
 library(tidyr)
 library(knitr)

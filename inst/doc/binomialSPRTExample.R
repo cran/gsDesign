@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,21 +11,21 @@ knitr::opts_chunk$set(
   out.width = "80%"
 )
 
-## ---- warning=FALSE, message=FALSE----------------------
+## ----warning=FALSE, message=FALSE-----------------------
 library(gsDesign)
 
 ## -------------------------------------------------------
 b <- binomialSPRT(p0 = .1, p1 = .35, alpha = .08, beta = .2, minn = 10, maxn = 25)
 plot(b)
 
-## ---- warning=FALSE, message=FALSE----------------------
+## ----warning=FALSE, message=FALSE-----------------------
 library(ggplot2)
 
 ## -------------------------------------------------------
 p <- plot(b, plottype = 2)
 p + scale_y_continuous(breaks = seq(0, 90, 10))
 
-## ---- warning=FALSE, message=FALSE----------------------
+## ----warning=FALSE, message=FALSE-----------------------
 library(dplyr)
 library(tidyr)
 

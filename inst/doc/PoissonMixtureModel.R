@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -11,34 +11,12 @@ knitr::opts_chunk$set(
   out.width = "80%"
 )
 
-## ---- echo=FALSE, message=FALSE, warning=FALSE----------
+## ----echo=FALSE, message=FALSE, warning=FALSE-----------
 library(gsDesign)
 library(dplyr)
 library(tibble)
 library(ggplot2)
 library(gt)
-
-## -------------------------------------------------------
-# Control group assumptions for three Poisson mixture cure models
-cure_rate <- c(.5, .35, .55)
-# Second time point for respective models
-t1 <- c(24, 24, 24)
-# Survival rate at 2nd time point for respective models
-s1 <- c(.65, .5, .68)
-time_unit <- "month"
-# Hazard ratio for experimental versus control for respective models
-hr <- c(.7, .75, .7)
-# Total study duration
-study_duration <- c(48, 48, 56)
-# Number of bins for piecewise approximation
-bins <- 5
-
-## -------------------------------------------------------
-# This code should be updated by user for their scenario
-# Enrollment duration by scenario
-enroll_duration <- c(12, 12, 20)
-# Dropout rate (exponential failure rate per time unit) by scenario
-dropout_rate <- c(.002, .001, .001)
 
 ## -------------------------------------------------------
 # Poisson mixture survival
@@ -54,7 +32,29 @@ hPM <- function(x = 0:20, cure_rate = .5, t1 = 10, s1 = .6) {
   return(theta * lambda * exp(-lambda * x))
 }
 
-## ---- warning=FALSE, message=FALSE, echo=FALSE----------
+## -------------------------------------------------------
+# Control group assumptions for three Poisson mixture cure models
+cure_rate <- c(.5, .35, .55)
+# Second time point for respective models
+t1 <- c(24, 24, 24)
+# Survival rate at 2nd time point for respective models
+s1 <- c(.65, .5, .68)
+time_unit <- "month"
+# Hazard ratio for experimental versus control for respective models
+hr <- c(.7, .75, .7)
+# Total study duration
+study_duration <- c(48, 48, 56)
+# Number of bins for piecewise approximation of Poisson mixture rates
+bins <- 5
+
+## -------------------------------------------------------
+# This code should be updated by user for their scenario
+# Enrollment duration by scenario
+enroll_duration <- c(12, 12, 20)
+# Dropout rate (exponential failure rate per time unit) by scenario
+dropout_rate <- c(.002, .001, .001)
+
+## ----warning=FALSE, message=FALSE, echo=FALSE-----------
 t <- seq(0, study_duration[1] + 12, (study_duration[1] + 12) / bins)
 survival <- NULL
 for (scenario in 1:length(cure_rate)) {
@@ -84,7 +84,7 @@ ggplot(survival, aes(x = Time, y = Survival, lty = Treatment, col = Scenario)) +
   ggtitle("Poisson Mixture Model with Proportional Hazards") +
   theme(legend.position = "bottom")
 
-## ---- echo = FALSE--------------------------------------
+## ----echo = FALSE---------------------------------------
 hazard <- survival %>%
   filter(Time > 0) %>%
   group_by(Scenario, Treatment) %>%
@@ -105,12 +105,12 @@ ggplot() +
   ylab("Hazard rate") +
   xlab("Time") +
   ggtitle("Step Function Approximated Hazard Rate for Design Cure Model",
-    subtitle = "Control Group"
+    subtitle = "Control Group, Scenario 1"
   ) +
   geom_line(data = hazardC1, aes(x = time_lagged, y = hazard_rate), lty = 2) +
   annotate(geom = "text", x = 35, y = .02, label = "Dashed line shows actual hazard rate")
 
-## ---- echo=FALSE, echo=FALSE----------------------------
+## ----echo=FALSE, echo=FALSE-----------------------------
 # DO NOT ALTER CODE
 event_accrual <- NULL
 for (scenario in 1:length(cure_rate)) {
@@ -161,13 +161,8 @@ ggplot(event_accrual, aes(x = Time, y = EF, color = Scenario, lty = Hypothesis))
   theme(legend.position = "bottom")
 
 ## -------------------------------------------------------
-h1s1_EF <- event_accrual %>%
-  filter(Scenario == 1 & Hypothesis == "H1" & Time %in% c(12, 24, 36)) %>%
-  select(Time, EF)
-h1s1_EF
-# Interim analysis timing (information fraction)
-timing <- h1s1_EF$EF
-timing_calendar <- h1s1_EF$Time / study_duration
+# Calendar time from start of randomization until each analysis time
+calendarTime <- c(14, 24, 36, 48)
 
 ## -------------------------------------------------------
 # Get hazard rate info for Scenario 1 control group
@@ -185,8 +180,8 @@ test.type <- 6
 # 1-sided Type I error used for safety (for asymmetric 2-sided design)
 astar <- .2
 # Spending functions (sfu, sfl) and parameters (sfupar, sflpar)
-sfu <- sfHSD # O'Brien-Fleming approximation by Lan and DeMets
-sfupar <- -4 # Not needed for sfLDPocock
+sfu <- sfHSD 
+sfupar <- -3 
 sfl <- sfLDPocock # Near-equal Z-values for each analysis
 sflpar <- NULL # Not needed for Pocock spending
 # Dropout rate (exponential parameter per unit of time)
@@ -196,26 +191,23 @@ ratio <- 1
 
 ## -------------------------------------------------------
 design_calendar <-
-  gsSurv(
-    k = length(timing) + 1,
+  gsSurvCalendar(
+    calendarTime = calendarTime,
+    spending = "calendar",
     alpha = alpha,
     beta = beta,
     astar = astar,
     test.type = test.type,
-    timing = timing, # Planned event fractions here
     hr = hr[1],
     R = enroll_duration[1],
     gamma = 1,
-    T = study_duration[1],
     minfup = study_duration[1] - enroll_duration[1],
     ratio = ratio,
     sfu = sfu,
     sfupar = sfupar,
-    usTime = timing_calendar, # Use calendar-based spending
     sfl = sfl,
     sflpar = sflpar,
     lambdaC = lambdaC,
-    lsTime = timing_calendar, # Use calendar-based spending
     S = S
   )
 design_calendar %>%

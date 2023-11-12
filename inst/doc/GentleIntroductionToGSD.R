@@ -1,4 +1,4 @@
-## ---- include=FALSE-------------------------------------
+## ----include=FALSE--------------------------------------
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 options(width = 58)
 
-## ---- message=FALSE, warning=FALSE----------------------
+## ----message=FALSE, warning=FALSE-----------------------
 library(gsDesign)
 
 ## -------------------------------------------------------
