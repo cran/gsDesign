@@ -35,7 +35,7 @@ beta <- 0.1
 (1 + r)^2 / r / log(hr)^2 * ((qnorm(1 - alpha) + qnorm(1 - beta)))^2
 
 ## -------------------------------------------------------
-nEvents(hr = hr, alpha = alpha, beta = beta, r = 1, tbl = TRUE) %>%
+nEvents(hr = hr, alpha = alpha, beta = beta, r = 1, tbl = TRUE) |>
   kable()
 
 ## -------------------------------------------------------
@@ -50,13 +50,13 @@ Schoenfeld <- gsDesign(
   k = 2,
   n.fix = nEvents(hr = hr, alpha = alpha, beta = beta, r = 1),
   delta1 = log(hr)
-)
-Schoenfeld %>%
-  gsBoundSummary(deltaname = "HR", logdelta = TRUE) %>%
+) |> toInteger()
+Schoenfeld |>
+  gsBoundSummary(deltaname = "HR", logdelta = TRUE, Nname = "Events") |>
   kable(row.names = FALSE)
 
 ## ----eval=FALSE-----------------------------------------
-#  Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr))
+#  Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr)) |> toInteger()
 
 ## -------------------------------------------------------
 Schoenfeld$n.I
@@ -152,9 +152,9 @@ lfgs <- gsSurv(
   ratio = r,
   alpha = alpha,
   beta = beta
-)
-lfgs %>%
-  gsBoundSummary() %>%
+) |> toInteger()
+lfgs |>
+  gsBoundSummary() |>
   kable(row.names = FALSE)
 
 ## -------------------------------------------------------
@@ -163,14 +163,14 @@ z <- lfgs$upper$bound
 zn2hr(z = z, n = events) # Schoenfeld approximation to HR
 
 ## ----fig.asp=1------------------------------------------
-plot(lfgs, pl = "hr", dgt = 4, base = TRUE)
+plot(lfgs, pl = "hr", dgt = 2, base = TRUE)
 
 ## -------------------------------------------------------
 tibble::tibble(
   Analysis = 1:2,
   `Control events` = lfgs$eDC,
   `Experimental events` = lfgs$eDE
-) %>%
+) |>
   kable()
 
 ## ----fig.asp=1------------------------------------------
@@ -187,9 +187,9 @@ plot(
 ## -------------------------------------------------------
 b <- tEventsIA(x = lfgs, timing = 0.25)
 cat(paste(
-  " Time: ", b$T,
-  "\n Expected enrollment:", b$eNC + b$eNE,
-  "\n Expected control events:", b$eDC,
-  "\n Expected experimental events:", b$eDE, "\n"
+  " Time: ", round(b$T, 1),
+  "\n Expected enrollment:", round(b$eNC + b$eNE, 1),
+  "\n Expected control events:", round(b$eDC, 1),
+  "\n Expected experimental events:", round(b$eDE, 1), "\n"
 ))
 
