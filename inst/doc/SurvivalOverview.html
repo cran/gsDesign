@@ -470,7 +470,7 @@ number of events required to power for HR=0.7 with <span class="math inline">\(\
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> r <span class="sc">/</span> <span class="fu">log</span>(hr)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> ((<span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha) <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> beta)))<span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 330.3779</span></span></code></pre></div>
 <p>which, rounding up, matches (with tabular output):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nEvents</span>(<span class="at">hr =</span> hr, <span class="at">alpha =</span> alpha, <span class="at">beta =</span> beta, <span class="at">r =</span> <span class="dv">1</span>, <span class="at">tbl =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nEvents</span>(<span class="at">hr =</span> hr, <span class="at">alpha =</span> alpha, <span class="at">beta =</span> beta, <span class="at">r =</span> <span class="dv">1</span>, <span class="at">tbl =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div>
 <table>
 <thead>
@@ -534,9 +534,9 @@ power slightly over the targeted 90%.</p>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">2</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.fix =</span> <span class="fu">nEvents</span>(<span class="at">hr =</span> hr, <span class="at">alpha =</span> alpha, <span class="at">beta =</span> beta, <span class="at">r =</span> <span class="dv">1</span>),</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta1 =</span> <span class="fu">log</span>(hr)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">toInteger</span>()</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Schoenfeld <span class="sc">|&gt;</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsBoundSummary</span>(<span class="at">deltaname =</span> <span class="st">&quot;HR&quot;</span>, <span class="at">logdelta =</span> <span class="cn">TRUE</span>, <span class="at">Nname =</span> <span class="st">&quot;Events&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">toInteger</span>()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>Schoenfeld <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsBoundSummary</span>(<span class="at">deltaname =</span> <span class="st">&quot;HR&quot;</span>, <span class="at">logdelta =</span> <span class="cn">TRUE</span>, <span class="at">Nname =</span> <span class="st">&quot;Events&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table>
 <thead>
@@ -616,7 +616,7 @@ power slightly over the targeted 90%.</p>
 <p>Exactly the same result can be obtained with the following, passing
 the standardized effect size <code>theta</code> from above to the
 parameter <code>delta</code> in <code>gsDesign()</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Schoenfeld <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(<span class="at">k =</span> <span class="dv">2</span>, <span class="at">delta =</span> <span class="sc">-</span>theta, <span class="at">delta1 =</span> <span class="fu">log</span>(hr)) <span class="sc">|&gt;</span> <span class="fu">toInteger</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Schoenfeld <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(<span class="at">k =</span> <span class="dv">2</span>, <span class="at">delta =</span> <span class="sc">-</span>theta, <span class="at">delta1 =</span> <span class="fu">log</span>(hr)) <span class="sc">%&gt;%</span> <span class="fu">toInteger</span>()</span></code></pre></div>
 <p>We noted above that the asymptotic variance for <span class="math inline">\(\hat\theta\)</span> is <span class="math inline">\(1/n\)</span> which corresponds to statistical
 information <span class="math inline">\(\mathcal I=n\)</span> for the
 parameter <span class="math inline">\(\theta\)</span>. Thus, the
@@ -854,9 +854,9 @@ power.</p>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio =</span> r,</span>
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> alpha,</span>
 <span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> beta</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">toInteger</span>()</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>lfgs <span class="sc">|&gt;</span></span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsBoundSummary</span>() <span class="sc">|&gt;</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">toInteger</span>()</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>lfgs <span class="sc">%&gt;%</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsBoundSummary</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <table>
 <thead>
@@ -959,7 +959,7 @@ alternate hypothesis with:</p>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Analysis =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Control events</span><span class="st">`</span> <span class="ot">=</span> lfgs<span class="sc">$</span>eDC,</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Experimental events</span><span class="st">`</span> <span class="ot">=</span> lfgs<span class="sc">$</span>eDE</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div>
 <table>
 <thead>

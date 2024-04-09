@@ -1,5 +1,5 @@
 Package: gsDesign
-Version: 3.6.1
+Version: 3.6.2
 Title: Group Sequential Design
 Authors@R: person(given = "Keaven", family = "Anderson", email =
           "keaven_anderson@merck.com", role = c('aut','cre'))
@@ -23,8 +23,8 @@ Suggests: covr, gridExtra, kableExtra, knitr, mvtnorm, ragg, rmarkdown,
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
 NeedsCompilation: yes
-Packaged: 2024-02-12 23:01:35 UTC; xiaonan4
+Packaged: 2024-04-09 20:33:11 UTC; xiaonan4
 Author: Keaven Anderson [aut, cre]
 Maintainer: Keaven Anderson <keaven_anderson@merck.com>
 Repository: CRAN
-Date/Publication: 2024-02-13 05:20:02 UTC
+Date/Publication: 2024-04-09 21:40:02 UTC
