@@ -496,7 +496,7 @@ hypothesis:</p>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> deltahat <span class="sc">/</span> s</span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(z <span class="sc">&gt;=</span> <span class="fu">qnorm</span>(.<span class="dv">975</span>))</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.946461</span></span></code></pre></div>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.946227</span></span></code></pre></div>
 <p>The standard error for this simulation power calculation is
 approximately</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(pwr <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pwr) <span class="sc">/</span> nsim)</span>

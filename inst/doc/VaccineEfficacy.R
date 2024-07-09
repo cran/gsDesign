@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 
 options(width = 58)
 
-## ----message=FALSE, warning=FALSE, class.source="fold-hide"----
+## ----message=FALSE, warning=FALSE-----------------------
 library(gsDesign)
 library(gt)
 library(dplyr)
@@ -192,7 +192,7 @@ excess_alpha_spend <- matrix(0, nrow = nb$k, ncol=nb$k)
 for(i in 1:xb$k){
   a <- xb$lower$bound
   a[i] <- a[i] + 1
-  excess_alpha_spend[i,] <- 
+  excess_alpha_spend[i,] <-
     cumsum(gsBinomialExact(k = xb$k, theta = xb$theta, n.I = xb$n.I, b= xb$n.I + 1, a = a)$lower$prob[,1])
 }
 excess_alpha_spend
@@ -211,7 +211,7 @@ excess_beta_spend <- matrix(0, nrow = nb$k - 1, ncol=nb$k)
 for(i in 1:(xb$k - 1)){
   b <- xb$upper$bound
   b[i] <- b[i] - 1
-  excess_beta_spend[i,] <- 
+  excess_beta_spend[i,] <-
     cumsum(as.numeric(gsBinomialExact(k = xb$k, theta = xb$theta, n.I = xb$n.I, b = b, a = xb$lower$bound)$upper$prob[,2]))
 }
 excess_beta_spend
