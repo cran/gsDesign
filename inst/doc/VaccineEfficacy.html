@@ -12,7 +12,7 @@
 
 
 
-<title>Vaccine Efficacy Trial Design</title>
+<title>Vaccine efficacy trial design</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -358,15 +358,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Vaccine Efficacy Trial Design</h1>
+<h1 class="title toc-ignore">Vaccine efficacy trial design</h1>
 
 
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>This article explores a method of approximating a design using the
 exact binomial method of <span class="citation">Chan and Bohidar
 (1998)</span> by a time-to-event design using the method of <span class="citation">Lachin and Foulkes (1986)</span>. This allows use of
@@ -380,14 +380,14 @@ studies. Finally, since this procedure is new as of November, 2023 we
 suggest checks and potential revisions to spending function choices to
 optimize design boundaries.</p>
 </div>
-<div id="parameterization" class="section level1">
-<h1>Parameterization</h1>
+<div id="parameterization" class="section level2">
+<h2>Parameterization</h2>
 <p>We begin with the assumption that we will a require a large sample
 size due to an endpoint with a small incidence rate. This could apply to
 a vaccine study or other prevention study with a relatively small number
 of events expected.</p>
-<div id="exact-binomial-approach" class="section level2">
-<h2>Exact binomial approach</h2>
+<div id="exact-binomial-approach" class="section level3">
+<h3>Exact binomial approach</h3>
 <p>Paralleling the notation of <span class="citation">Chan and Bohidar
 (1998)</span>, we assume <span class="math inline">\(N_C, P_C\)</span>
 to be binomial sample size and probability of an event for each
@@ -438,20 +438,20 @@ events in the experimental group:</p>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="dv">2</span>, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div>
-<div id="onvxkilzht" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#onvxkilzht table {
+<div id="xbmthrciis" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xbmthrciis table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#onvxkilzht thead, #onvxkilzht tbody, #onvxkilzht tfoot, #onvxkilzht tr, #onvxkilzht td, #onvxkilzht th {
+#xbmthrciis thead, #xbmthrciis tbody, #xbmthrciis tfoot, #xbmthrciis tr, #xbmthrciis td, #xbmthrciis th {
 border-style: none;
 }
-#onvxkilzht p {
+#xbmthrciis p {
 margin: 0;
 padding: 0;
 }
-#onvxkilzht .gt_table {
+#xbmthrciis .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -476,11 +476,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#onvxkilzht .gt_caption {
+#xbmthrciis .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#onvxkilzht .gt_title {
+#xbmthrciis .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -491,7 +491,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#onvxkilzht .gt_subtitle {
+#xbmthrciis .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -502,7 +502,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#onvxkilzht .gt_heading {
+#xbmthrciis .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -513,12 +513,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#onvxkilzht .gt_bottom_border {
+#xbmthrciis .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#onvxkilzht .gt_col_headings {
+#xbmthrciis .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -532,7 +532,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#onvxkilzht .gt_col_heading {
+#xbmthrciis .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -551,7 +551,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#onvxkilzht .gt_column_spanner_outer {
+#xbmthrciis .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -562,13 +562,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#onvxkilzht .gt_column_spanner_outer:first-child {
+#xbmthrciis .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#onvxkilzht .gt_column_spanner_outer:last-child {
+#xbmthrciis .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#onvxkilzht .gt_column_spanner {
+#xbmthrciis .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -579,10 +579,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#onvxkilzht .gt_spanner_row {
+#xbmthrciis .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#onvxkilzht .gt_group_heading {
+#xbmthrciis .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -607,7 +607,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#onvxkilzht .gt_empty_group_heading {
+#xbmthrciis .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -621,13 +621,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#onvxkilzht .gt_from_md > :first-child {
+#xbmthrciis .gt_from_md > :first-child {
 margin-top: 0;
 }
-#onvxkilzht .gt_from_md > :last-child {
+#xbmthrciis .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#onvxkilzht .gt_row {
+#xbmthrciis .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -645,7 +645,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#onvxkilzht .gt_stub {
+#xbmthrciis .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -657,7 +657,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#onvxkilzht .gt_stub_row_group {
+#xbmthrciis .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -670,13 +670,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#onvxkilzht .gt_row_group_first td {
+#xbmthrciis .gt_row_group_first td {
 border-top-width: 2px;
 }
-#onvxkilzht .gt_row_group_first th {
+#xbmthrciis .gt_row_group_first th {
 border-top-width: 2px;
 }
-#onvxkilzht .gt_summary_row {
+#xbmthrciis .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -685,14 +685,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#onvxkilzht .gt_first_summary_row {
+#xbmthrciis .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#onvxkilzht .gt_first_summary_row.thick {
+#xbmthrciis .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#onvxkilzht .gt_last_summary_row {
+#xbmthrciis .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -701,7 +701,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#onvxkilzht .gt_grand_summary_row {
+#xbmthrciis .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -710,7 +710,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#onvxkilzht .gt_first_grand_summary_row {
+#xbmthrciis .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -719,7 +719,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#onvxkilzht .gt_last_grand_summary_row_top {
+#xbmthrciis .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -728,10 +728,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#onvxkilzht .gt_striped {
+#xbmthrciis .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#onvxkilzht .gt_table_body {
+#xbmthrciis .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -739,7 +739,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#onvxkilzht .gt_footnotes {
+#xbmthrciis .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -752,7 +752,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#onvxkilzht .gt_footnote {
+#xbmthrciis .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -760,7 +760,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#onvxkilzht .gt_sourcenotes {
+#xbmthrciis .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -773,58 +773,65 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#onvxkilzht .gt_sourcenote {
+#xbmthrciis .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#onvxkilzht .gt_left {
+#xbmthrciis .gt_left {
 text-align: left;
 }
-#onvxkilzht .gt_center {
+#xbmthrciis .gt_center {
 text-align: center;
 }
-#onvxkilzht .gt_right {
+#xbmthrciis .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#onvxkilzht .gt_font_normal {
+#xbmthrciis .gt_font_normal {
 font-weight: normal;
 }
-#onvxkilzht .gt_font_bold {
+#xbmthrciis .gt_font_bold {
 font-weight: bold;
 }
-#onvxkilzht .gt_font_italic {
+#xbmthrciis .gt_font_italic {
 font-style: italic;
 }
-#onvxkilzht .gt_super {
+#xbmthrciis .gt_super {
 font-size: 65%;
 }
-#onvxkilzht .gt_footnote_marks {
+#xbmthrciis .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#onvxkilzht .gt_asterisk {
+#xbmthrciis .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#onvxkilzht .gt_indent_1 {
+#xbmthrciis .gt_indent_1 {
 text-indent: 5px;
 }
-#onvxkilzht .gt_indent_2 {
+#xbmthrciis .gt_indent_2 {
 text-indent: 10px;
 }
-#onvxkilzht .gt_indent_3 {
+#xbmthrciis .gt_indent_3 {
 text-indent: 15px;
 }
-#onvxkilzht .gt_indent_4 {
+#xbmthrciis .gt_indent_4 {
 text-indent: 20px;
 }
-#onvxkilzht .gt_indent_5 {
+#xbmthrciis .gt_indent_5 {
 text-indent: 25px;
+}
+#xbmthrciis .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#xbmthrciis div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
@@ -860,8 +867,8 @@ it provides sample size and study duration approximations that are not
 given by the Jennison and Turnbull approach.</p>
 </div>
 </div>
-<div id="the-time-to-event-approach" class="section level1">
-<h1>The time-to-event approach</h1>
+<div id="the-time-to-event-approach" class="section level2">
+<h2>The time-to-event approach</h2>
 <p>For a time-to-event formulation with exponential failure rates <span class="math inline">\(\lambda_C\)</span> for control and <span class="math inline">\(\lambda_E\)</span> for experimental group assigned
 participants, we would define</p>
 <p><span class="math display">\[\pi = 1 - \lambda_E /
@@ -873,8 +880,8 @@ appropriate exact binomial design. We will also define a planned number
 of events at each of <span class="math inline">\(K\)</span> planned
 analyses by <span class="math inline">\(D_k, 1\le k\le K\)</span>.</p>
 </div>
-<div id="generating-a-design" class="section level1">
-<h1>Generating a design</h1>
+<div id="generating-a-design" class="section level2">
+<h2>Generating a design</h2>
 <p>We begin by specifying parameters. The <code>alpha</code> and
 <code>beta</code> parameters will not be met exactly due to the discrete
 group sequential probability calculations performed. The current version
@@ -902,8 +909,8 @@ the <span class="citation">Logunov et al. (2021)</span> trial.</p>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>VE0 <span class="ot">&lt;-</span> .<span class="dv">3</span> <span class="co"># Null hypothesis vaccine efficacy</span></span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># Experimental/Control enrollment ratio</span></span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>test.type <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 1 for one-sided, 4 for non-binding futility</span></span></code></pre></div>
-<div id="the-time-to-event-design" class="section level2">
-<h2>The time-to-event design</h2>
+<div id="the-time-to-event-design" class="section level3">
+<h3>The time-to-event design</h3>
 <p>Now we generate the design. If resulting alpha and beta do not
 satisfy requirements, adjust parameters above until a satisfactory
 result is obtained.</p>
@@ -947,20 +954,20 @@ levels.</p>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Integer event counts at analyses&quot;</span></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>))</span></code></pre></div>
-<div id="egowuoeego" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#egowuoeego table {
+<div id="mrmzctlveb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mrmzctlveb table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#egowuoeego thead, #egowuoeego tbody, #egowuoeego tfoot, #egowuoeego tr, #egowuoeego td, #egowuoeego th {
+#mrmzctlveb thead, #mrmzctlveb tbody, #mrmzctlveb tfoot, #mrmzctlveb tr, #mrmzctlveb td, #mrmzctlveb th {
 border-style: none;
 }
-#egowuoeego p {
+#mrmzctlveb p {
 margin: 0;
 padding: 0;
 }
-#egowuoeego .gt_table {
+#mrmzctlveb .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -985,11 +992,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#egowuoeego .gt_caption {
+#mrmzctlveb .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#egowuoeego .gt_title {
+#mrmzctlveb .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1000,7 +1007,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#egowuoeego .gt_subtitle {
+#mrmzctlveb .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1011,7 +1018,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#egowuoeego .gt_heading {
+#mrmzctlveb .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1022,12 +1029,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#egowuoeego .gt_bottom_border {
+#mrmzctlveb .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#egowuoeego .gt_col_headings {
+#mrmzctlveb .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1041,7 +1048,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#egowuoeego .gt_col_heading {
+#mrmzctlveb .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1060,7 +1067,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#egowuoeego .gt_column_spanner_outer {
+#mrmzctlveb .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1071,13 +1078,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#egowuoeego .gt_column_spanner_outer:first-child {
+#mrmzctlveb .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#egowuoeego .gt_column_spanner_outer:last-child {
+#mrmzctlveb .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#egowuoeego .gt_column_spanner {
+#mrmzctlveb .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1088,10 +1095,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#egowuoeego .gt_spanner_row {
+#mrmzctlveb .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#egowuoeego .gt_group_heading {
+#mrmzctlveb .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1116,7 +1123,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#egowuoeego .gt_empty_group_heading {
+#mrmzctlveb .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1130,13 +1137,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#egowuoeego .gt_from_md > :first-child {
+#mrmzctlveb .gt_from_md > :first-child {
 margin-top: 0;
 }
-#egowuoeego .gt_from_md > :last-child {
+#mrmzctlveb .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#egowuoeego .gt_row {
+#mrmzctlveb .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -1154,7 +1161,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#egowuoeego .gt_stub {
+#mrmzctlveb .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1166,7 +1173,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#egowuoeego .gt_stub_row_group {
+#mrmzctlveb .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1179,13 +1186,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#egowuoeego .gt_row_group_first td {
+#mrmzctlveb .gt_row_group_first td {
 border-top-width: 2px;
 }
-#egowuoeego .gt_row_group_first th {
+#mrmzctlveb .gt_row_group_first th {
 border-top-width: 2px;
 }
-#egowuoeego .gt_summary_row {
+#mrmzctlveb .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1194,14 +1201,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#egowuoeego .gt_first_summary_row {
+#mrmzctlveb .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#egowuoeego .gt_first_summary_row.thick {
+#mrmzctlveb .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#egowuoeego .gt_last_summary_row {
+#mrmzctlveb .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1210,7 +1217,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#egowuoeego .gt_grand_summary_row {
+#mrmzctlveb .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1219,7 +1226,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#egowuoeego .gt_first_grand_summary_row {
+#mrmzctlveb .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1228,7 +1235,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#egowuoeego .gt_last_grand_summary_row_top {
+#mrmzctlveb .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1237,10 +1244,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#egowuoeego .gt_striped {
+#mrmzctlveb .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#egowuoeego .gt_table_body {
+#mrmzctlveb .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1248,7 +1255,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#egowuoeego .gt_footnotes {
+#mrmzctlveb .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1261,7 +1268,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#egowuoeego .gt_footnote {
+#mrmzctlveb .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1269,7 +1276,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#egowuoeego .gt_sourcenotes {
+#mrmzctlveb .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1282,58 +1289,65 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#egowuoeego .gt_sourcenote {
+#mrmzctlveb .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#egowuoeego .gt_left {
+#mrmzctlveb .gt_left {
 text-align: left;
 }
-#egowuoeego .gt_center {
+#mrmzctlveb .gt_center {
 text-align: center;
 }
-#egowuoeego .gt_right {
+#mrmzctlveb .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#egowuoeego .gt_font_normal {
+#mrmzctlveb .gt_font_normal {
 font-weight: normal;
 }
-#egowuoeego .gt_font_bold {
+#mrmzctlveb .gt_font_bold {
 font-weight: bold;
 }
-#egowuoeego .gt_font_italic {
+#mrmzctlveb .gt_font_italic {
 font-style: italic;
 }
-#egowuoeego .gt_super {
+#mrmzctlveb .gt_super {
 font-size: 65%;
 }
-#egowuoeego .gt_footnote_marks {
+#mrmzctlveb .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#egowuoeego .gt_asterisk {
+#mrmzctlveb .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#egowuoeego .gt_indent_1 {
+#mrmzctlveb .gt_indent_1 {
 text-indent: 5px;
 }
-#egowuoeego .gt_indent_2 {
+#mrmzctlveb .gt_indent_2 {
 text-indent: 10px;
 }
-#egowuoeego .gt_indent_3 {
+#mrmzctlveb .gt_indent_3 {
 text-indent: 15px;
 }
-#egowuoeego .gt_indent_4 {
+#mrmzctlveb .gt_indent_4 {
 text-indent: 20px;
 }
-#egowuoeego .gt_indent_5 {
+#mrmzctlveb .gt_indent_5 {
 text-indent: 25px;
+}
+#mrmzctlveb .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#mrmzctlveb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
@@ -1441,8 +1455,8 @@ Hwang-Shih-DeCani spending function with gamma = -3. Futility bounds
 derived using a Hwang-Shih-DeCani spending function with gamma = -3.</p>
 </div>
 </div>
-<div id="converting-to-an-exact-binomial-design" class="section level1">
-<h1>Converting to an exact binomial design</h1>
+<div id="converting-to-an-exact-binomial-design" class="section level2">
+<h2>Converting to an exact binomial design</h2>
 <p>We now convert this to an exact binomial design. The bound counts are
 described in this initial table displayed. <code>N</code> is the total
 event count, <code>a</code> the maximum number of events in the
@@ -1458,27 +1472,27 @@ alternate (<code>theta</code> = 0.4737) hypotheses, respectively; these
 calculations are done under the exact binomial distribution
 assumptions.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(x)</span></code></pre></div>
-<div id="combined-summary-table" class="section level2">
-<h2>Combined summary table</h2>
+<div id="combined-summary-table" class="section level3">
+<h3>Combined summary table</h3>
 <p>We produce a summary table. Code for this is provided in the R
 markdown for this vignette provided with the package. This combines
 information from the time-to-event design for calendar timing of
 analyses (Time) and expected sample size at each analysis (N) along with
 bounds and operating characteristics for the design.</p>
-<div id="kfmrxlyrpu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kfmrxlyrpu table {
+<div id="tdlvogmhfj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tdlvogmhfj table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#kfmrxlyrpu thead, #kfmrxlyrpu tbody, #kfmrxlyrpu tfoot, #kfmrxlyrpu tr, #kfmrxlyrpu td, #kfmrxlyrpu th {
+#tdlvogmhfj thead, #tdlvogmhfj tbody, #tdlvogmhfj tfoot, #tdlvogmhfj tr, #tdlvogmhfj td, #tdlvogmhfj th {
 border-style: none;
 }
-#kfmrxlyrpu p {
+#tdlvogmhfj p {
 margin: 0;
 padding: 0;
 }
-#kfmrxlyrpu .gt_table {
+#tdlvogmhfj .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1503,11 +1517,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_caption {
+#tdlvogmhfj .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#kfmrxlyrpu .gt_title {
+#tdlvogmhfj .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1518,7 +1532,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#kfmrxlyrpu .gt_subtitle {
+#tdlvogmhfj .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1529,7 +1543,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#kfmrxlyrpu .gt_heading {
+#tdlvogmhfj .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1540,12 +1554,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_bottom_border {
+#tdlvogmhfj .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_col_headings {
+#tdlvogmhfj .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1559,7 +1573,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_col_heading {
+#tdlvogmhfj .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1578,7 +1592,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#kfmrxlyrpu .gt_column_spanner_outer {
+#tdlvogmhfj .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1589,13 +1603,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#kfmrxlyrpu .gt_column_spanner_outer:first-child {
+#tdlvogmhfj .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#kfmrxlyrpu .gt_column_spanner_outer:last-child {
+#tdlvogmhfj .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#kfmrxlyrpu .gt_column_spanner {
+#tdlvogmhfj .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1606,10 +1620,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#kfmrxlyrpu .gt_spanner_row {
+#tdlvogmhfj .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#kfmrxlyrpu .gt_group_heading {
+#tdlvogmhfj .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1634,7 +1648,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#kfmrxlyrpu .gt_empty_group_heading {
+#tdlvogmhfj .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1648,13 +1662,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#kfmrxlyrpu .gt_from_md > :first-child {
+#tdlvogmhfj .gt_from_md > :first-child {
 margin-top: 0;
 }
-#kfmrxlyrpu .gt_from_md > :last-child {
+#tdlvogmhfj .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#kfmrxlyrpu .gt_row {
+#tdlvogmhfj .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1672,7 +1686,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#kfmrxlyrpu .gt_stub {
+#tdlvogmhfj .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1684,7 +1698,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#kfmrxlyrpu .gt_stub_row_group {
+#tdlvogmhfj .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1697,13 +1711,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#kfmrxlyrpu .gt_row_group_first td {
+#tdlvogmhfj .gt_row_group_first td {
 border-top-width: 2px;
 }
-#kfmrxlyrpu .gt_row_group_first th {
+#tdlvogmhfj .gt_row_group_first th {
 border-top-width: 2px;
 }
-#kfmrxlyrpu .gt_summary_row {
+#tdlvogmhfj .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1712,14 +1726,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#kfmrxlyrpu .gt_first_summary_row {
+#tdlvogmhfj .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_first_summary_row.thick {
+#tdlvogmhfj .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#kfmrxlyrpu .gt_last_summary_row {
+#tdlvogmhfj .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1728,7 +1742,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_grand_summary_row {
+#tdlvogmhfj .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1737,7 +1751,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#kfmrxlyrpu .gt_first_grand_summary_row {
+#tdlvogmhfj .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1746,7 +1760,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_last_grand_summary_row_top {
+#tdlvogmhfj .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1755,10 +1769,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_striped {
+#tdlvogmhfj .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#kfmrxlyrpu .gt_table_body {
+#tdlvogmhfj .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1766,7 +1780,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_footnotes {
+#tdlvogmhfj .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1779,7 +1793,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_footnote {
+#tdlvogmhfj .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1787,7 +1801,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#kfmrxlyrpu .gt_sourcenotes {
+#tdlvogmhfj .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1800,58 +1814,65 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#kfmrxlyrpu .gt_sourcenote {
+#tdlvogmhfj .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#kfmrxlyrpu .gt_left {
+#tdlvogmhfj .gt_left {
 text-align: left;
 }
-#kfmrxlyrpu .gt_center {
+#tdlvogmhfj .gt_center {
 text-align: center;
 }
-#kfmrxlyrpu .gt_right {
+#tdlvogmhfj .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#kfmrxlyrpu .gt_font_normal {
+#tdlvogmhfj .gt_font_normal {
 font-weight: normal;
 }
-#kfmrxlyrpu .gt_font_bold {
+#tdlvogmhfj .gt_font_bold {
 font-weight: bold;
 }
-#kfmrxlyrpu .gt_font_italic {
+#tdlvogmhfj .gt_font_italic {
 font-style: italic;
 }
-#kfmrxlyrpu .gt_super {
+#tdlvogmhfj .gt_super {
 font-size: 65%;
 }
-#kfmrxlyrpu .gt_footnote_marks {
+#tdlvogmhfj .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#kfmrxlyrpu .gt_asterisk {
+#tdlvogmhfj .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#kfmrxlyrpu .gt_indent_1 {
+#tdlvogmhfj .gt_indent_1 {
 text-indent: 5px;
 }
-#kfmrxlyrpu .gt_indent_2 {
+#tdlvogmhfj .gt_indent_2 {
 text-indent: 10px;
 }
-#kfmrxlyrpu .gt_indent_3 {
+#tdlvogmhfj .gt_indent_3 {
 text-indent: 15px;
 }
-#kfmrxlyrpu .gt_indent_4 {
+#tdlvogmhfj .gt_indent_4 {
 text-indent: 20px;
 }
-#kfmrxlyrpu .gt_indent_5 {
+#tdlvogmhfj .gt_indent_5 {
 text-indent: 25px;
+}
+#tdlvogmhfj .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#tdlvogmhfj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
@@ -1865,17 +1886,17 @@ text-indent: 25px;
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Time">Time</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="N">N</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Cases">Cases</th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Experimental Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Experimental Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Experimental Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Experimental Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Vaccine Efficacy at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Vaccine Efficacy at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Vaccine Efficacy at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Vaccine Efficacy at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="6" scope="colgroup" id="Power by Vaccine Efficacy&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Power by Vaccine Efficacy<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="6" scope="colgroup" id="Power by Vaccine Efficacy&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Power by Vaccine Efficacy<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span></span>
       </th>
     </tr>
     <tr class="gt_col_headings">
@@ -1883,7 +1904,7 @@ text-indent: 25px;
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="50%">50%</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="60%">60%</th>
@@ -1946,19 +1967,19 @@ text-indent: 25px;
   
   <tfoot class="gt_footnotes">
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Experimental case counts to cross between success and futility counts do not stop trial</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span> Experimental case counts to cross between success and futility counts do not stop trial</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span> Cumulative spending at each analysis</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span> alpha-spending for efficacy ignores non-binding futility bound</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span> alpha-spending for efficacy ignores non-binding futility bound</td>
     </tr>
   </tfoot>
 </table>
@@ -1993,8 +2014,8 @@ evidence is convincing enough to be accepted as a clinically relevant
 benefit in addition to statistical benefit (efficacy bounds) or a less
 than relevant benefit for futility bounds.</p>
 </div>
-<div id="checking-design-properties" class="section level2">
-<h2>Checking design properties</h2>
+<div id="checking-design-properties" class="section level3">
+<h3>Checking design properties</h3>
 <p>Next, we look at <span class="math inline">\(\alpha\)</span>- and
 <span class="math inline">\(\beta\)</span>-spending for the
 time-to-event design to compare to the exact bound restricted by the
@@ -2002,8 +2023,8 @@ discrete possible counts at bounds. For both <span class="math inline">\(\alpha\
 has no more spending at each analysis than allowed by each spending
 function. We also confirm that changing any of the exact bounds by 1
 exceeds the targeting spending.</p>
-<div id="alpha-spending" class="section level3">
-<h3><span class="math inline">\(\alpha\)</span>-spending</h3>
+<div id="alpha-spending" class="section level4">
+<h4><span class="math inline">\(\alpha\)</span>-spending</h4>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exact design cumulative alpha-spending at efficacy bounds</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (non-binding)</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b=</span> xb<span class="sc">$</span>n.I <span class="sc">+</span> <span class="dv">1</span>, <span class="at">a =</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound)</span>
@@ -2040,8 +2061,8 @@ hold.</p>
 #&gt; [2,] 0.001619438 0.013174419 0.02171228
 #&gt; [3,] 0.001619438 0.006447739 0.02856667</code></pre>
 </div>
-<div id="beta-spending" class="section level3">
-<h3><span class="math inline">\(\beta\)</span>-spending</h3>
+<div id="beta-spending" class="section level4">
+<h4><span class="math inline">\(\beta\)</span>-spending</h4>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cumulative beta-spending for exact design</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xb<span class="sc">$</span>upper<span class="sc">$</span>prob[,<span class="dv">2</span>])</span></code></pre></div>
 <pre><code>#&gt; Analysis  1 Analysis  2 Analysis  3 
@@ -2070,8 +2091,8 @@ hold.</p>
 #&gt; [1,] 0.02618462 0.03428681 0.1059802
 #&gt; [2,] 0.01033516 0.03746257 0.1034467</code></pre>
 </div>
-<div id="bound-update-at-time-of-analysis-for-example-2" class="section level3">
-<h3>Bound Update at Time of Analysis for Example 2</h3>
+<div id="bound-update-at-time-of-analysis-for-example-2" class="section level4">
+<h4>Bound update at time of analysis for example 2</h4>
 <p>We now use the second interim analysis outcome from the SPUTNIK trial
 to show how to update bounds from above when event counts differ from
 planned. The first database was on November 18, 2020 and included 20
@@ -2095,20 +2116,20 @@ timing are no longer needed.</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ebUpdate <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(xx, <span class="at">observedEvents =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">78</span>))</span></code></pre></div>
 <p>We hide the code to produce the table; this is available in package
 vignette code.</p>
-<div id="brrnxtfmxk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#brrnxtfmxk table {
+<div id="ylidhzwjwq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ylidhzwjwq table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#brrnxtfmxk thead, #brrnxtfmxk tbody, #brrnxtfmxk tfoot, #brrnxtfmxk tr, #brrnxtfmxk td, #brrnxtfmxk th {
+#ylidhzwjwq thead, #ylidhzwjwq tbody, #ylidhzwjwq tfoot, #ylidhzwjwq tr, #ylidhzwjwq td, #ylidhzwjwq th {
 border-style: none;
 }
-#brrnxtfmxk p {
+#ylidhzwjwq p {
 margin: 0;
 padding: 0;
 }
-#brrnxtfmxk .gt_table {
+#ylidhzwjwq .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2133,11 +2154,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_caption {
+#ylidhzwjwq .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#brrnxtfmxk .gt_title {
+#ylidhzwjwq .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2148,7 +2169,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#brrnxtfmxk .gt_subtitle {
+#ylidhzwjwq .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2159,7 +2180,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#brrnxtfmxk .gt_heading {
+#ylidhzwjwq .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2170,12 +2191,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_bottom_border {
+#ylidhzwjwq .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_col_headings {
+#ylidhzwjwq .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2189,7 +2210,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_col_heading {
+#ylidhzwjwq .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2208,7 +2229,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#brrnxtfmxk .gt_column_spanner_outer {
+#ylidhzwjwq .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2219,13 +2240,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#brrnxtfmxk .gt_column_spanner_outer:first-child {
+#ylidhzwjwq .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#brrnxtfmxk .gt_column_spanner_outer:last-child {
+#ylidhzwjwq .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#brrnxtfmxk .gt_column_spanner {
+#ylidhzwjwq .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2236,10 +2257,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#brrnxtfmxk .gt_spanner_row {
+#ylidhzwjwq .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#brrnxtfmxk .gt_group_heading {
+#ylidhzwjwq .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2264,7 +2285,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#brrnxtfmxk .gt_empty_group_heading {
+#ylidhzwjwq .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2278,13 +2299,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#brrnxtfmxk .gt_from_md > :first-child {
+#ylidhzwjwq .gt_from_md > :first-child {
 margin-top: 0;
 }
-#brrnxtfmxk .gt_from_md > :last-child {
+#ylidhzwjwq .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#brrnxtfmxk .gt_row {
+#ylidhzwjwq .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2302,7 +2323,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#brrnxtfmxk .gt_stub {
+#ylidhzwjwq .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2314,7 +2335,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#brrnxtfmxk .gt_stub_row_group {
+#ylidhzwjwq .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2327,13 +2348,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#brrnxtfmxk .gt_row_group_first td {
+#ylidhzwjwq .gt_row_group_first td {
 border-top-width: 2px;
 }
-#brrnxtfmxk .gt_row_group_first th {
+#ylidhzwjwq .gt_row_group_first th {
 border-top-width: 2px;
 }
-#brrnxtfmxk .gt_summary_row {
+#ylidhzwjwq .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2342,14 +2363,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#brrnxtfmxk .gt_first_summary_row {
+#ylidhzwjwq .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_first_summary_row.thick {
+#ylidhzwjwq .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#brrnxtfmxk .gt_last_summary_row {
+#ylidhzwjwq .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2358,7 +2379,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_grand_summary_row {
+#ylidhzwjwq .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2367,7 +2388,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#brrnxtfmxk .gt_first_grand_summary_row {
+#ylidhzwjwq .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2376,7 +2397,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_last_grand_summary_row_top {
+#ylidhzwjwq .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2385,10 +2406,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_striped {
+#ylidhzwjwq .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#brrnxtfmxk .gt_table_body {
+#ylidhzwjwq .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2396,7 +2417,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_footnotes {
+#ylidhzwjwq .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2409,7 +2430,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_footnote {
+#ylidhzwjwq .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2417,7 +2438,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#brrnxtfmxk .gt_sourcenotes {
+#ylidhzwjwq .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2430,58 +2451,65 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#brrnxtfmxk .gt_sourcenote {
+#ylidhzwjwq .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#brrnxtfmxk .gt_left {
+#ylidhzwjwq .gt_left {
 text-align: left;
 }
-#brrnxtfmxk .gt_center {
+#ylidhzwjwq .gt_center {
 text-align: center;
 }
-#brrnxtfmxk .gt_right {
+#ylidhzwjwq .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#brrnxtfmxk .gt_font_normal {
+#ylidhzwjwq .gt_font_normal {
 font-weight: normal;
 }
-#brrnxtfmxk .gt_font_bold {
+#ylidhzwjwq .gt_font_bold {
 font-weight: bold;
 }
-#brrnxtfmxk .gt_font_italic {
+#ylidhzwjwq .gt_font_italic {
 font-style: italic;
 }
-#brrnxtfmxk .gt_super {
+#ylidhzwjwq .gt_super {
 font-size: 65%;
 }
-#brrnxtfmxk .gt_footnote_marks {
+#ylidhzwjwq .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#brrnxtfmxk .gt_asterisk {
+#ylidhzwjwq .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#brrnxtfmxk .gt_indent_1 {
+#ylidhzwjwq .gt_indent_1 {
 text-indent: 5px;
 }
-#brrnxtfmxk .gt_indent_2 {
+#ylidhzwjwq .gt_indent_2 {
 text-indent: 10px;
 }
-#brrnxtfmxk .gt_indent_3 {
+#ylidhzwjwq .gt_indent_3 {
 text-indent: 15px;
 }
-#brrnxtfmxk .gt_indent_4 {
+#ylidhzwjwq .gt_indent_4 {
 text-indent: 20px;
 }
-#brrnxtfmxk .gt_indent_5 {
+#ylidhzwjwq .gt_indent_5 {
 text-indent: 25px;
+}
+#ylidhzwjwq .katex-display {
+display: inline-flex !important;
+margin-bottom: 0.75em !important;
+}
+#ylidhzwjwq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+height: 0px !important;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
@@ -2493,17 +2521,17 @@ text-indent: 25px;
     <tr class="gt_col_headings gt_spanner_row">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Analysis">Analysis</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Cases">Cases</th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="VE at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">VE at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="VE at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">VE at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span></span>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="Power by VE&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Power by VE<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="Power by VE&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
+        <span class="gt_column_spanner">Power by VE<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span></span>
       </th>
     </tr>
     <tr class="gt_col_headings">
@@ -2511,7 +2539,7 @@ text-indent: 25px;
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="65%">65%</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="75%">75%</th>
@@ -2545,19 +2573,19 @@ text-indent: 25px;
   
   <tfoot class="gt_footnotes">
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>1</sup></span> Experimental case counts; counts between success and futility bounds do not stop trial</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span> Experimental case counts; counts between success and futility bounds do not stop trial</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>3</sup></span> Cumulative spending at each analysis</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;"><sup>5</sup></span> Efficacy spending ignores non-binding futility bound</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span> Efficacy spending ignores non-binding futility bound</td>
     </tr>
   </tfoot>
 </table>
@@ -2565,8 +2593,8 @@ text-indent: 25px;
 </div>
 </div>
 </div>
-<div id="summary" class="section level1">
-<h1>Summary</h1>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
 <p>We have provided an extended example to show that a <span class="citation">Chan and Bohidar (1998)</span> exact binomial using
 spending function bounds can be derived in a two-step process that
 delivers sample size and bounds by 1) deriving a related time-to-event
@@ -2578,8 +2606,8 @@ a reasonable and straightforward approach to develop a complete design
 that accounts for the impact of enrollment, failure rates dropout rates,
 and trial duration.</p>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-ChanBohidar" class="csl-entry">
 Chan, Ivan SF, and Norman R Bohidar. 1998. <span>“Exact Power and Sample

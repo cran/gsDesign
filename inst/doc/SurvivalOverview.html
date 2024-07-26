@@ -416,10 +416,10 @@ so-called <em>natural parameter</em> for this case. Asymptotically the
 distribution of the Cox model estimate <span class="math inline">\(\hat{\delta}\)</span> under the proportional
 hazards assumption is (<span class="citation">Schoenfeld (1981)</span>)
 <span class="math display">\[\hat\delta\sim
-\hbox{Normal}(\delta=\log\nu, (1+r)^2/nr).\]</span> The inverse of the
+\text{Normal}(\delta=\log\nu, (1+r)^2/nr).\]</span> The inverse of the
 variance is the statistical information: <span class="math display">\[\mathcal I = nr/(1 + r)^2.\]</span> Using a Cox
 model to estimate <span class="math inline">\(\delta\)</span>, the Wald
-test for <span class="math inline">\(\hbox{H_0}: \delta=0\)</span> can
+test for <span class="math inline">\(\text{H}_0: \delta=0\)</span> can
 be approximated with the asymptotic variance from above as:</p>
 <p><span class="math display">\[Z_W\approx \frac{\sqrt
 {nr}}{1+r}\hat\delta=\frac{\ln(\hat\nu)\sqrt{nr}}{1+r}.\]</span></p>
@@ -432,16 +432,16 @@ size</em> as</p>
 \log(\nu)\sqrt r / (1+r).\]</span> Letting <span class="math inline">\(\hat\theta = -\sqrt r/(1+r)\hat\delta\)</span> and
 <span class="math inline">\(n\)</span> representing the number of events
 observed, we have <span class="math display">\[\hat \theta \sim
-\hbox{Normal}(\theta, 1/ n).\]</span> Thus, the standardized Z version
+\text{Normal}(\theta, 1/ n).\]</span> Thus, the standardized Z version
 of the logrank is approximately distributed as</p>
-<p><span class="math display">\[Z\sim\hbox{Normal}(\sqrt
+<p><span class="math display">\[Z\sim\text{Normal}(\sqrt
 n\theta,1).\]</span> Treatment effect favoring experimental treatment
 compared to control in this notation corresponds to a hazard ratio <span class="math inline">\(\nu &lt; 1\)</span>, as well as negative values of
 the standardized effect <span class="math inline">\(\theta\)</span>,
 natural parameter <span class="math inline">\(\delta\)</span> and
 standardized Z-test.</p>
 <div id="power-and-sample-size-with-nevents" class="section level3">
-<h3>Power and sample size with nEvents()</h3>
+<h3>Power and sample size with <code>nEvents()</code></h3>
 <p>Based on the above, the power for the logrank test when <span class="math inline">\(n\)</span> events have been observed is
 approximated by</p>
 <p><span class="math display">\[P[Z\le z]=\Phi(z -\sqrt n\theta)=\Phi(z-
@@ -520,7 +520,7 @@ design sample size. The parameter <code>delta</code> in
 <code>gsDesign()</code> corresponds to standardized effect size with
 sign changed <span class="math inline">\(-\theta\)</span> in notation
 used above and by <span class="citation">Jennison and Turnbull
-(2000)</span>, while the natural parameter, <span class="math inline">\(\log(\hbox{HR})\)</span> is in the parameter
+(2000)</span>, while the natural parameter, <span class="math inline">\(\log(\text{HR})\)</span> is in the parameter
 <code>delta1</code> passed to <code>gsDesign()</code>. The name of the
 effect size is specified in <code>deltaname</code> and the parameter
 <code>logdelta = TRUE</code> indicates that <code>delta</code> input

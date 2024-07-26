@@ -430,7 +430,7 @@ favoring experimental treatment and negative value favoring control. We
 assume a consistent estimate <span class="math inline">\(\hat\sigma_j^2\)</span> of <span class="math inline">\(\sigma_j^2, j=1,2,\ldots,k\)</span>.</li>
 <li>The information fraction is defined as <span class="math inline">\(t_j=\mathcal{I}_i/\mathcal{I}_j\)</span> at
 analysis <span class="math inline">\(j=1,\ldots,k\)</span>.</li>
-<li>Correlations between estimates at different analyses are <span class="math inline">\(\hbox{Corr}(\hat\delta_i,\hat\delta_j)=\sqrt{\mathcal{I}_i/\mathcal{I}_j}=\sqrt{t_j}\)</span>
+<li>Correlations between estimates at different analyses are <span class="math inline">\(\text{Corr}(\hat\delta_i,\hat\delta_j)=\sqrt{\mathcal{I}_i/\mathcal{I}_j}=\sqrt{t_j}\)</span>
 for <span class="math inline">\(1\le i\le j\le k.\)</span></li>
 <li>There is a test test <span class="math inline">\(Z_j\approx\hat\delta_j/\hat{\sigma}^2_j.\)</span></li>
 </ul>
@@ -442,7 +442,7 @@ examine the difference in change from baseline at a milestone time point
 (e.g., at 6 weeks as in <span class="citation">Binneman et al.
 (2008)</span>). For <span class="math inline">\(j=1,\ldots,k\)</span>,
 the tests <span class="math inline">\(Z_j\)</span> are asymptotically
-multivariate normal with correlations as above, and for <span class="math inline">\(i=1,\ldots,k\)</span> have <span class="math inline">\(\hbox{Cov}(Z_i,Z_j)=\hbox{Corr}(\hat\delta_i,\hat\delta_j)\)</span>
+multivariate normal with correlations as above, and for <span class="math inline">\(i=1,\ldots,k\)</span> have <span class="math inline">\(\text{Cov}(Z_i,Z_j)=\text{Corr}(\hat\delta_i,\hat\delta_j)\)</span>
 and <span class="math inline">\(E(Z_j)=\delta\sqrt{I_j}.\)</span></p>
 <p>This multivariate asymptotic normal distribution for <span class="math inline">\(Z_1,\ldots,Z_k\)</span> is referred to as the
 <em>canonical form</em> by <span class="citation">Jennison and Turnbull
@@ -651,8 +651,8 @@ final analysis. The value of the non-binding Type I error is still <span class="
 #&gt;            P(Cross) if delta=0   0.0965   0.9035
 #&gt;            P(Cross) if delta=3   0.8350   0.1650</code></pre>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-binneman20086" class="csl-entry">
 Binneman, Brendon, Douglas Feltner, Sheela Kolluri, Yuanjun Shi, Ruolun
