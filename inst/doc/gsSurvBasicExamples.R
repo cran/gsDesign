@@ -60,19 +60,19 @@ x <- nSurv(
 x
 
 ## ----eval=FALSE-----------------------------------------
-#  # THIS CODE IS EXAMPLE ONLY; NOT EXECUTED HERE
-#  nSurv(
-#    R = R,
-#    gamma = gamma,
-#    eta = eta,
-#    minfup = minfup,
-#    T = NULL, # This was changed
-#    lambdaC = log(2) / median,
-#    hr = hr,
-#    hr0 = hr0,
-#    beta = beta,
-#    alpha = alpha
-#  )
+# # THIS CODE IS EXAMPLE ONLY; NOT EXECUTED HERE
+# nSurv(
+#   R = R,
+#   gamma = gamma,
+#   eta = eta,
+#   minfup = minfup,
+#   T = NULL, # This was changed
+#   lambdaC = log(2) / median,
+#   hr = hr,
+#   hr0 = hr0,
+#   beta = beta,
+#   alpha = alpha
+# )
 
 ## -------------------------------------------------------
 # Number of analyses (interim + final)

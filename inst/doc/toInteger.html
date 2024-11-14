@@ -50,7 +50,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -61,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -356,95 +356,54 @@ rounding.</li>
 <li>Power on output will not be exactly as input.</li>
 </ul>
 <p>This document goes through examples to demonstrate the calculations.
-The new function as of July, 2023 is the <code>toInteger()</code> which
+The new function as of July 2023 is the <code>toInteger()</code> which
 operates on group sequential designs to convert to integer-based total
-sample size and event counts at analyses. We begin with an abbreviated
-example for a time-to-event endpoint design to demonstrate basic
-concepts. We follow with a more extended example for a binary endpoint
-to explain more details.</p>
+sample size and event counts at analyses. As of November 2024, the
+rounding defaults are changing as documented below. We begin with a
+summary of the method. Then we provide an abbreviated example for a
+time-to-event endpoint design to demonstrate basic concepts. We follow
+with a more extended example for a binary endpoint to explain more
+details.</p>
 </div>
-<div id="time-to-event-endpoint-example" class="section level2">
-<h2>Time-to-event endpoint example</h2>
-<p>The initial design for a time-to-event endpoint in a 2-arm trial does
-not have integer sample size and event counts. See comments in the code
-and output from the <code>summary()</code> function below to understand
-inputs.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>, <span class="co"># Number of analyses</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">test.type =</span> <span class="dv">4</span>, <span class="co"># Asymmetric 2-sided design with non-binding futility bound</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.025</span>, <span class="co"># 1-sided Type I error</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> <span class="fl">0.1</span>, <span class="co"># Type II error (1 - power; 90% power)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">25</span>, .<span class="dv">7</span>), <span class="co"># Fraction of final planned events at interim analyses</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF, <span class="co"># O&#39;Brien-Fleming-like spending for efficacy</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfl =</span> sfHSD, <span class="co"># Hwang-Shih-DeCani spending for futility</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sflpar =</span> <span class="sc">-</span><span class="fl">2.2</span>, <span class="co"># Futility spending parameter to customize bound</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambdaC =</span> <span class="fu">log</span>(<span class="dv">2</span>) <span class="sc">/</span> <span class="dv">12</span>, <span class="co"># 12 month median control survival</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">hr =</span> <span class="fl">0.75</span>, <span class="co"># Alternate hypothesis hazard ratio</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta =</span> <span class="sc">-</span><span class="fu">log</span>(.<span class="dv">98</span>) <span class="sc">/</span> <span class="dv">12</span>, <span class="co"># 2% dropout rate per year</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Enrollment accelerates over 6 months to steady state</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamma =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">5</span>, <span class="fl">7.5</span>, <span class="dv">10</span>), <span class="co"># Relative enrollment rates</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Duration of relative enrollment rate</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">100</span>),</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Enrollment duration targeted to T - minfup = 12 months total</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">T =</span> <span class="dv">36</span>, <span class="co"># Trial duration</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">minfup =</span> <span class="dv">24</span>, <span class="co"># Minimum follow-up duration</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio =</span> <span class="dv">1</span> <span class="co"># Randomization ratio is 1:1</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>We can summarize this textually as:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">summary</span>(x))</span></code></pre></div>
-<p>Asymmetric two-sided group sequential design with non-binding
-futility bound, 3 analyses, time-to-event outcome with sample size 726
-and 540 events required, 90 percent power, 2.5 percent (1-sided) Type I
-error to detect a hazard ratio of 0.75. Enrollment and total study
-durations are assumed to be 12 and 36 months, respectively. Efficacy
-bounds derived using a Lan-DeMets O’Brien-Fleming approximation spending
-function (no parameters). Futility bounds derived using a
-Hwang-Shih-DeCani spending function with gamma = -2.2.</p>
-<p>We now adapt this design to integer targeted events at each analysis
-as well as an sample size per arm at the end of the trial. We provide a
-table summarizing bounds. Due to rounding up of the final event count,
-we see slightly larger than the targeted 90% trial power in the last row
-of the efficacy column.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust design to integer-based event counts at analyses</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and even integer-based final event count</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>xi <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(xi) <span class="co"># Summarize design bounds</span></span></code></pre></div>
-<pre><code>##     Analysis               Value Efficacy Futility
-##    IA 1: 25%                   Z   4.3326  -0.6868
-##       N: 690         p (1-sided)   0.0000   0.7539
-##  Events: 135        ~HR at bound   0.4744   1.1255
-##    Month: 12    P(Cross) if HR=1   0.0000   0.2461
-##              P(Cross) if HR=0.75   0.0039   0.0091
-##    IA 2: 70%                   Z   2.4381   1.0548
-##       N: 726         p (1-sided)   0.0074   0.1458
-##  Events: 378        ~HR at bound   0.7782   0.8972
-##    Month: 22    P(Cross) if HR=1   0.0074   0.8580
-##              P(Cross) if HR=0.75   0.6406   0.0457
-##        Final                   Z   1.9999   1.9999
-##       N: 726         p (1-sided)   0.0228   0.0228
-##  Events: 540        ~HR at bound   0.8419   0.8419
-##    Month: 36    P(Cross) if HR=1   0.0233   0.9767
-##              P(Cross) if HR=0.75   0.9002   0.0998</code></pre>
-<p>We now summarize sample size and targeted events at analyses.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integer event counts at analyses are integer</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>xi<span class="sc">$</span>n.I</span></code></pre></div>
-<pre><code>## [1] 135 378 540</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Control planned sample size at analyses</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Final analysis is integer; interim analyses before enrollment completion</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># are continuous</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>xi<span class="sc">$</span>eNC</span></code></pre></div>
-<pre><code>##          [,1]
-## [1,] 344.4354
-## [2,] 363.0000
-## [3,] 363.0000</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Experimental analysis planned sample size at analyses</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>xi<span class="sc">$</span>eNE</span></code></pre></div>
-<pre><code>##          [,1]
-## [1,] 344.4354
-## [2,] 363.0000
-## [3,] 363.0000</code></pre>
+<div id="summary-of-method" class="section level2">
+<h2>Summary of method</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(<span class="at">ratio =</span> <span class="dv">1</span>, <span class="at">hr =</span> .<span class="dv">74</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span> <span class="fu">toInteger</span>()</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># Continuous event counts</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>x<span class="sc">$</span>n.I</span></code></pre></div>
+<pre><code>## [1] 165.0263 330.0526 495.0789</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Rounded event counts at interims, rounded up at final analysis</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>y<span class="sc">$</span>n.I</span></code></pre></div>
+<pre><code>## [1] 165 330 496</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Continuous sample size at interim and final analyses</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">as.numeric</span>(x<span class="sc">$</span>eNE <span class="sc">+</span> x<span class="sc">$</span>eNC)</span></code></pre></div>
+<pre><code>## [1] 510.9167 730.7015 730.7015</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Rounded up to even final sample size given that x$ratio = 1</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># and rounding to multiple of x$ratio + 1</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">as.numeric</span>(y<span class="sc">$</span>eNE <span class="sc">+</span> y<span class="sc">$</span>eNC)</span></code></pre></div>
+<pre><code>## [1] 511.2601 732.0000 732.0000</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># With roundUpFinal = FALSE, final sample size rounded to nearest integer</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>z <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span> <span class="fu">toInteger</span>(<span class="at">roundUpFinal =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">as.numeric</span>(z<span class="sc">$</span>eNE <span class="sc">+</span> z<span class="sc">$</span>eNC)</span></code></pre></div>
+<pre><code>## [1] 510.6594 730.0000 730.0000</code></pre>
+<ul>
+<li>When <code>ratio</code> is a positive integer, the final sample size
+is rounded to a multiple of <code>ratio + 1</code>.
+<ul>
+<li>For 1:1 randomization (experimental:control), set
+<code>ratio = 1</code> to round to an even sample size.</li>
+<li>For 2:1 randomization, set <code>ratio = 2</code> to round to a
+multiple of 3.</li>
+<li>For 3:2 randomization, set <code>ratio = 4</code> to round to a
+multiple of 5.</li>
+<li>Note that for the final analysis the sample size is rounded up to
+the nearest multiple of <code>ratio + 1</code> when
+<code>roundUpFinal = TRUE</code> is specified. If
+<code>roundUpFinal = FALSE</code>, the final sample size is rounded to
+the nearest multiple of <code>ratio + 1</code>.</li>
+</ul></li>
+</ul>
 </div>
 <div id="binomial-endpoint-designs" class="section level2">
 <h2>Binomial endpoint designs</h2>
@@ -453,15 +412,15 @@ of the efficacy column.</p>
 <p>We present a simple example based on comparing binomial rates with
 interim analyses after 50% and 75% of events. We assume a 2:1
 experimental:control randomization ratio. Note that the sample size is
-not an integer.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>n.fix <span class="ot">&lt;-</span> <span class="fu">nBinomial</span>(<span class="at">p1 =</span> .<span class="dv">2</span>, <span class="at">p2 =</span> .<span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>n.fix</span></code></pre></div>
+not an integer. We target 80% power (<code>beta = .2</code>).</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>n.fix <span class="ot">&lt;-</span> <span class="fu">nBinomial</span>(<span class="at">p1 =</span> .<span class="dv">2</span>, <span class="at">p2 =</span> .<span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>n.fix</span></code></pre></div>
 <pre><code>## [1] 429.8846</code></pre>
 <p>If we replace the <code>beta</code> argument above with a integer
 sample size that is a multiple of 3 so that we get the desired 2:1
 integer sample sizes per arm (432 = 144 control + 288 experimental
-targeted) we get slightly larger thant the targeted 80% power:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nBinomial</span>(<span class="at">p1 =</span> .<span class="dv">2</span>, <span class="at">p2 =</span> .<span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">n =</span> <span class="dv">432</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span></code></pre></div>
+targeted) we get slightly larger than the targeted 80% power:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">nBinomial</span>(<span class="at">p1 =</span> .<span class="dv">2</span>, <span class="at">p2 =</span> .<span class="dv">1</span>, <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">n =</span> <span class="dv">432</span>, <span class="at">ratio =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## [1] 0.801814</code></pre>
 </div>
 <div id="sided-design" class="section level3">
@@ -471,52 +430,52 @@ a 1-sided group sequential design with interims after 50% and 75% of
 observations. Again, sample size at each analysis is not an integer. We
 use the Lan-DeMets spending function approximating an O’Brien-Fleming
 efficacy bound.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1-sided design (efficacy bound only; test.type = 1)</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(<span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">n.fix =</span> n.fix, <span class="at">test.type =</span> <span class="dv">1</span>, <span class="at">sfu =</span> sfLDOF, <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">75</span>))</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuous sample size (non-integer) at planned analyses</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>n.I</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># 1-sided design (efficacy bound only; test.type = 1)</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(<span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">n.fix =</span> n.fix, <span class="at">test.type =</span> <span class="dv">1</span>, <span class="at">sfu =</span> sfLDOF, <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">75</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># Continuous sample size (non-integer) at planned analyses</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>xb<span class="sc">$</span>n.I</span></code></pre></div>
 <pre><code>## [1] 219.1621 328.7432 438.3243</code></pre>
 <p>Next we convert to integer sample sizes at each analysis. Interim
 sample sizes are rounded to the nearest integer. The default
 <code>roundUpFinal = TRUE</code> rounds the final sample size to the
 nearest integer to 1 + the experimental:control randomization ratio.
 Thus, the final sample size of 441 below is a multiple of 3.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to integer sample size with even multiple of ratio + 1</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># i.e., multiple of 3 in this case at final analysis</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>x_integer <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>x_integer<span class="sc">$</span>n.I</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Convert to integer sample size with even multiple of ratio + 1</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># i.e., multiple of 3 in this case at final analysis</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>x_integer <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(xb, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>x_integer<span class="sc">$</span>n.I</span></code></pre></div>
 <pre><code>## [1] 219 329 441</code></pre>
 <p>Next we examine the efficacy bound of the 2 designs as they are
 slightly different.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bound for continuous sample size design</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Bound for continuous sample size design</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>xb<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
 <pre><code>## [1] 2.962588 2.359018 2.014084</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bound for integer sample size design</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>x_integer<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Bound for integer sample size design</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>x_integer<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
 <pre><code>## [1] 2.974067 2.366106 2.012987</code></pre>
 <p>The differences are associated with slightly different timing of the
 analyses associated with the different sample sizes noted above:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuous design sample size fractions at analyses</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>timing</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Continuous design sample size fractions at analyses</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>xb<span class="sc">$</span>timing</span></code></pre></div>
 <pre><code>## [1] 0.50 0.75 1.00</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integer design sample size fractions at analyses</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>x_integer<span class="sc">$</span>timing</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Integer design sample size fractions at analyses</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>x_integer<span class="sc">$</span>timing</span></code></pre></div>
 <pre><code>## [1] 0.4965986 0.7460317 1.0000000</code></pre>
 <p>These differences also make a difference in the cumulative Type I
 error associated with each analysis as shown below.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuous sample size design</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(x<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># Continuous sample size design</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">cumsum</span>(xb<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
 <pre><code>## [1] 0.001525323 0.009649325 0.025000000</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specified spending based on the spending function</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> x<span class="sc">$</span>alpha, <span class="at">t =</span> x<span class="sc">$</span>timing, x<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Specified spending based on the spending function</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>xb<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> xb<span class="sc">$</span>alpha, <span class="at">t =</span> xb<span class="sc">$</span>timing, xb<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
 <pre><code>## [1] 0.001525323 0.009649325 0.025000000</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Integer sample size design</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(x_integer<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># Integer sample size design</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">cumsum</span>(x_integer<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
 <pre><code>## [1] 0.001469404 0.009458454 0.025000000</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specified spending based on the spending function</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Slightly different from continuous design due to slightly different information fraction</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> x_integer<span class="sc">$</span>alpha, <span class="at">t =</span> x_integer<span class="sc">$</span>timing, x_integer<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
-<pre><code>## [1] 0.001469404 0.009458454 0.025000000</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># Specified spending based on the spending function</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="co"># Slightly different from continuous design due to slightly different information fraction</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>x<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> x_integer<span class="sc">$</span>alpha, <span class="at">t =</span> x_integer<span class="sc">$</span>timing, x_integer<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
+<pre><code>## [1] 0.01547975 0.02079331 0.02500000</code></pre>
 <p>Finally, we look at cumulative boundary crossing probabilities under
 the alternate hypothesis for each design. Due to rounding up the final
 sample size, the integer-based design has slightly higher total power
@@ -524,12 +483,12 @@ than the specified 80% (Type II error <code>beta = 0.2.</code>). Interim
 power is slightly lower for the integer-based design since sample size
 is rounded to the nearest integer rather than rounded up as at the final
 analysis.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cumulative upper boundary crossing probability under alternate by analysis</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># under alternate hypothesis for continuous sample size</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(x<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co"># Cumulative upper boundary crossing probability under alternate by analysis</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="co"># under alternate hypothesis for continuous sample size</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="fu">cumsum</span>(xb<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
 <pre><code>## [1] 0.1679704 0.5399906 0.8000000</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for integer sample sizes at each analysis</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(x_integer<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># Same for integer sample sizes at each analysis</span></span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="fu">cumsum</span>(x_integer<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
 <pre><code>## [1] 0.1649201 0.5374791 0.8025140</code></pre>
 </div>
 <div id="non-binding-design" class="section level3">
@@ -541,55 +500,55 @@ sample size to retain power. The parameter <code>delta1</code> is the
 natural parameter denoting the difference in response (or failure) rates
 of 0.2 vs. 0.1 that was specified in the call to
 <code>nBinomial()</code> above.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2-sided asymmetric design with non-binding futility bound (test.type = 4)</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>xnb <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">n.fix =</span> n.fix, <span class="at">test.type =</span> <span class="dv">4</span>,</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF, <span class="at">sfl =</span> sfHSD, <span class="at">sflpar =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">75</span>), <span class="at">delta1 =</span> .<span class="dv">1</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Continuous sample size for non-binding design</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>xnb<span class="sc">$</span>n.I</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="co"># 2-sided asymmetric design with non-binding futility bound (test.type = 4)</span></span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a>xnb <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>  <span class="at">alpha =</span> .<span class="dv">025</span>, <span class="at">beta =</span> .<span class="dv">2</span>, <span class="at">n.fix =</span> n.fix, <span class="at">test.type =</span> <span class="dv">4</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF, <span class="at">sfl =</span> sfHSD, <span class="at">sflpar =</span> <span class="sc">-</span><span class="dv">2</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">75</span>), <span class="at">delta1 =</span> .<span class="dv">1</span></span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a>)</span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a><span class="co"># Continuous sample size for non-binding design</span></span>
+<span id="cb40-8"><a href="#cb40-8" tabindex="-1"></a>xnb<span class="sc">$</span>n.I</span></code></pre></div>
 <pre><code>## [1] 231.9610 347.9415 463.9219</code></pre>
 <p>As before, we convert to integer sample sizes at each analysis and
 see the slight deviations from the interim timing of 0.5 and 0.75.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>xnbi <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(xnb, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Integer design sample size at each analysis</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>xnbi<span class="sc">$</span>n.I</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>xnbi <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(xnb, <span class="at">ratio =</span> <span class="dv">2</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="co"># Integer design sample size at each analysis</span></span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>xnbi<span class="sc">$</span>n.I</span></code></pre></div>
 <pre><code>## [1] 232 348 465</code></pre>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Information fraction based on integer sample sizes</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>xnbi<span class="sc">$</span>timing</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co"># Information fraction based on integer sample sizes</span></span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>xnbi<span class="sc">$</span>timing</span></code></pre></div>
 <pre><code>## [1] 0.4989247 0.7483871 1.0000000</code></pre>
 <p>These differences also make a difference in the Type I error
 associated with each analysis</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Type I error, continuous design</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xnb<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co"># Type I error, continuous design</span></span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a><span class="fu">cumsum</span>(xnb<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
 <pre><code>## [1] 0.001525323 0.009630324 0.023013764</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Type I error, integer design</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co"># Type I error, integer design</span></span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">1</span>])</span></code></pre></div>
 <pre><code>## [1] 0.001507499 0.009553042 0.022999870</code></pre>
 <p>The Type I error ignoring the futility bounds just shown does not use
 the full targeted 0.025 as the calculations assume the trial stops for
 futility if an interim futility bound is crossed. The non-binding Type I
 error assuming the trial does not stop for futility is:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Type I error for integer design ignoring futility bound</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>falseposnb)</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="co"># Type I error for integer design ignoring futility bound</span></span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>falseposnb)</span></code></pre></div>
 <pre><code>## [1] 0.001507499 0.009571518 0.025000000</code></pre>
 <p>Finally, we look at cumulative lower boundary crossing probabilities
 under the alternate hypothesis for the integer-based design and compare
 to the planned <span class="math inline">\(\beta\)</span>-spending. We
 note that the final Type II error spending is slightly lower than the
 targeted 0.2 due to rounding up the final sample size.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Actual cumulative beta spent at each analysis</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>lower<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="co"># Actual cumulative beta spent at each analysis</span></span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a><span class="fu">cumsum</span>(xnbi<span class="sc">$</span>lower<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
 <pre><code>## [1] 0.05360549 0.10853733 0.19921266</code></pre>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spending function target is the same at interims, but larger at final</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>xnbi<span class="sc">$</span>lower<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> xnbi<span class="sc">$</span>beta, <span class="at">t =</span> xnbi<span class="sc">$</span>n.I <span class="sc">/</span> <span class="fu">max</span>(xnbi<span class="sc">$</span>n.I), <span class="at">param =</span> xnbi<span class="sc">$</span>lower<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="co"># Spending function target is the same at interims, but larger at final</span></span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a>xnbi<span class="sc">$</span>lower<span class="sc">$</span><span class="fu">sf</span>(<span class="at">alpha =</span> xnbi<span class="sc">$</span>beta, <span class="at">t =</span> xnbi<span class="sc">$</span>n.I <span class="sc">/</span> <span class="fu">max</span>(xnbi<span class="sc">$</span>n.I), <span class="at">param =</span> xnbi<span class="sc">$</span>lower<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
 <pre><code>## [1] 0.05360549 0.10853733 0.20000000</code></pre>
 <p>The <span class="math inline">\(\beta\)</span>-spending lower than
 0.2 in the first row above is due to the final sample size powering the
 trial to greater than 0.8 as seen below.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># beta-spending</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(xnbi<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="co"># beta-spending</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="fu">sum</span>(xnbi<span class="sc">$</span>upper<span class="sc">$</span>prob[, <span class="dv">2</span>])</span></code></pre></div>
 <pre><code>## [1] 0.8007874</code></pre>
 </div>
 </div>

@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -148,6 +148,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -362,9 +363,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>This article explores a method of approximating a design using the
@@ -416,42 +417,42 @@ vaccine efficacy <span class="math inline">\(\pi_1 = 0.7\)</span> and
 experimental:control randomization ratio <span class="math inline">\(r=3\)</span>. This converts to an alternate
 hypothesis (approximate) probability that any event is in the
 experimental group of</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pi1 <span class="ot">&lt;-</span> .<span class="dv">7</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi1))</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>p1</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>pi1 <span class="ot">&lt;-</span> .<span class="dv">7</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi1))</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>p1</span></code></pre></div>
 <pre><code>#&gt; [1] 0.4736842</code></pre>
 <p>We use the inversion formula to revert this to <span class="math inline">\(\pi_1 = 0.7\)</span></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">/</span> (ratio <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> p1 <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="dv">1</span> <span class="sc">/</span> (ratio <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">/</span> p1 <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div>
 <pre><code>#&gt; [1] 0.7</code></pre>
 <p>Letting the null hypothesis vaccine efficacy be <span class="math inline">\(\pi_0 = 0.3\)</span>, our exact binomial null
 hypothesis probability that an event is in the experimental group is</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pi0 <span class="ot">&lt;-</span> .<span class="dv">3</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi0))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>p0</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>pi0 <span class="ot">&lt;-</span> .<span class="dv">3</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pi0))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>p0</span></code></pre></div>
 <pre><code>#&gt; [1] 0.6774194</code></pre>
 <p>We also translate several vaccine efficacy values to proportion of
 events in the experimental group:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ve <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">6</span>, .<span class="dv">65</span>, .<span class="dv">7</span>, .<span class="dv">75</span>, .<span class="dv">8</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>prob_experimental <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ve))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">VE =</span> ve, <span class="st">&quot;P(Experimental)&quot;</span> <span class="ot">=</span> prob_experimental) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="dv">2</span>, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div>
-<div id="xbmthrciis" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xbmthrciis table {
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>ve <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">5</span>, .<span class="dv">6</span>, .<span class="dv">65</span>, .<span class="dv">7</span>, .<span class="dv">75</span>, .<span class="dv">8</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>prob_experimental <span class="ot">&lt;-</span> ratio <span class="sc">/</span> (ratio <span class="sc">+</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ve))</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">VE =</span> ve, <span class="st">&quot;P(Experimental)&quot;</span> <span class="ot">=</span> prob_experimental) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="dv">2</span>, <span class="at">decimals =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div id="dudoxznugp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#dudoxznugp table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#xbmthrciis thead, #xbmthrciis tbody, #xbmthrciis tfoot, #xbmthrciis tr, #xbmthrciis td, #xbmthrciis th {
+#dudoxznugp thead, #dudoxznugp tbody, #dudoxznugp tfoot, #dudoxznugp tr, #dudoxznugp td, #dudoxznugp th {
 border-style: none;
 }
-#xbmthrciis p {
+#dudoxznugp p {
 margin: 0;
 padding: 0;
 }
-#xbmthrciis .gt_table {
+#dudoxznugp .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -476,11 +477,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#xbmthrciis .gt_caption {
+#dudoxznugp .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#xbmthrciis .gt_title {
+#dudoxznugp .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -491,7 +492,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#xbmthrciis .gt_subtitle {
+#dudoxznugp .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -502,7 +503,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#xbmthrciis .gt_heading {
+#dudoxznugp .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -513,12 +514,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xbmthrciis .gt_bottom_border {
+#dudoxznugp .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbmthrciis .gt_col_headings {
+#dudoxznugp .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -532,7 +533,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#xbmthrciis .gt_col_heading {
+#dudoxznugp .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -551,7 +552,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#xbmthrciis .gt_column_spanner_outer {
+#dudoxznugp .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -562,13 +563,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#xbmthrciis .gt_column_spanner_outer:first-child {
+#dudoxznugp .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#xbmthrciis .gt_column_spanner_outer:last-child {
+#dudoxznugp .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#xbmthrciis .gt_column_spanner {
+#dudoxznugp .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -579,10 +580,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#xbmthrciis .gt_spanner_row {
+#dudoxznugp .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#xbmthrciis .gt_group_heading {
+#dudoxznugp .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -607,7 +608,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#xbmthrciis .gt_empty_group_heading {
+#dudoxznugp .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -621,13 +622,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#xbmthrciis .gt_from_md > :first-child {
+#dudoxznugp .gt_from_md > :first-child {
 margin-top: 0;
 }
-#xbmthrciis .gt_from_md > :last-child {
+#dudoxznugp .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#xbmthrciis .gt_row {
+#dudoxznugp .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -645,7 +646,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#xbmthrciis .gt_stub {
+#dudoxznugp .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -657,7 +658,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbmthrciis .gt_stub_row_group {
+#dudoxznugp .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -670,13 +671,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#xbmthrciis .gt_row_group_first td {
+#dudoxznugp .gt_row_group_first td {
 border-top-width: 2px;
 }
-#xbmthrciis .gt_row_group_first th {
+#dudoxznugp .gt_row_group_first th {
 border-top-width: 2px;
 }
-#xbmthrciis .gt_summary_row {
+#dudoxznugp .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -685,14 +686,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbmthrciis .gt_first_summary_row {
+#dudoxznugp .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#xbmthrciis .gt_first_summary_row.thick {
+#dudoxznugp .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#xbmthrciis .gt_last_summary_row {
+#dudoxznugp .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -701,7 +702,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbmthrciis .gt_grand_summary_row {
+#dudoxznugp .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -710,7 +711,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbmthrciis .gt_first_grand_summary_row {
+#dudoxznugp .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -719,7 +720,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#xbmthrciis .gt_last_grand_summary_row_top {
+#dudoxznugp .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -728,10 +729,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#xbmthrciis .gt_striped {
+#dudoxznugp .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#xbmthrciis .gt_table_body {
+#dudoxznugp .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -739,7 +740,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#xbmthrciis .gt_footnotes {
+#dudoxznugp .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -752,7 +753,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xbmthrciis .gt_footnote {
+#dudoxznugp .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -760,7 +761,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbmthrciis .gt_sourcenotes {
+#dudoxznugp .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -773,64 +774,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#xbmthrciis .gt_sourcenote {
+#dudoxznugp .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#xbmthrciis .gt_left {
+#dudoxznugp .gt_left {
 text-align: left;
 }
-#xbmthrciis .gt_center {
+#dudoxznugp .gt_center {
 text-align: center;
 }
-#xbmthrciis .gt_right {
+#dudoxznugp .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#xbmthrciis .gt_font_normal {
+#dudoxznugp .gt_font_normal {
 font-weight: normal;
 }
-#xbmthrciis .gt_font_bold {
+#dudoxznugp .gt_font_bold {
 font-weight: bold;
 }
-#xbmthrciis .gt_font_italic {
+#dudoxznugp .gt_font_italic {
 font-style: italic;
 }
-#xbmthrciis .gt_super {
+#dudoxznugp .gt_super {
 font-size: 65%;
 }
-#xbmthrciis .gt_footnote_marks {
+#dudoxznugp .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#xbmthrciis .gt_asterisk {
+#dudoxznugp .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#xbmthrciis .gt_indent_1 {
+#dudoxznugp .gt_indent_1 {
 text-indent: 5px;
 }
-#xbmthrciis .gt_indent_2 {
+#dudoxznugp .gt_indent_2 {
 text-indent: 10px;
 }
-#xbmthrciis .gt_indent_3 {
+#dudoxznugp .gt_indent_3 {
 text-indent: 15px;
 }
-#xbmthrciis .gt_indent_4 {
+#dudoxznugp .gt_indent_4 {
 text-indent: 20px;
 }
-#xbmthrciis .gt_indent_5 {
+#dudoxznugp .gt_indent_5 {
 text-indent: 25px;
 }
-#xbmthrciis .katex-display {
+#dudoxznugp .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#xbmthrciis div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#dudoxznugp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -892,39 +893,39 @@ This design is then adapted to a design using the exact binomial method
 of <span class="citation">Chan and Bohidar (1998)</span>. The
 randomization ratio (experimental/control) was assumed to be 3:1 as in
 the <span class="citation">Logunov et al. (2021)</span> trial.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.025</span> <span class="co"># Type I error</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># Type II error (1 - power)</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># number of analyses in group sequential design</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>timing <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">45</span>, .<span class="dv">7</span>) <span class="co"># Relative timing of interim analyses compared to final</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>sfu <span class="ot">&lt;-</span> sfHSD <span class="co"># Efficacy bound spending function (Hwang-Shih-DeCani)</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>sfupar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span> <span class="co"># Parameter for efficacy spending function</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>sfl <span class="ot">&lt;-</span> sfHSD <span class="co"># Futility bound spending function (Hwang-Shih-DeCani)</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>sflpar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span> <span class="co"># Futility bound spending function parameter</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>timename <span class="ot">&lt;-</span> <span class="st">&quot;Month&quot;</span> <span class="co"># Time unit</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>failRate <span class="ot">&lt;-</span> .<span class="dv">002</span> <span class="co"># Exponential failure rate</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>dropoutRate <span class="ot">&lt;-</span> .<span class="dv">0001</span> <span class="co"># Exponential dropout rate</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>enrollDuration <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="co"># Enrollment duration</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>trialDuration <span class="ot">&lt;-</span> <span class="dv">24</span> <span class="co"># Planned trial duration</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>VE1 <span class="ot">&lt;-</span> .<span class="dv">7</span> <span class="co"># Alternate hypothesis vaccine efficacy</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>VE0 <span class="ot">&lt;-</span> .<span class="dv">3</span> <span class="co"># Null hypothesis vaccine efficacy</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># Experimental/Control enrollment ratio</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>test.type <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 1 for one-sided, 4 for non-binding futility</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.025</span> <span class="co"># Type I error</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># Type II error (1 - power)</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># number of analyses in group sequential design</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>timing <span class="ot">&lt;-</span> <span class="fu">c</span>(.<span class="dv">45</span>, .<span class="dv">7</span>) <span class="co"># Relative timing of interim analyses compared to final</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>sfu <span class="ot">&lt;-</span> sfHSD <span class="co"># Efficacy bound spending function (Hwang-Shih-DeCani)</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>sfupar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span> <span class="co"># Parameter for efficacy spending function</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>sfl <span class="ot">&lt;-</span> sfHSD <span class="co"># Futility bound spending function (Hwang-Shih-DeCani)</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>sflpar <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">3</span> <span class="co"># Futility bound spending function parameter</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>timename <span class="ot">&lt;-</span> <span class="st">&quot;Month&quot;</span> <span class="co"># Time unit</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>failRate <span class="ot">&lt;-</span> .<span class="dv">002</span> <span class="co"># Exponential failure rate</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>dropoutRate <span class="ot">&lt;-</span> .<span class="dv">0001</span> <span class="co"># Exponential dropout rate</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>enrollDuration <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="co"># Enrollment duration</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>trialDuration <span class="ot">&lt;-</span> <span class="dv">24</span> <span class="co"># Planned trial duration</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>VE1 <span class="ot">&lt;-</span> .<span class="dv">7</span> <span class="co"># Alternate hypothesis vaccine efficacy</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>VE0 <span class="ot">&lt;-</span> .<span class="dv">3</span> <span class="co"># Null hypothesis vaccine efficacy</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># Experimental/Control enrollment ratio</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>test.type <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 1 for one-sided, 4 for non-binding futility</span></span></code></pre></div>
 <div id="the-time-to-event-design" class="section level3">
 <h3>The time-to-event design</h3>
 <p>Now we generate the design. If resulting alpha and beta do not
 satisfy requirements, adjust parameters above until a satisfactory
 result is obtained.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive Group Sequential Design</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This determines final sample size</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> k, <span class="at">test.type =</span> test.type, <span class="at">alpha =</span> alpha, <span class="at">beta =</span> beta, <span class="at">timing =</span> timing,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfu, <span class="at">sfupar =</span> sfupar, <span class="at">sfl =</span> sfl, <span class="at">sflpar =</span> sflpar,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambdaC =</span> failRate, <span class="at">eta =</span> dropoutRate,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Translate vaccine efficacy to HR</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hr =</span> <span class="dv">1</span> <span class="sc">-</span> VE1, <span class="at">hr0 =</span> <span class="dv">1</span> <span class="sc">-</span> VE0,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">R =</span> enrollDuration, <span class="at">T =</span> trialDuration,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">minfup =</span> trialDuration <span class="sc">-</span> enrollDuration, <span class="at">ratio =</span> ratio</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Derive Group Sequential Design</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co"># This determines final sample size</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="at">k =</span> k, <span class="at">test.type =</span> test.type, <span class="at">alpha =</span> alpha, <span class="at">beta =</span> beta, <span class="at">timing =</span> timing,</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="at">sfu =</span> sfu, <span class="at">sfupar =</span> sfupar, <span class="at">sfl =</span> sfl, <span class="at">sflpar =</span> sflpar,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  <span class="at">lambdaC =</span> failRate, <span class="at">eta =</span> dropoutRate,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="co"># Translate vaccine efficacy to HR</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="at">hr =</span> <span class="dv">1</span> <span class="sc">-</span> VE1, <span class="at">hr0 =</span> <span class="dv">1</span> <span class="sc">-</span> VE0,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="at">R =</span> enrollDuration, <span class="at">T =</span> trialDuration,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="at">minfup =</span> trialDuration <span class="sc">-</span> enrollDuration, <span class="at">ratio =</span> ratio</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>)</span></code></pre></div>
 <p>Now we convert this to a design with integer event counts at
 analyses. This is achieved by rounding interim analysis event counts
 from the above design and rounding up the final analysis event count.
@@ -943,31 +944,31 @@ VE of 0.5 would be worth discussion with a data monitoring committee as
 well as other planners for the trial; a custom spending function could
 be used to set both the first and second interim bounds to desired
 levels.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(xx,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tdigits =</span> <span class="dv">1</span>, <span class="at">logdelta =</span> <span class="cn">TRUE</span>, <span class="at">deltaname =</span> <span class="st">&quot;HR&quot;</span>, <span class="at">Nname =</span> <span class="st">&quot;Events&quot;</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">exclude =</span> <span class="fu">c</span>(<span class="st">&quot;B-value&quot;</span>, <span class="st">&quot;CP&quot;</span>, <span class="st">&quot;CP H1&quot;</span>, <span class="st">&quot;PP&quot;</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Initial group sequential approximation&quot;</span>,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Integer event counts at analyses&quot;</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>))</span></code></pre></div>
-<div id="mrmzctlveb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mrmzctlveb table {
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(xx,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">tdigits =</span> <span class="dv">1</span>, <span class="at">logdelta =</span> <span class="cn">TRUE</span>, <span class="at">deltaname =</span> <span class="st">&quot;HR&quot;</span>, <span class="at">Nname =</span> <span class="st">&quot;Events&quot;</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">exclude =</span> <span class="fu">c</span>(<span class="st">&quot;B-value&quot;</span>, <span class="st">&quot;CP&quot;</span>, <span class="st">&quot;CP H1&quot;</span>, <span class="st">&quot;PP&quot;</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Initial group sequential approximation&quot;</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Integer event counts at analyses&quot;</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">1</span>))</span></code></pre></div>
+<div id="yowhyeawiw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yowhyeawiw table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#mrmzctlveb thead, #mrmzctlveb tbody, #mrmzctlveb tfoot, #mrmzctlveb tr, #mrmzctlveb td, #mrmzctlveb th {
+#yowhyeawiw thead, #yowhyeawiw tbody, #yowhyeawiw tfoot, #yowhyeawiw tr, #yowhyeawiw td, #yowhyeawiw th {
 border-style: none;
 }
-#mrmzctlveb p {
+#yowhyeawiw p {
 margin: 0;
 padding: 0;
 }
-#mrmzctlveb .gt_table {
+#yowhyeawiw .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -992,11 +993,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#mrmzctlveb .gt_caption {
+#yowhyeawiw .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#mrmzctlveb .gt_title {
+#yowhyeawiw .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1007,7 +1008,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#mrmzctlveb .gt_subtitle {
+#yowhyeawiw .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1018,7 +1019,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#mrmzctlveb .gt_heading {
+#yowhyeawiw .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1029,12 +1030,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#mrmzctlveb .gt_bottom_border {
+#yowhyeawiw .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#mrmzctlveb .gt_col_headings {
+#yowhyeawiw .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1048,7 +1049,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#mrmzctlveb .gt_col_heading {
+#yowhyeawiw .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1067,7 +1068,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#mrmzctlveb .gt_column_spanner_outer {
+#yowhyeawiw .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1078,13 +1079,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#mrmzctlveb .gt_column_spanner_outer:first-child {
+#yowhyeawiw .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#mrmzctlveb .gt_column_spanner_outer:last-child {
+#yowhyeawiw .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#mrmzctlveb .gt_column_spanner {
+#yowhyeawiw .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1095,10 +1096,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#mrmzctlveb .gt_spanner_row {
+#yowhyeawiw .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#mrmzctlveb .gt_group_heading {
+#yowhyeawiw .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1123,7 +1124,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#mrmzctlveb .gt_empty_group_heading {
+#yowhyeawiw .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1137,13 +1138,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#mrmzctlveb .gt_from_md > :first-child {
+#yowhyeawiw .gt_from_md > :first-child {
 margin-top: 0;
 }
-#mrmzctlveb .gt_from_md > :last-child {
+#yowhyeawiw .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#mrmzctlveb .gt_row {
+#yowhyeawiw .gt_row {
 padding-top: 1px;
 padding-bottom: 1px;
 padding-left: 5px;
@@ -1161,7 +1162,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#mrmzctlveb .gt_stub {
+#yowhyeawiw .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1173,7 +1174,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#mrmzctlveb .gt_stub_row_group {
+#yowhyeawiw .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1186,13 +1187,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#mrmzctlveb .gt_row_group_first td {
+#yowhyeawiw .gt_row_group_first td {
 border-top-width: 2px;
 }
-#mrmzctlveb .gt_row_group_first th {
+#yowhyeawiw .gt_row_group_first th {
 border-top-width: 2px;
 }
-#mrmzctlveb .gt_summary_row {
+#yowhyeawiw .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1201,14 +1202,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#mrmzctlveb .gt_first_summary_row {
+#yowhyeawiw .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#mrmzctlveb .gt_first_summary_row.thick {
+#yowhyeawiw .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#mrmzctlveb .gt_last_summary_row {
+#yowhyeawiw .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1217,7 +1218,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#mrmzctlveb .gt_grand_summary_row {
+#yowhyeawiw .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1226,7 +1227,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#mrmzctlveb .gt_first_grand_summary_row {
+#yowhyeawiw .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1235,7 +1236,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#mrmzctlveb .gt_last_grand_summary_row_top {
+#yowhyeawiw .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1244,10 +1245,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#mrmzctlveb .gt_striped {
+#yowhyeawiw .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#mrmzctlveb .gt_table_body {
+#yowhyeawiw .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1255,7 +1256,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#mrmzctlveb .gt_footnotes {
+#yowhyeawiw .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1268,7 +1269,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#mrmzctlveb .gt_footnote {
+#yowhyeawiw .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1276,7 +1277,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#mrmzctlveb .gt_sourcenotes {
+#yowhyeawiw .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1289,64 +1290,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#mrmzctlveb .gt_sourcenote {
+#yowhyeawiw .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#mrmzctlveb .gt_left {
+#yowhyeawiw .gt_left {
 text-align: left;
 }
-#mrmzctlveb .gt_center {
+#yowhyeawiw .gt_center {
 text-align: center;
 }
-#mrmzctlveb .gt_right {
+#yowhyeawiw .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#mrmzctlveb .gt_font_normal {
+#yowhyeawiw .gt_font_normal {
 font-weight: normal;
 }
-#mrmzctlveb .gt_font_bold {
+#yowhyeawiw .gt_font_bold {
 font-weight: bold;
 }
-#mrmzctlveb .gt_font_italic {
+#yowhyeawiw .gt_font_italic {
 font-style: italic;
 }
-#mrmzctlveb .gt_super {
+#yowhyeawiw .gt_super {
 font-size: 65%;
 }
-#mrmzctlveb .gt_footnote_marks {
+#yowhyeawiw .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#mrmzctlveb .gt_asterisk {
+#yowhyeawiw .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#mrmzctlveb .gt_indent_1 {
+#yowhyeawiw .gt_indent_1 {
 text-indent: 5px;
 }
-#mrmzctlveb .gt_indent_2 {
+#yowhyeawiw .gt_indent_2 {
 text-indent: 10px;
 }
-#mrmzctlveb .gt_indent_3 {
+#yowhyeawiw .gt_indent_3 {
 text-indent: 15px;
 }
-#mrmzctlveb .gt_indent_4 {
+#yowhyeawiw .gt_indent_4 {
 text-indent: 20px;
 }
-#mrmzctlveb .gt_indent_5 {
+#yowhyeawiw .gt_indent_5 {
 text-indent: 25px;
 }
-#mrmzctlveb .katex-display {
+#yowhyeawiw .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#mrmzctlveb div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#yowhyeawiw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -1444,7 +1445,7 @@ height: 0px !important;
 </table>
 </div>
 <p>A textual summary for the design is:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">summary</span>(xx, <span class="at">timeunit =</span> <span class="st">&quot;months&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">summary</span>(xx, <span class="at">timeunit =</span> <span class="st">&quot;months&quot;</span>))</span></code></pre></div>
 <p>Asymmetric two-sided group sequential design with non-binding
 futility bound, 3 analyses, time-to-event outcome with sample size 3606
 and 68 events required, 90 percent power, 2.5 percent (1-sided) Type I
@@ -1471,7 +1472,7 @@ lower (efficacy) bounds under the null (<code>theta</code> = 0.6774) and
 alternate (<code>theta</code> = 0.4737) hypotheses, respectively; these
 calculations are done under the exact binomial distribution
 assumptions.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(x)</span></code></pre></div>
 <div id="combined-summary-table" class="section level3">
 <h3>Combined summary table</h3>
 <p>We produce a summary table. Code for this is provided in the R
@@ -1479,20 +1480,20 @@ markdown for this vignette provided with the package. This combines
 information from the time-to-event design for calendar timing of
 analyses (Time) and expected sample size at each analysis (N) along with
 bounds and operating characteristics for the design.</p>
-<div id="tdlvogmhfj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tdlvogmhfj table {
+<div id="qbqhcexbaz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qbqhcexbaz table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#tdlvogmhfj thead, #tdlvogmhfj tbody, #tdlvogmhfj tfoot, #tdlvogmhfj tr, #tdlvogmhfj td, #tdlvogmhfj th {
+#qbqhcexbaz thead, #qbqhcexbaz tbody, #qbqhcexbaz tfoot, #qbqhcexbaz tr, #qbqhcexbaz td, #qbqhcexbaz th {
 border-style: none;
 }
-#tdlvogmhfj p {
+#qbqhcexbaz p {
 margin: 0;
 padding: 0;
 }
-#tdlvogmhfj .gt_table {
+#qbqhcexbaz .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -1517,11 +1518,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_caption {
+#qbqhcexbaz .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#tdlvogmhfj .gt_title {
+#qbqhcexbaz .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -1532,7 +1533,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#tdlvogmhfj .gt_subtitle {
+#qbqhcexbaz .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -1543,7 +1544,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#tdlvogmhfj .gt_heading {
+#qbqhcexbaz .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -1554,12 +1555,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_bottom_border {
+#qbqhcexbaz .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_col_headings {
+#qbqhcexbaz .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1573,7 +1574,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_col_heading {
+#qbqhcexbaz .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1592,7 +1593,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#tdlvogmhfj .gt_column_spanner_outer {
+#qbqhcexbaz .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1603,13 +1604,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#tdlvogmhfj .gt_column_spanner_outer:first-child {
+#qbqhcexbaz .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#tdlvogmhfj .gt_column_spanner_outer:last-child {
+#qbqhcexbaz .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#tdlvogmhfj .gt_column_spanner {
+#qbqhcexbaz .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -1620,10 +1621,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#tdlvogmhfj .gt_spanner_row {
+#qbqhcexbaz .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#tdlvogmhfj .gt_group_heading {
+#qbqhcexbaz .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1648,7 +1649,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#tdlvogmhfj .gt_empty_group_heading {
+#qbqhcexbaz .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -1662,13 +1663,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#tdlvogmhfj .gt_from_md > :first-child {
+#qbqhcexbaz .gt_from_md > :first-child {
 margin-top: 0;
 }
-#tdlvogmhfj .gt_from_md > :last-child {
+#qbqhcexbaz .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#tdlvogmhfj .gt_row {
+#qbqhcexbaz .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1686,7 +1687,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#tdlvogmhfj .gt_stub {
+#qbqhcexbaz .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1698,7 +1699,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#tdlvogmhfj .gt_stub_row_group {
+#qbqhcexbaz .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -1711,13 +1712,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#tdlvogmhfj .gt_row_group_first td {
+#qbqhcexbaz .gt_row_group_first td {
 border-top-width: 2px;
 }
-#tdlvogmhfj .gt_row_group_first th {
+#qbqhcexbaz .gt_row_group_first th {
 border-top-width: 2px;
 }
-#tdlvogmhfj .gt_summary_row {
+#qbqhcexbaz .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1726,14 +1727,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#tdlvogmhfj .gt_first_summary_row {
+#qbqhcexbaz .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_first_summary_row.thick {
+#qbqhcexbaz .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#tdlvogmhfj .gt_last_summary_row {
+#qbqhcexbaz .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1742,7 +1743,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_grand_summary_row {
+#qbqhcexbaz .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -1751,7 +1752,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#tdlvogmhfj .gt_first_grand_summary_row {
+#qbqhcexbaz .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1760,7 +1761,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_last_grand_summary_row_top {
+#qbqhcexbaz .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -1769,10 +1770,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_striped {
+#qbqhcexbaz .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#tdlvogmhfj .gt_table_body {
+#qbqhcexbaz .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -1780,7 +1781,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_footnotes {
+#qbqhcexbaz .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1793,7 +1794,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_footnote {
+#qbqhcexbaz .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -1801,7 +1802,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#tdlvogmhfj .gt_sourcenotes {
+#qbqhcexbaz .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -1814,64 +1815,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#tdlvogmhfj .gt_sourcenote {
+#qbqhcexbaz .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#tdlvogmhfj .gt_left {
+#qbqhcexbaz .gt_left {
 text-align: left;
 }
-#tdlvogmhfj .gt_center {
+#qbqhcexbaz .gt_center {
 text-align: center;
 }
-#tdlvogmhfj .gt_right {
+#qbqhcexbaz .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#tdlvogmhfj .gt_font_normal {
+#qbqhcexbaz .gt_font_normal {
 font-weight: normal;
 }
-#tdlvogmhfj .gt_font_bold {
+#qbqhcexbaz .gt_font_bold {
 font-weight: bold;
 }
-#tdlvogmhfj .gt_font_italic {
+#qbqhcexbaz .gt_font_italic {
 font-style: italic;
 }
-#tdlvogmhfj .gt_super {
+#qbqhcexbaz .gt_super {
 font-size: 65%;
 }
-#tdlvogmhfj .gt_footnote_marks {
+#qbqhcexbaz .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#tdlvogmhfj .gt_asterisk {
+#qbqhcexbaz .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#tdlvogmhfj .gt_indent_1 {
+#qbqhcexbaz .gt_indent_1 {
 text-indent: 5px;
 }
-#tdlvogmhfj .gt_indent_2 {
+#qbqhcexbaz .gt_indent_2 {
 text-indent: 10px;
 }
-#tdlvogmhfj .gt_indent_3 {
+#qbqhcexbaz .gt_indent_3 {
 text-indent: 15px;
 }
-#tdlvogmhfj .gt_indent_4 {
+#qbqhcexbaz .gt_indent_4 {
 text-indent: 20px;
 }
-#tdlvogmhfj .gt_indent_5 {
+#qbqhcexbaz .gt_indent_5 {
 text-indent: 25px;
 }
-#tdlvogmhfj .katex-display {
+#qbqhcexbaz .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#tdlvogmhfj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qbqhcexbaz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -1886,32 +1887,32 @@ height: 0px !important;
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Time">Time</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="N">N</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Cases">Cases</th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Experimental Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Experimental Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="cases">
+        <div class="gt_column_spanner">Experimental Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Vaccine Efficacy at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Vaccine Efficacy at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="vebound">
+        <div class="gt_column_spanner">Vaccine Efficacy at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="spend">
+        <div class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>3</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="6" scope="colgroup" id="Power by Vaccine Efficacy&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Power by Vaccine Efficacy<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="6" scope="colgroup" id="power">
+        <div class="gt_column_spanner">Power by Vaccine Efficacy<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>4</sup></span></div>
       </th>
     </tr>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Success">Success</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ve_efficacy">Efficacy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ve_futility">Futility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>5</sup></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="50%">50%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="60%">60%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="65%">65%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="70%">70%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="75%">75%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="80%">80%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a50%">50%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a60%">60%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a65%">65%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a70%">70%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a75%">75%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a80%">80%</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -1967,19 +1968,19 @@ height: 0px !important;
   
   <tfoot class="gt_footnotes">
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span> Experimental case counts to cross between success and futility counts do not stop trial</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Experimental case counts to cross between success and futility counts do not stop trial</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span> alpha-spending for efficacy ignores non-binding futility bound</td>
+      <td class="gt_footnote" colspan="16"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>5</sup></span> alpha-spending for efficacy ignores non-binding futility bound</td>
     </tr>
   </tfoot>
 </table>
@@ -1989,25 +1990,25 @@ generated from the time-to-event design as follows. First, we computed
 nominal p-value 1-sided bounds under the null hypothesis for the
 efficacy bounds using the normal approximation that the time-to-event
 design used:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>efficacyNominalPValue <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="sc">-</span>xx<span class="sc">$</span>upper<span class="sc">$</span>bound)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>efficacyNominalPValue</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>efficacyNominalPValue <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="sc">-</span>xx<span class="sc">$</span>upper<span class="sc">$</span>bound)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>efficacyNominalPValue</span></code></pre></div>
 <pre><code>#&gt; [1] 0.003610924 0.007155713 0.021200261</code></pre>
 <p>Then we took the inverse binomial distribution for these p-values
 assuming the targeted total number of cases to obtain:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbinom</span>(<span class="at">p =</span> efficacyNominalPValue, <span class="at">size =</span> xx<span class="sc">$</span>n.I, <span class="at">prob =</span> p0) <span class="sc">-</span> <span class="dv">1</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">qbinom</span>(<span class="at">p =</span> efficacyNominalPValue, <span class="at">size =</span> xx<span class="sc">$</span>n.I, <span class="at">prob =</span> p0) <span class="sc">-</span> <span class="dv">1</span></span></code></pre></div>
 <pre><code>#&gt; [1] 12 23 37</code></pre>
 <p>This is actually the same as the final bounds computed above:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xb<span class="sc">$</span>lower<span class="sc">$</span>bound</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>xb<span class="sc">$</span>lower<span class="sc">$</span>bound</span></code></pre></div>
 <pre><code>#&gt; [1] 12 23 37</code></pre>
 <p>This and the initial approximation for the futility bound are
 returned from <code>toBinomialExact()</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>xb<span class="sc">$</span>init_approx<span class="sc">$</span>a</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>xb<span class="sc">$</span>init_approx<span class="sc">$</span>a</span></code></pre></div>
 <pre><code>#&gt; [1] 12 23 37</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>xb<span class="sc">$</span>init_approx<span class="sc">$</span>b</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>xb<span class="sc">$</span>init_approx<span class="sc">$</span>b</span></code></pre></div>
 <pre><code>#&gt; [1] 20 29 38</code></pre>
 <p>For the futility bound, only a slight adjustment was required for the
 final bound:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>xb<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>xb<span class="sc">$</span>upper<span class="sc">$</span>bound</span></code></pre></div>
 <pre><code>#&gt; [1] 21 30 38</code></pre>
 <p>The vaccine efficacy at bounds should be checked to see if the
 evidence is convincing enough to be accepted as a clinically relevant
@@ -2025,14 +2026,14 @@ function. We also confirm that changing any of the exact bounds by 1
 exceeds the targeting spending.</p>
 <div id="alpha-spending" class="section level4">
 <h4><span class="math inline">\(\alpha\)</span>-spending</h4>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exact design cumulative alpha-spending at efficacy bounds</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (non-binding)</span></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b=</span> xb<span class="sc">$</span>n.I <span class="sc">+</span> <span class="dv">1</span>, <span class="at">a =</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(nb<span class="sc">$</span>lower<span class="sc">$</span>prob[,<span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># Exact design cumulative alpha-spending at efficacy bounds</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co"># (non-binding)</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>nb <span class="ot">&lt;-</span> <span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b=</span> xb<span class="sc">$</span>n.I <span class="sc">+</span> <span class="dv">1</span>, <span class="at">a =</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound)</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="fu">cumsum</span>(nb<span class="sc">$</span>lower<span class="sc">$</span>prob[,<span class="dv">1</span>])</span></code></pre></div>
 <pre><code>#&gt; Analysis  1 Analysis  2 Analysis  3 
 #&gt; 0.001619438 0.006447739 0.017397214</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Targeted alpha-spending</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>xx<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(alpha, <span class="at">t =</span> xx<span class="sc">$</span>timing, xx<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># Targeted alpha-spending</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>xx<span class="sc">$</span>upper<span class="sc">$</span><span class="fu">sf</span>(alpha, <span class="at">t =</span> xx<span class="sc">$</span>timing, xx<span class="sc">$</span>upper<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
 <pre><code>#&gt; [1] 0.003610924 0.009107476 0.025000000</code></pre>
 <p>Above we see the achieved <span class="math inline">\(\alpha\)</span>-spending ignoring the futility
 bound is controlled at the targeted level at each analysis; because of
@@ -2047,15 +2048,15 @@ spending for the exact design is close to the targeted <span class="math inline"
 this case, choosing the Hwang-Shih-DeCani efficacy spending parameter as
 <span class="math inline">\(\gamma=-4\)</span> instead of <span class="math inline">\(\gamma=-3\)</span> second property would not
 hold.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that increasing any bound goes above cumulative spend</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>excess_alpha_spend <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> nb<span class="sc">$</span>k, <span class="at">ncol=</span>nb<span class="sc">$</span>k)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>xb<span class="sc">$</span>k){</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  a[i] <span class="ot">&lt;-</span> a[i] <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  excess_alpha_spend[i,] <span class="ot">&lt;-</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cumsum</span>(<span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b=</span> xb<span class="sc">$</span>n.I <span class="sc">+</span> <span class="dv">1</span>, <span class="at">a =</span> a)<span class="sc">$</span>lower<span class="sc">$</span>prob[,<span class="dv">1</span>])</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>excess_alpha_spend</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Check that increasing any bound goes above cumulative spend</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>excess_alpha_spend <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> nb<span class="sc">$</span>k, <span class="at">ncol=</span>nb<span class="sc">$</span>k)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>xb<span class="sc">$</span>k){</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  a <span class="ot">&lt;-</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>  a[i] <span class="ot">&lt;-</span> a[i] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  excess_alpha_spend[i,] <span class="ot">&lt;-</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>    <span class="fu">cumsum</span>(<span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b=</span> xb<span class="sc">$</span>n.I <span class="sc">+</span> <span class="dv">1</span>, <span class="at">a =</span> a)<span class="sc">$</span>lower<span class="sc">$</span>prob[,<span class="dv">1</span>])</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>}</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>excess_alpha_spend</span></code></pre></div>
 <pre><code>#&gt;             [,1]        [,2]       [,3]
 #&gt; [1,] 0.004979222 0.008826964 0.01933025
 #&gt; [2,] 0.001619438 0.013174419 0.02171228
@@ -2063,12 +2064,12 @@ hold.</p>
 </div>
 <div id="beta-spending" class="section level4">
 <h4><span class="math inline">\(\beta\)</span>-spending</h4>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cumulative beta-spending for exact design</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cumsum</span>(xb<span class="sc">$</span>upper<span class="sc">$</span>prob[,<span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># Cumulative beta-spending for exact design</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">cumsum</span>(xb<span class="sc">$</span>upper<span class="sc">$</span>prob[,<span class="dv">2</span>])</span></code></pre></div>
 <pre><code>#&gt; Analysis  1 Analysis  2 Analysis  3 
 #&gt;  0.01033516  0.02225609  0.09941943</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Targeted beta-spending</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>xx<span class="sc">$</span>lower<span class="sc">$</span><span class="fu">sf</span>(beta, <span class="at">t =</span> xx<span class="sc">$</span>timing, xx<span class="sc">$</span>lower<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># Targeted beta-spending</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>xx<span class="sc">$</span>lower<span class="sc">$</span><span class="fu">sf</span>(beta, <span class="at">t =</span> xx<span class="sc">$</span>timing, xx<span class="sc">$</span>lower<span class="sc">$</span>param)<span class="sc">$</span>spend</span></code></pre></div>
 <pre><code>#&gt; [1] 0.0144437 0.0364299 0.1000000</code></pre>
 <p>Since the futility bound at the final analysis is only 1 plus the
 efficacy bound, it cannot be lowered in the following. However, we see
@@ -2078,15 +2079,15 @@ interim spending (diagonal elements) and total Type II error spending
 to ensure the second of these properties; e.g., with the
 O’Brien-Flemining-like spending function the second property did not
 hold.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check that increasing any bound goes above cumulative spend</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>excess_beta_spend <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> nb<span class="sc">$</span>k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">ncol=</span>nb<span class="sc">$</span>k)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(xb<span class="sc">$</span>k <span class="sc">-</span> <span class="dv">1</span>)){</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> xb<span class="sc">$</span>upper<span class="sc">$</span>bound</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  b[i] <span class="ot">&lt;-</span> b[i] <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  excess_beta_spend[i,] <span class="ot">&lt;-</span></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cumsum</span>(<span class="fu">as.numeric</span>(<span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b =</span> b, <span class="at">a =</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound)<span class="sc">$</span>upper<span class="sc">$</span>prob[,<span class="dv">2</span>]))</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>excess_beta_spend</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co"># Check that increasing any bound goes above cumulative spend</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>excess_beta_spend <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> nb<span class="sc">$</span>k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">ncol=</span>nb<span class="sc">$</span>k)</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(xb<span class="sc">$</span>k <span class="sc">-</span> <span class="dv">1</span>)){</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>  b <span class="ot">&lt;-</span> xb<span class="sc">$</span>upper<span class="sc">$</span>bound</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>  b[i] <span class="ot">&lt;-</span> b[i] <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>  excess_beta_spend[i,] <span class="ot">&lt;-</span></span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>    <span class="fu">cumsum</span>(<span class="fu">as.numeric</span>(<span class="fu">gsBinomialExact</span>(<span class="at">k =</span> xb<span class="sc">$</span>k, <span class="at">theta =</span> xb<span class="sc">$</span>theta, <span class="at">n.I =</span> xb<span class="sc">$</span>n.I, <span class="at">b =</span> b, <span class="at">a =</span> xb<span class="sc">$</span>lower<span class="sc">$</span>bound)<span class="sc">$</span>upper<span class="sc">$</span>prob[,<span class="dv">2</span>]))</span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a>}</span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>excess_beta_spend</span></code></pre></div>
 <pre><code>#&gt;            [,1]       [,2]      [,3]
 #&gt; [1,] 0.02618462 0.03428681 0.1059802
 #&gt; [2,] 0.01033516 0.03746257 0.1034467</code></pre>
@@ -2113,23 +2114,23 @@ the second analysis we exceed the targeted power and never reach the
 allowed <span class="math inline">\(\beta\)</span>-spending for Type II
 error. Note that for this table, the expected sample size and calendar
 timing are no longer needed.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>ebUpdate <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(xx, <span class="at">observedEvents =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">78</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>ebUpdate <span class="ot">&lt;-</span> <span class="fu">toBinomialExact</span>(xx, <span class="at">observedEvents =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">78</span>))</span></code></pre></div>
 <p>We hide the code to produce the table; this is available in package
 vignette code.</p>
-<div id="ylidhzwjwq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ylidhzwjwq table {
+<div id="qokuvfeczq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qokuvfeczq table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#ylidhzwjwq thead, #ylidhzwjwq tbody, #ylidhzwjwq tfoot, #ylidhzwjwq tr, #ylidhzwjwq td, #ylidhzwjwq th {
+#qokuvfeczq thead, #qokuvfeczq tbody, #qokuvfeczq tfoot, #qokuvfeczq tr, #qokuvfeczq td, #qokuvfeczq th {
 border-style: none;
 }
-#ylidhzwjwq p {
+#qokuvfeczq p {
 margin: 0;
 padding: 0;
 }
-#ylidhzwjwq .gt_table {
+#qokuvfeczq .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -2154,11 +2155,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_caption {
+#qokuvfeczq .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#ylidhzwjwq .gt_title {
+#qokuvfeczq .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -2169,7 +2170,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#ylidhzwjwq .gt_subtitle {
+#qokuvfeczq .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -2180,7 +2181,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#ylidhzwjwq .gt_heading {
+#qokuvfeczq .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -2191,12 +2192,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_bottom_border {
+#qokuvfeczq .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_col_headings {
+#qokuvfeczq .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2210,7 +2211,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_col_heading {
+#qokuvfeczq .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2229,7 +2230,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#ylidhzwjwq .gt_column_spanner_outer {
+#qokuvfeczq .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2240,13 +2241,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#ylidhzwjwq .gt_column_spanner_outer:first-child {
+#qokuvfeczq .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#ylidhzwjwq .gt_column_spanner_outer:last-child {
+#qokuvfeczq .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#ylidhzwjwq .gt_column_spanner {
+#qokuvfeczq .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -2257,10 +2258,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#ylidhzwjwq .gt_spanner_row {
+#qokuvfeczq .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#ylidhzwjwq .gt_group_heading {
+#qokuvfeczq .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2285,7 +2286,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#ylidhzwjwq .gt_empty_group_heading {
+#qokuvfeczq .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -2299,13 +2300,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#ylidhzwjwq .gt_from_md > :first-child {
+#qokuvfeczq .gt_from_md > :first-child {
 margin-top: 0;
 }
-#ylidhzwjwq .gt_from_md > :last-child {
+#qokuvfeczq .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#ylidhzwjwq .gt_row {
+#qokuvfeczq .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2323,7 +2324,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#ylidhzwjwq .gt_stub {
+#qokuvfeczq .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2335,7 +2336,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ylidhzwjwq .gt_stub_row_group {
+#qokuvfeczq .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -2348,13 +2349,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#ylidhzwjwq .gt_row_group_first td {
+#qokuvfeczq .gt_row_group_first td {
 border-top-width: 2px;
 }
-#ylidhzwjwq .gt_row_group_first th {
+#qokuvfeczq .gt_row_group_first th {
 border-top-width: 2px;
 }
-#ylidhzwjwq .gt_summary_row {
+#qokuvfeczq .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2363,14 +2364,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ylidhzwjwq .gt_first_summary_row {
+#qokuvfeczq .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_first_summary_row.thick {
+#qokuvfeczq .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#ylidhzwjwq .gt_last_summary_row {
+#qokuvfeczq .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2379,7 +2380,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_grand_summary_row {
+#qokuvfeczq .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -2388,7 +2389,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ylidhzwjwq .gt_first_grand_summary_row {
+#qokuvfeczq .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2397,7 +2398,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_last_grand_summary_row_top {
+#qokuvfeczq .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -2406,10 +2407,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_striped {
+#qokuvfeczq .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#ylidhzwjwq .gt_table_body {
+#qokuvfeczq .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -2417,7 +2418,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_footnotes {
+#qokuvfeczq .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2430,7 +2431,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_footnote {
+#qokuvfeczq .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -2438,7 +2439,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ylidhzwjwq .gt_sourcenotes {
+#qokuvfeczq .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -2451,64 +2452,64 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ylidhzwjwq .gt_sourcenote {
+#qokuvfeczq .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ylidhzwjwq .gt_left {
+#qokuvfeczq .gt_left {
 text-align: left;
 }
-#ylidhzwjwq .gt_center {
+#qokuvfeczq .gt_center {
 text-align: center;
 }
-#ylidhzwjwq .gt_right {
+#qokuvfeczq .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#ylidhzwjwq .gt_font_normal {
+#qokuvfeczq .gt_font_normal {
 font-weight: normal;
 }
-#ylidhzwjwq .gt_font_bold {
+#qokuvfeczq .gt_font_bold {
 font-weight: bold;
 }
-#ylidhzwjwq .gt_font_italic {
+#qokuvfeczq .gt_font_italic {
 font-style: italic;
 }
-#ylidhzwjwq .gt_super {
+#qokuvfeczq .gt_super {
 font-size: 65%;
 }
-#ylidhzwjwq .gt_footnote_marks {
+#qokuvfeczq .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#ylidhzwjwq .gt_asterisk {
+#qokuvfeczq .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#ylidhzwjwq .gt_indent_1 {
+#qokuvfeczq .gt_indent_1 {
 text-indent: 5px;
 }
-#ylidhzwjwq .gt_indent_2 {
+#qokuvfeczq .gt_indent_2 {
 text-indent: 10px;
 }
-#ylidhzwjwq .gt_indent_3 {
+#qokuvfeczq .gt_indent_3 {
 text-indent: 15px;
 }
-#ylidhzwjwq .gt_indent_4 {
+#qokuvfeczq .gt_indent_4 {
 text-indent: 20px;
 }
-#ylidhzwjwq .gt_indent_5 {
+#qokuvfeczq .gt_indent_5 {
 text-indent: 25px;
 }
-#ylidhzwjwq .katex-display {
+#qokuvfeczq .katex-display {
 display: inline-flex !important;
 margin-bottom: 0.75em !important;
 }
-#ylidhzwjwq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qokuvfeczq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
 height: 0px !important;
 }
 </style>
@@ -2521,29 +2522,29 @@ height: 0px !important;
     <tr class="gt_col_headings gt_spanner_row">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Analysis">Analysis</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" scope="col" id="Cases">Cases</th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Cases at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="cases">
+        <div class="gt_column_spanner">Cases at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="VE at Bound&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">VE at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="vebound">
+        <div class="gt_column_spanner">VE at Bound<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Error Spending&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="spend">
+        <div class="gt_column_spanner">Error Spending<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>3</sup></span></div>
       </th>
-      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="Power by VE&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;4&lt;/sup&gt;&lt;/span&gt;">
-        <span class="gt_column_spanner">Power by VE<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span></span>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="3" scope="colgroup" id="power">
+        <div class="gt_column_spanner">Power by VE<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>4</sup></span></div>
       </th>
     </tr>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Success">Success</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Efficacy">Efficacy</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Futility">Futility</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha&lt;span class=&quot;gt_footnote_marks&quot; style=&quot;white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;&quot;&gt;&lt;sup&gt;5&lt;/sup&gt;&lt;/span&gt;">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ve_efficacy">Efficacy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="ve_futility">Futility</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="alpha">alpha<span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>5</sup></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="beta">beta</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="65%">65%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="75%">75%</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="85%">85%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a65%">65%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a75%">75%</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a85%">85%</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -2573,19 +2574,19 @@ height: 0px !important;
   
   <tfoot class="gt_footnotes">
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>1</sup></span> Experimental case counts; counts between success and futility bounds do not stop trial</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> Experimental case counts; counts between success and futility bounds do not stop trial</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>2</sup></span> Exact vaccine efficacy required to cross bound</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>3</sup></span> Cumulative spending at each analysis</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>4</sup></span> Cumulative power at each analysis by underlying vaccine efficacy</td>
     </tr>
     <tr>
-      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height: 0;"><sup>5</sup></span> Efficacy spending ignores non-binding futility bound</td>
+      <td class="gt_footnote" colspan="11"><span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>5</sup></span> Efficacy spending ignores non-binding futility bound</td>
     </tr>
   </tfoot>
 </table>
@@ -2608,7 +2609,7 @@ and trial duration.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-ChanBohidar" class="csl-entry">
 Chan, Ivan SF, and Norman R Bohidar. 1998. <span>“Exact Power and Sample
 Size for Vaccine Efficacy Studies.”</span> <em>Communications in

@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -148,6 +148,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -517,8 +518,8 @@ still controlled at the design <span class="math inline">\(\alpha\)</span>-level
 for approvals of new treatments, non-binding Type I error calculation is
 generally expected by regulators.</p>
 <p>For any given <span class="math inline">\(0&lt;\alpha&lt;1\)</span>
-we define a non-decreasing <span class="math inline">\(\alpha\)</span>-spending function <span class="math inline">\(f(t; \alpha)\)</span> for <span class="math inline">\(t\geq 0\)</span> with <span class="math inline">\(\alpha\left( 0\right) =0\)</span> and for <span class="math inline">\(t\geq 1\)</span>, <span class="math inline">\(f(
-t; \alpha) =\alpha\)</span>. Letting <span class="math inline">\(t_0=0\)</span>, we set <span class="math inline">\(\alpha_j(0)\)</span> for <span class="math inline">\(j=1,\ldots,k\)</span> through the equation <span class="math display">\[\alpha^+_{j}(0) = f(t_j;\alpha)-f(t_{j-1};
+we define a non-decreasing <span class="math inline">\(\alpha\)</span>-spending function <span class="math inline">\(f(t; \alpha)\)</span> for <span class="math inline">\(t\geq 0\)</span> with <span class="math inline">\(\alpha\left(  0\right)  =0\)</span> and for <span class="math inline">\(t\geq 1\)</span>, <span class="math inline">\(f(
+t; \alpha)  =\alpha\)</span>. Letting <span class="math inline">\(t_0=0\)</span>, we set <span class="math inline">\(\alpha_j(0)\)</span> for <span class="math inline">\(j=1,\ldots,k\)</span> through the equation <span class="math display">\[\alpha^+_{j}(0) = f(t_j;\alpha)-f(t_{j-1};
 \alpha).\]</span> Assuming an asymmetric lower bound, we similarly use a
 <span class="math inline">\(\beta\)</span>-spending function and to set
 <span class="math inline">\(\beta\)</span>-spending at analysis <span class="math inline">\(j=1,\ldots, k\)</span> as: <span class="math display">\[\beta_{j}(\delta_1) = g(t_j;\delta_1, \beta) -
@@ -536,50 +537,51 @@ analysis half way through the trial with</p>
 <p><span class="math display">\[g(t; \beta) =
 2\left(  1-\Phi\left(  \frac{\Phi
 ^{-1}(\beta/2)}{\sqrt{t}}\right)  \right).\]</span></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span></code></pre></div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>delta1 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># Treatment effect, alternate hypothesis</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>delta0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Treatment effect, null hypothesis</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># Randomization ratio (experimental / control)</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fl">7.5</span> <span class="co"># Standard deviation for change in HAM-D score</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 1-sided Type I error</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fl">0.17</span> <span class="co"># Targeted Type II error (1 - targeted power)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># Number of planned analyses</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>test.type <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># Asymmetric bound design with non-binding futility bound</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>timing <span class="ot">&lt;-</span> .<span class="dv">5</span> <span class="co"># information fraction at interim analyses</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>sfu <span class="ot">&lt;-</span> sfLDOF <span class="co"># O&#39;Brien-Fleming spending function for alpha-spending</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>sfupar <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Parameter for upper spending function</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>sfl <span class="ot">&lt;-</span> sfLDOF <span class="co"># O&#39;Brien-Fleming spending function for beta-spending</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>sflpar <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Parameter for lower spending function</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;normal&quot;</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive normal fixed design sample size</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nNormal</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta1 =</span> delta1,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta0 =</span> delta0,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio =</span> ratio,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> sd,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> alpha,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> beta</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Derive group sequential design based on parameters above</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> k,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">test.type =</span> test.type,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> alpha,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> beta,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">timing =</span> timing,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfu,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfupar =</span> sfupar,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfl =</span> sfl,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sflpar =</span> sflpar,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> delta, <span class="co"># Not used since n.fix is provided</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta1 =</span> delta1,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta0 =</span> delta0,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;normal&quot;</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.fix =</span> n</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert sample size at each analysis to integer values</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>delta1 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># Treatment effect, alternate hypothesis</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>delta0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Treatment effect, null hypothesis</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>ratio <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># Randomization ratio (experimental / control)</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>sd <span class="ot">&lt;-</span> <span class="fl">7.5</span> <span class="co"># Standard deviation for change in HAM-D score</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="co"># 1-sided Type I error</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fl">0.17</span> <span class="co"># Targeted Type II error (1 - targeted power)</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># Number of planned analyses</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>test.type <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># Asymmetric bound design with non-binding futility bound</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>timing <span class="ot">&lt;-</span> .<span class="dv">5</span> <span class="co"># information fraction at interim analyses</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>sfu <span class="ot">&lt;-</span> sfLDOF <span class="co"># O&#39;Brien-Fleming spending function for alpha-spending</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>sfupar <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Parameter for upper spending function</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>sfl <span class="ot">&lt;-</span> sfLDOF <span class="co"># O&#39;Brien-Fleming spending function for beta-spending</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>sflpar <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># Parameter for lower spending function</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>endpoint <span class="ot">&lt;-</span> <span class="st">&quot;normal&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Derive normal fixed design sample size</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nNormal</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">delta1 =</span> delta1,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">delta0 =</span> delta0,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">ratio =</span> ratio,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">sd =</span> sd,</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">alpha =</span> alpha,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="at">beta =</span> beta</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Derive group sequential design based on parameters above</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">k =</span> k,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">test.type =</span> test.type,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">alpha =</span> alpha,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">beta =</span> beta,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">timing =</span> timing,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">sfu =</span> sfu,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">sfupar =</span> sfupar,</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="at">sfl =</span> sfl,</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>  <span class="at">sflpar =</span> sflpar,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  <span class="at">delta =</span> delta, <span class="co"># Not used since n.fix is provided</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="at">delta1 =</span> delta1,</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  <span class="at">delta0 =</span> delta0,</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  <span class="at">endpoint =</span> <span class="st">&quot;normal&quot;</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>  <span class="at">n.fix =</span> n</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>)</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co"># Convert sample size at each analysis to integer values</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">toInteger</span>(x)</span></code></pre></div>
+<pre><code>#&gt; toInteger: rounding done to nearest integer since ratio was not specified as postive integer .</code></pre>
 <p>The planned design used <span class="math inline">\(\alpha=0.1\)</span>, one-sided and Type II error
 17% (83% power) with an interim analysis at 50% of the final planned
 observations. This leads to Type I <span class="math inline">\(\alpha\)</span>-spending of 0.02 and <span class="math inline">\(\beta\)</span>-spending of 0.052 at the planned
@@ -608,37 +610,37 @@ for <code>P(Cross) if delta=0</code> is less than the planned <span class="math 
 <span class="math inline">\(\alpha(0)\)</span> which excludes the
 probability of crossing the lower bound at the interim analysis and the
 final analysis. The value of the non-binding Type I error is still <span class="math inline">\(\alpha^+(0) = 0.10\)</span>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Updated alpha is unchanged</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>alphau <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Updated sample size at each analysis</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>n.I <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">134</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Updated number of analyses</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>ku <span class="ot">&lt;-</span> <span class="fu">length</span>(n.I)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Information fraction is used for spending</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>usTime <span class="ot">&lt;-</span> n.I <span class="sc">/</span> x<span class="sc">$</span>n.I[x<span class="sc">$</span>k]</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lsTime <span class="ot">&lt;-</span> usTime</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Update design based on actual interim sample size and planned final sample size</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>xu <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> ku,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">test.type =</span> test.type,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> alphau,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta =</span> x<span class="sc">$</span>beta,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfu =</span> sfu,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfupar =</span> sfupar,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sfl =</span> sfl,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">sflpar =</span> sflpar,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.I =</span> n.I,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxn.IPlan =</span> x<span class="sc">$</span>n.I[x<span class="sc">$</span>k],</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> x<span class="sc">$</span>delta,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta1 =</span> x<span class="sc">$</span>delta1,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta0 =</span> x<span class="sc">$</span>delta0,</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">endpoint =</span> endpoint,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">n.fix =</span> n,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">usTime =</span> usTime,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">lsTime =</span> lsTime</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize bounds</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(xu, <span class="at">Nname =</span> <span class="st">&quot;N&quot;</span>, <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">ddigits =</span> <span class="dv">2</span>, <span class="at">tdigits =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Updated alpha is unchanged</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>alphau <span class="ot">&lt;-</span> <span class="fl">0.1</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># Updated sample size at each analysis</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>n.I <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">59</span>, <span class="dv">134</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># Updated number of analyses</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>ku <span class="ot">&lt;-</span> <span class="fu">length</span>(n.I)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Information fraction is used for spending</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>usTime <span class="ot">&lt;-</span> n.I <span class="sc">/</span> x<span class="sc">$</span>n.I[x<span class="sc">$</span>k]</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>lsTime <span class="ot">&lt;-</span> usTime</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Update design based on actual interim sample size and planned final sample size</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>xu <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">k =</span> ku,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">test.type =</span> test.type,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">alpha =</span> alphau,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">beta =</span> x<span class="sc">$</span>beta,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">sfu =</span> sfu,</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">sfupar =</span> sfupar,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">sfl =</span> sfl,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">sflpar =</span> sflpar,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">n.I =</span> n.I,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">maxn.IPlan =</span> x<span class="sc">$</span>n.I[x<span class="sc">$</span>k],</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">delta =</span> x<span class="sc">$</span>delta,</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">delta1 =</span> x<span class="sc">$</span>delta1,</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">delta0 =</span> x<span class="sc">$</span>delta0,</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">endpoint =</span> endpoint,</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">n.fix =</span> n,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="at">usTime =</span> usTime,</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="at">lsTime =</span> lsTime</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Summarize bounds</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">gsBoundSummary</span>(xu, <span class="at">Nname =</span> <span class="st">&quot;N&quot;</span>, <span class="at">digits =</span> <span class="dv">4</span>, <span class="at">ddigits =</span> <span class="dv">2</span>, <span class="at">tdigits =</span> <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>#&gt;   Analysis               Value Efficacy Futility
 #&gt;  IA 1: 44%                   Z   2.2209  -0.2304
 #&gt;      N: 59         p (1-sided)   0.0132   0.5911
@@ -653,7 +655,7 @@ final analysis. The value of the non-binding Type I error is still <span class="
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-binneman20086" class="csl-entry">
 Binneman, Brendon, Douglas Feltner, Sheela Kolluri, Yuanjun Shi, Ruolun
 Qiu, and Thomas Stiger. 2008. <span>“A 6-Week Randomized,

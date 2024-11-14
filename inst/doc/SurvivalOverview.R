@@ -56,7 +56,7 @@ Schoenfeld %>%
   kable(row.names = FALSE)
 
 ## ----eval=FALSE-----------------------------------------
-#  Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr)) %>% toInteger()
+# Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr)) %>% toInteger()
 
 ## -------------------------------------------------------
 Schoenfeld$n.I
