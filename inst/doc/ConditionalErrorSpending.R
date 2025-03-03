@@ -2,9 +2,7 @@
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  dev = "ragg_png",
-  dpi = 96,
-  fig.retina = 2,
+  dev = "svg",
   fig.width = 7,
   fig.asp = 1,
   fig.align = "center",
