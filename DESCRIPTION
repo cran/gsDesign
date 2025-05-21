@@ -1,9 +1,10 @@
 Package: gsDesign
-Version: 3.6.7
+Version: 3.6.8
 Title: Group Sequential Design
 Authors@R: c(
     person("Keaven", "Anderson", email = "keaven_anderson@merck.com", role = c("aut", "cre")),
-    person("Merck & Co., Inc., Rahway, NJ, USA and its affiliates", role = "cph")
+    person("Merck & Co., Inc., Rahway, NJ, USA and its affiliates", role = "cph",
+           comment = c(ROR = "02891sr49"))
     )
 Description: Derives group sequential clinical trial designs and describes
     their properties. Particular focus on time-to-event, binary, and
@@ -24,9 +25,10 @@ Suggests: covr, data.table, gridExtra, kableExtra, knitr, mvtnorm,
 VignetteBuilder: knitr
 RoxygenNote: 7.3.2
 NeedsCompilation: yes
-Packaged: 2025-03-03 15:42:11 UTC; xiaonan4
+Packaged: 2025-05-21 05:30:39 UTC; xiaonan4
 Author: Keaven Anderson [aut, cre],
-  Merck & Co., Inc., Rahway, NJ, USA and its affiliates [cph]
+  Merck & Co., Inc., Rahway, NJ, USA and its affiliates [cph] (ROR:
+    <https://ror.org/02891sr49>)
 Maintainer: Keaven Anderson <keaven_anderson@merck.com>
 Repository: CRAN
-Date/Publication: 2025-03-03 22:20:06 UTC
+Date/Publication: 2025-05-21 14:10:02 UTC

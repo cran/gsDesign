@@ -3,6 +3,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   dev = "svg",
+  fig.ext = "svg",
   fig.width = 7,
   fig.asp = 1,
   fig.align = "center",
