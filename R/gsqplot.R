@@ -607,14 +607,14 @@ plotgsCP <- function(x, theta = "thetahat", main = "Conditional power at interim
     )
     if (x$n.fix == 1) {
       if (base) {
-        graphics::text(x = y2$N, y = y2$CP, paste(rep("r=", x$k), y2$Ztxt, sep = ""), cex = cex)
+        graphics::text(x = y2$N, y = y2$CP, paste(rep("r=", length(y2$Ztxt)), y2$Ztxt, sep = ""), cex = cex)
       } else {
         y2$Ztxt <- paste(rep("r=", x$k - 1), y2$Ztxt, sep = "")
         p <- p + geom_text(data = y2, aes(N, CP, group = factor(Bound), label = Ztxt), size = cex * 5, colour = getColor(1))
       }
     } else {
       if (base) {
-        graphics::text(x = y2$N, y = y2$CP, paste(rep("N=", x$k), y2$Ztxt, sep = ""), cex = cex)
+        graphics::text(x = y2$N, y = y2$CP, paste(rep("N=", length(y2$Ztxt)), y2$Ztxt, sep = ""), cex = cex)
       } else {
         y2$Ztxt <- paste(rep("N=", x$k - 1), y2$Ztxt, sep = "")
         p <- p + geom_text(data = y2, aes(N, CP, group = factor(Bound), label = Ztxt), size = cex * 5, colour = getColor(1))
@@ -893,7 +893,7 @@ plotgsPower <- function(x, main = "Boundary crossing probabilities by effect siz
                            col = .data$Bound,
                            lty = .data$Analysis)
                          ) + 
-      ggplot2::geom_line(size = lwd) + 
+      ggplot2::geom_line(lwd = lwd) + 
       ggplot2::ylab(ylab) +
       ggplot2::guides(color = ggplot2::guide_legend(title = "Probability")) + 
       ggplot2::xlab(xlab) +
