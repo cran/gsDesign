@@ -19,11 +19,11 @@ library(knitr)
 library(tibble)
 
 ## -------------------------------------------------------
-design <- gsSurv(hr = 0.7, lambdaC = log(2) / 12, minfup = 24, T = 36) %>% toInteger()
-design %>% gsBoundSummary()
+design <- gsSurv(hr = 0.7, lambdaC = log(2) / 12, minfup = 24, T = 36) |> toInteger()
+design |> gsBoundSummary()
 
 ## ----results = 'asis'-----------------------------------
-cat(design %>% summary())
+cat(design |> summary())
 
 ## -------------------------------------------------------
 update <- gsDesign(

@@ -34,7 +34,7 @@ beta <- 0.1
 (1 + r)^2 / r / log(hr)^2 * ((qnorm(1 - alpha) + qnorm(1 - beta)))^2
 
 ## -------------------------------------------------------
-nEvents(hr = hr, alpha = alpha, beta = beta, r = 1, tbl = TRUE) %>%
+nEvents(hr = hr, alpha = alpha, beta = beta, r = 1, tbl = TRUE) |>
   kable()
 
 ## -------------------------------------------------------
@@ -49,13 +49,13 @@ Schoenfeld <- gsDesign(
   k = 2,
   n.fix = nEvents(hr = hr, alpha = alpha, beta = beta, r = 1),
   delta1 = log(hr)
-) %>% toInteger()
-Schoenfeld %>%
-  gsBoundSummary(deltaname = "HR", logdelta = TRUE, Nname = "Events") %>%
+) |> toInteger()
+Schoenfeld |>
+  gsBoundSummary(deltaname = "HR", logdelta = TRUE, Nname = "Events") |>
   kable(row.names = FALSE)
 
 ## ----eval=FALSE-----------------------------------------
-# Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr)) %>% toInteger()
+# Schoenfeld <- gsDesign(k = 2, delta = -theta, delta1 = log(hr)) |> toInteger()
 
 ## -------------------------------------------------------
 Schoenfeld$n.I
@@ -151,9 +151,9 @@ lfgs <- gsSurv(
   ratio = r,
   alpha = alpha,
   beta = beta
-) %>% toInteger()
-lfgs %>%
-  gsBoundSummary() %>%
+) |> toInteger()
+lfgs |>
+  gsBoundSummary() |>
   kable(row.names = FALSE)
 
 ## -------------------------------------------------------
@@ -169,7 +169,7 @@ tibble::tibble(
   Analysis = 1:2,
   `Control events` = lfgs$eDC,
   `Experimental events` = lfgs$eDE
-) %>%
+) |>
   kable()
 
 ## ----fig.asp=1------------------------------------------

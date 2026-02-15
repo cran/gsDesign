@@ -24,10 +24,6 @@ library(ggplot2)
 p <- plot(b, plottype = 2)
 p + scale_y_continuous(breaks = seq(0, 90, 10))
 
-## ----warning=FALSE, message=FALSE-----------------------
-library(dplyr)
-library(tidyr)
-
 ## -------------------------------------------------------
 # Compute boundary crossing probabilities for selected response rates
 b_power <- gsBinomialExact(
@@ -36,8 +32,8 @@ b_power <- gsBinomialExact(
 )
 
 ## -------------------------------------------------------
-b_power %>%
-  as_table() %>%
+b_power |>
+  as_table() |>
   as_gt()
 
 ## -------------------------------------------------------
@@ -55,8 +51,8 @@ safety_power <- gsBinomialExact(
   a = safety_design$lower$bound,
   b = safety_design$upper$bound
 )
-safety_power %>%
-  as_table() %>%
+safety_power |>
+  as_table() |>
   as_gt(
     theta_label = gt::html("Underlying<br>AE rate"),
     prob_decimals = 3,
