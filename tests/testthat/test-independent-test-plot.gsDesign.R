@@ -34,11 +34,34 @@ test_that("plot.gsDesign: plots are correctly rendered for plottype 2 and base s
   )
 })
 
-test_that("plot.gsDesign: plots are correctly rendered for plottype 3 and base set to TRUE", {
+# R 4.5.3 fixes plotmath subscript placement (tall subscripts were previously
+# positioned too high), which changes text rendering and breaks vdiffr
+# snapshots. Keep two expectations, one for R < 4.5.3 and one for R >= 4.5.3.
+test_that("plot.gsDesign: plots are correctly rendered for plottype 3 and base set to TRUE (R < 4.5.3)", {
+  local_edition(3)
+  announce_snapshot_file("independent-test-plot.gsDesign/plottype-3-base-true.svg")
+  # skip_unless_r() has been available since testthat 3.3.0 released in November 2025.
+  # If you can't use it, do NOT add shims for older testthat versions,
+  # but update your testthat version instead.
+  skip_unless_r("< 4.5.3")
+
   x <- gsDesign(k = 5, test.type = 2, n.fix = 100)
 
   vdiffr::expect_doppelganger(
     "plottype 3 base TRUE",
+    capture.output(plot.gsDesign(x, plottype = 3, base = TRUE))
+  )
+})
+
+test_that("plot.gsDesign: plots are correctly rendered for plottype 3 and base set to TRUE (R >= 4.5.3)", {
+  local_edition(3)
+  announce_snapshot_file("independent-test-plot.gsDesign/plottype-3-base-true-r453plus.svg")
+  skip_unless_r(">= 4.5.3")
+
+  x <- gsDesign(k = 5, test.type = 2, n.fix = 100)
+
+  vdiffr::expect_doppelganger(
+    "plottype 3 base TRUE R453plus",
     capture.output(plot.gsDesign(x, plottype = 3, base = TRUE))
   )
 })
@@ -52,11 +75,28 @@ test_that("plot.gsDesign: graphs are correctly rendered for plottype 4 and base 
   )
 })
 
-test_that("plot.gsDesign: plots are correctly rendered for plottype 4 and base set to TRUE", {
+test_that("plot.gsDesign: plots are correctly rendered for plottype 4 and base set to TRUE (R < 4.5.3)", {
+  local_edition(3)
+  announce_snapshot_file("independent-test-plot.gsDesign/plottype-4-base-true.svg")
+  skip_unless_r("< 4.5.3")
+
   x <- gsDesign(k = 5, test.type = 2, n.fix = 100)
 
   vdiffr::expect_doppelganger(
     "plottype 4 base TRUE",
+    capture.output(plot.gsDesign(x, plottype = 4, base = TRUE))
+  )
+})
+
+test_that("plot.gsDesign: plots are correctly rendered for plottype 4 and base set to TRUE (R >= 4.5.3)", {
+  local_edition(3)
+  announce_snapshot_file("independent-test-plot.gsDesign/plottype-4-base-true-r453plus.svg")
+  skip_unless_r(">= 4.5.3")
+
+  x <- gsDesign(k = 5, test.type = 2, n.fix = 100)
+
+  vdiffr::expect_doppelganger(
+    "plottype 4 base TRUE R453plus",
     capture.output(plot.gsDesign(x, plottype = 4, base = TRUE))
   )
 })

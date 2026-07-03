@@ -1,3 +1,12 @@
+# gsMaskXtableColumn function [sinew] ----
+gsMaskXtableColumn <- function(column_values, bound_obj, test_flag = NULL, stats_per_analysis = 5) {
+  inactive <- gsBoundDisplayInactive(bound_obj, test_flag)
+  if (length(inactive) > 0 && any(inactive)) {
+    column_values[rep(inactive, each = stats_per_analysis)] <- NA_character_
+  }
+  column_values
+}
+
 # xtable.gsDesign roxy [sinew] ----
 #' @title Summary table of gsDesign using xtable
 #' 
@@ -57,8 +66,6 @@ xtable.gsDesign <- function(x, caption = NULL, label = NULL, align = NULL, digit
   st <- stat
   for (i in 2:k) stat <- c(stat, st)
   an <- rep(" ", 5 * k)
-  tim <- an
-  enrol <- an
   fut <- an
   eff <- an
   an[5 * (0:(k - 1)) + 1] <- c(paste("IA ",
@@ -92,6 +99,8 @@ xtable.gsDesign <- function(x, caption = NULL, label = NULL, align = NULL, digit
   bsp <- as.character(round(cumsum(x$lower$prob[, 2]), 4))
   bsp[bsp == "0"] <- "$< 0.0001$"
   fut[5 * (0:(k - 1)) + 5] <- bsp
+  eff <- gsMaskXtableColumn(eff, x$upper, x$testUpper)
+  fut <- gsMaskXtableColumn(fut, x$lower, x$testLower)
   neff <- length(eff)
   if (!is.null(footnote)) {
     eff[neff] <- paste(
@@ -99,8 +108,29 @@ xtable.gsDesign <- function(x, caption = NULL, label = NULL, align = NULL, digit
       fnwid, "}}{\\footnotesize", footnote, "}"
     )
   }
-  x <- data.frame(an, stat, fut, eff)
-  colnames(x) <- c("Analysis", "Value", "Futility", "Efficacy")
+  if (x$test.type %in% c(7, 8) && !is.null(x$harm)) {
+    harm <- rep(" ", 5 * k)
+    harm[5 * (0:(k - 1)) + 1] <- as.character(round(x$harm$bound, 2))
+    hsp <- as.character(round(stats::pnorm(-x$harm$bound), 4))
+    hsp[hsp == "0"] <- " $< 0.0001$"
+    harm[5 * (0:(k - 1)) + 2] <- hsp
+    deltaharm <- gsDelta(x = x, i = 1:x$k, z = x$harm$bound[1:x$k])
+    if (logdelta) deltaharm <- exp(deltaharm)
+    hsp <- as.character(round(deltaharm, 4))
+    harm[5 * (0:(k - 1)) + 3] <- hsp
+    hsp <- as.character(round(cumsum(x$harm$prob[, 1]), 5))
+    hsp[hsp == "0"] <- "$< 0.0001$"
+    harm[5 * (0:(k - 1)) + 4] <- hsp
+    hsp <- as.character(round(cumsum(x$harm$prob[, 2]), 4))
+    hsp[hsp == "0"] <- "$< 0.0001$"
+    harm[5 * (0:(k - 1)) + 5] <- hsp
+    harm <- gsMaskXtableColumn(harm, x$harm, x$testHarm)
+    x <- data.frame(an, stat, harm, fut, eff)
+    colnames(x) <- c("Analysis", "Value", "Harm", "Futility", "Efficacy")
+  } else {
+    x <- data.frame(an, stat, fut, eff)
+    colnames(x) <- c("Analysis", "Value", "Futility", "Efficacy")
+  }
   xtable::xtable(x, caption = caption, label = label, align = align, digits = digits, display = display, ...)
 }
 

@@ -1,5 +1,5 @@
 Package: gsDesign
-Version: 3.9.0
+Version: 3.10.0
 Title: Group Sequential Design
 Authors@R: c(
     person("Keaven", "Anderson", email = "keaven_anderson@merck.com", role = c("aut", "cre")),
@@ -21,14 +21,14 @@ Depends: R (>= 4.1.0)
 Imports: dplyr (>= 1.1.0), ggplot2 (>= 3.1.1), graphics, gt, methods,
         r2rtf, rlang, stats, tibble, tidyr, tools, xtable
 Suggests: covr, data.table, gridExtra, kableExtra, knitr, mvtnorm,
-        rmarkdown, scales, testthat, utils, vdiffr
+        rmarkdown, rpact, scales, testthat, utils, vdiffr
 VignetteBuilder: knitr
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: yes
-Packaged: 2026-02-15 06:25:59 UTC; xiaonan4
+Packaged: 2026-07-02 15:29:07 UTC; Anderkea
 Author: Keaven Anderson [aut, cre],
   Merck & Co., Inc., Rahway, NJ, USA and its affiliates [cph] (ROR:
     <https://ror.org/02891sr49>)
 Maintainer: Keaven Anderson <keaven_anderson@merck.com>
 Repository: CRAN
-Date/Publication: 2026-02-15 14:50:09 UTC
+Date/Publication: 2026-07-03 02:20:02 UTC

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>gsDesign versus PROC SEQDESIGN</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">gsDesign versus PROC SEQDESIGN</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette compares two common workflows for group sequential
+design:</p>
+<ul>
+<li><code>gsDesign</code> in R, and</li>
+<li><code>PROC SEQDESIGN</code> in SAS.</li>
+</ul>
+<p>The goal is not to claim one method is universally better, but to
+clarify where the methods are aligned and where their assumptions and
+outputs differ in day-to-day use.</p>
+</div>
+<div id="common-statistical-foundation" class="section level2">
+<h2>Common statistical foundation</h2>
+<p>Both approaches are built on the same core large-sample theory:</p>
+<ul>
+<li>repeated looks at a test statistic over increasing information,</li>
+<li>approximate multivariate normality with independent increments,</li>
+<li>control of one- or two-sided Type I error across interim
+analyses.</li>
+</ul>
+<p>In other words, if you match design intent (error rates, timing,
+boundary family, and endpoint scale), you should expect qualitatively
+similar operating characteristics.</p>
+</div>
+<div id="where-assumptions-differ-in-practice" class="section level2">
+<h2>Where assumptions differ in practice</h2>
+<p>The table below summarizes practical differences users most often
+encounter.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>assumption_cmp <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="at">Topic =</span> <span class="fu">c</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    <span class="st">&quot;Parameterization&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="st">&quot;Information-time handling&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="st">&quot;Futility interpretation&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="st">&quot;Design flexibility&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  ),</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">gsDesign =</span> <span class="fu">c</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="st">&quot;Directly parameterized around spending functions and canonical Z-scale boundaries.&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="st">&quot;Arbitrary timing vector is natural input; design can be recalibrated from information fractions.&quot;</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    <span class="st">&quot;Explicit non-binding vs binding behavior through design/test-type choices.&quot;</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="st">&quot;Broad function-level customization in R objects and user-defined workflows.&quot;</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  ),</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">PROC_SEQDESIGN =</span> <span class="fu">c</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    <span class="st">&quot;Specified via procedure statements/options that map to boundary families and error control targets.&quot;</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>    <span class="st">&quot;Stage structure and information schedule are declared in procedure options.&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="st">&quot;Futility behavior is typically encoded by boundary/stop choices and analysis conventions.&quot;</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="st">&quot;Strong standardized procedure workflow with ODS-oriented reporting.&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  ),</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="at">check.names =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(assumption_cmp, <span class="at">align =</span> <span class="fu">c</span>(<span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>, <span class="st">&quot;l&quot;</span>))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="43%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Topic</th>
+<th align="left">gsDesign</th>
+<th align="left">PROC_SEQDESIGN</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Parameterization</td>
+<td align="left">Directly parameterized around spending functions and
+canonical Z-scale boundaries.</td>
+<td align="left">Specified via procedure statements/options that map to
+boundary families and error control targets.</td>
+</tr>
+<tr class="even">
+<td align="left">Information-time handling</td>
+<td align="left">Arbitrary timing vector is natural input; design can be
+recalibrated from information fractions.</td>
+<td align="left">Stage structure and information schedule are declared
+in procedure options.</td>
+</tr>
+<tr class="odd">
+<td align="left">Futility interpretation</td>
+<td align="left">Explicit non-binding vs binding behavior through
+design/test-type choices.</td>
+<td align="left">Futility behavior is typically encoded by boundary/stop
+choices and analysis conventions.</td>
+</tr>
+<tr class="even">
+<td align="left">Design flexibility</td>
+<td align="left">Broad function-level customization in R objects and
+user-defined workflows.</td>
+<td align="left">Strong standardized procedure workflow with
+ODS-oriented reporting.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="where-outputs-differ" class="section level2">
+<h2>Where outputs differ</h2>
+<p>Both methods provide stopping boundaries and operating
+characteristics, but the default output style is different.</p>
+<ul>
+<li><code>gsDesign</code> returns an R object with components for
+boundaries, spending, crossing probabilities, sample size inflation, and
+plotting support.</li>
+<li><code>PROC SEQDESIGN</code> provides procedure output tables
+(commonly via ODS) with boundary and operating-characteristic
+summaries.</li>
+</ul>
+<p>In short, <code>gsDesign</code> tends to be object-centric for
+programmable post-processing, whereas <code>PROC SEQDESIGN</code> is
+report-centric out of the box.</p>
+</div>
+<div id="worked-gsdesign-example" class="section level2">
+<h2>Worked <code>gsDesign</code> example</h2>
+<p>We generate a one-sided, 3-look design with O’Brien-Fleming-like
+spending for efficacy and futility.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">gsDesign</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">3</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">test.type =</span> <span class="dv">4</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.025</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">beta =</span> <span class="fl">0.10</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(<span class="fl">0.33</span>, <span class="fl">0.67</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  <span class="at">sfupar =</span> <span class="dv">0</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="at">sfl =</span> sfLDOF,</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">sflpar =</span> <span class="dv">0</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>gs_tbl <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="at">Analysis =</span> <span class="fu">seq_len</span>(x<span class="sc">$</span>k),</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">InfoFrac =</span> x<span class="sc">$</span>timing,</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="at">LowerZ =</span> <span class="fu">round</span>(x<span class="sc">$</span>lower<span class="sc">$</span>bound, <span class="dv">3</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="at">UpperZ =</span> <span class="fu">round</span>(x<span class="sc">$</span>upper<span class="sc">$</span>bound, <span class="dv">3</span>),</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="at">LowerSpend =</span> <span class="fu">signif</span>(x<span class="sc">$</span>lower<span class="sc">$</span>spend, <span class="dv">4</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  <span class="at">UpperSpend =</span> <span class="fu">signif</span>(x<span class="sc">$</span>upper<span class="sc">$</span>spend, <span class="dv">4</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">ceiling</span>(x<span class="sc">$</span>n.I)</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>)</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(gs_tbl)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Analysis</th>
+<th align="right">InfoFrac</th>
+<th align="right">LowerZ</th>
+<th align="right">UpperZ</th>
+<th align="right">LowerSpend</th>
+<th align="right">UpperSpend</th>
+<th align="right">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.33</td>
+<td align="right">-0.719</td>
+<td align="right">3.731</td>
+<td align="right">0.004192</td>
+<td align="right">0.0000955</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.67</td>
+<td align="right">1.017</td>
+<td align="right">2.504</td>
+<td align="right">0.040290</td>
+<td align="right">0.0060800</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">1.00</td>
+<td align="right">1.994</td>
+<td align="right">1.994</td>
+<td align="right">0.055520</td>
+<td align="right">0.0188200</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>The resulting table makes explicit what analysts often need for
+simulation or protocol drafting: analysis timing, upper/lower
+Z-boundaries, cumulative spending, and planned sample size by look.</p>
+</div>
+<div id="translating-intent-to-proc-seqdesign" class="section level2">
+<h2>Translating intent to <code>PROC SEQDESIGN</code></h2>
+<p>The same design intent can be specified in SAS, with exact option
+names depending on SAS version and local coding standards.</p>
+<pre class="sas"><code>/* Template only: verify option names against your SAS version documentation */
+proc seqdesign;
+  OBFDesign: design nstages=3
+    alpha=0.025
+    beta=0.10
+    info=(0.33 0.67 1.00)
+    method=errfuncobf
+    stop=both;
+run;</code></pre>
+<p>When comparing across systems, check that the following match before
+concluding results are different:</p>
+<ol style="list-style-type: decimal">
+<li>one- versus two-sided Type I error convention,</li>
+<li>boundary family/spending choice,</li>
+<li>information times,</li>
+<li>binding vs non-binding treatment of futility,</li>
+<li>effect-size and endpoint scale conventions.</li>
+</ol>
+</div>
+<div id="practical-guidance" class="section level2">
+<h2>Practical guidance</h2>
+<p>Use <code>gsDesign</code> when you need programmable reproducibility,
+transparent object-level inspection, and integration with R
+simulation/reporting pipelines.</p>
+<p>Use <code>PROC SEQDESIGN</code> when your statistical computing
+environment is SAS-centric and standardized procedure output is the
+primary deliverable.</p>
+<p>For regulatory or internal review, the best practice is to document
+design assumptions explicitly and provide a cross-platform
+reconciliation table rather than relying on nominal boundary labels
+alone.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

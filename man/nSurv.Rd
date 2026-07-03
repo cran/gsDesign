@@ -62,6 +62,8 @@ gsSurv(
   sfupar = -4,
   sfl = sfHSD,
   sflpar = -2,
+  sfharm = sfHSD,
+  sfharmparam = -2,
   r = 18,
   lambdaC = log(2)/6,
   hr = 0.6,
@@ -77,6 +79,9 @@ gsSurv(
   tol = .Machine$double.eps^0.25,
   usTime = NULL,
   lsTime = NULL,
+  testUpper = TRUE,
+  testLower = TRUE,
+  testHarm = TRUE,
   method = c("LachinFoulkes", "Schoenfeld", "Freedman", "BernsteinLagakos")
 )
 
@@ -117,10 +122,12 @@ vector implies a single stratum.
 Note that rates corresponding the final time period are extended indefinitely.}
 
 \item{hr}{Hazard ratio (experimental/control) under the alternate hypothesis
-(scalar).}
+(scalar, > 0, must differ from \code{hr0}). Both \code{hr < hr0}
+(experimental is beneficial when lower hazard is better) and \code{hr > hr0}
+(e.g., time-to-response or safety designs) are supported.}
 
 \item{hr0}{Hazard ratio (experimental/control) under the null hypothesis
-(scalar).}
+(scalar, > 0, must differ from \code{hr}).}
 
 \item{eta}{Scalar, vector or matrix of dropout hazard rates for the control
 group; rows represent time periods while columns represent strata; if
@@ -128,7 +135,7 @@ entered as a scalar, rate is constant across strata and time periods; if
 entered as a vector, rates are constant across strata.}
 
 \item{etaE}{Matrix dropout hazard rates for the experimental group specified
-in like form as \code{eta}; if NULL, this is set equal to \code{eta}.}
+in like form as \code{eta}; if \code{NULL}, this is set equal to \code{eta}.}
 
 \item{gamma}{A scalar, vector or matrix of rates of entry by time period
 (rows) and strata (columns); if entered as a scalar, rate is constant
@@ -142,7 +149,7 @@ specified (input \code{T=NULL}), the final enrollment period is extended as
 long as needed; otherwise enrollment after \code{sum(R)} is 0.}
 
 \item{S}{A scalar or vector of durations of piecewise constant event rates
-specified in rows of \code{lambda}, \code{eta} and \code{etaE}; this is NULL
+specified in rows of \code{lambda}, \code{eta} and \code{etaE}; this is \code{NULL}
 if there is a single event rate per stratum (exponential failure) or length
 of the number of rows in \code{lambda} minus 1, otherwise.
 The final time period is extended indefinitely for each stratum.}
@@ -160,10 +167,10 @@ of strata.}
 \item{alpha}{Type I error rate. Default is 0.025 since 1-sided testing is
 default.}
 
-\item{beta}{Type II error rate. Default is 0.10 (90\% power); NULL if power
+\item{beta}{Type II error rate. Default is 0.10 (90\% power); \code{NULL} if power
 is to be computed based on other input values.}
 
-\item{sided}{1 for 1-sided testing, 2 for 2-sided testing.}
+\item{sided}{\code{1} for 1-sided testing, \code{2} for 2-sided testing.}
 
 \item{method}{One of \code{"LachinFoulkes"} (default), \code{"Schoenfeld"},
 \code{"Freedman"}, or \code{"BernsteinLagakos"}.
@@ -205,14 +212,18 @@ bottom of the xtable output.}
 \code{4=}two-sided, asymmetric, beta-spending with non-binding lower bound
 \cr \code{5=}two-sided, asymmetric, lower bound spending under the null
 hypothesis with binding lower bound \cr \code{6=}two-sided, asymmetric,
-lower bound spending under the null hypothesis with non-binding lower bound.
+lower bound spending under the null hypothesis with non-binding lower bound
+\cr \code{7=}two-sided, asymmetric, with binding futility and binding harm bounds
+\cr \code{8=}two-sided, asymmetric, with non-binding futility and non-binding harm bounds.
 \cr See details, examples and manual.}
 
-\item{astar}{Normally not specified. If \code{test.type=5} or \code{6},
-\code{astar} specifies the total probability of crossing a lower bound at
-all analyses combined.  This will be changed to \eqn{1 - }\code{alpha} when
-default value of 0 is used.  Since this is the expected usage, normally
-\code{astar} is not specified by the user.}
+\item{astar}{Total spending for the lower (test.type 5 or 6) or harm
+(test.type 7 or 8) bound under the null hypothesis. Default is 0.
+For \code{test.type} 5 or 6, \code{astar} specifies the total probability
+of crossing a lower bound at all analyses combined.
+For \code{test.type} 7 or 8, \code{astar} specifies the total probability
+of crossing the harm bound at all analyses combined under the null hypothesis.
+If \code{astar = 0}, it will be changed to \eqn{1 - }\code{alpha}.}
 
 \item{sfu}{A spending function or a character string indicating a boundary
 type (that is, \dQuote{WT} for Wang-Tsiatis bounds, \dQuote{OF} for
@@ -226,7 +237,7 @@ spending (\code{test.type=1, 2}), \code{sfu}.  The default value is
 O'Brien-Fleming-like conservative bound when used with the default
 Hwang-Shih-DeCani spending function. This is a real-vector for many spending
 functions.  The parameter \code{sfupar} specifies any parameters needed for
-the spending function specified by \code{sfu}; this will be ignored for
+the spending function specified by \code{sfu}; this is not needed for
 spending functions (\code{sfLDOF}, \code{sfLDPocock}) or bound types
 (\dQuote{OF}, \dQuote{Pocock}) that do not require parameters.
 Note that \code{sfupar} can be specified as a positive scalar for
@@ -245,6 +256,13 @@ details, spending functions, manual and examples.}
 Hwang-Shih-DeCani spending function, specifies a less conservative spending
 rate than the default for the upper bound.}
 
+\item{sfharm}{A spending function for the harm bound, used with
+\code{test.type = 7} or \code{test.type = 8}.
+Default is \code{sfHSD}. See \code{\link{spendingFunction}} for details.}
+
+\item{sfharmparam}{Real value, default is \eqn{-2}. Parameter for the harm
+bound spending function \code{sfharm}.}
+
 \item{r}{Integer value (>= 1 and <= 80) controlling the number of numerical
 integration grid points. Default is 18, as recommended by Jennison and
 Turnbull (2000). Grid points are spread out in the tails for accurate
@@ -253,13 +271,48 @@ accuracy but slow down computation. Jennison and Turnbull (p. 350) note an
 accuracy of \eqn{10^{-6}} with \code{r = 16}. This parameter is normally
 not changed by users.}
 
-\item{usTime}{Default is NULL in which case upper bound spending time is
-determined by \code{timing}. Otherwise, this should be a vector of length
-\code{k} with the spending time at each analysis (see Details in help for \code{gsDesign}).}
+\item{usTime}{Default is NULL in which case upper bound spending time is 
+determined by \code{timing}. Otherwise, this should be a vector of length 
+\code{k} with the spending time at each analysis
+(see Details section of \code{\link{gsDesign}}).}
 
-\item{lsTime}{Default is NULL in which case lower bound spending time is
-determined by \code{timing}. Otherwise, this should be a vector of length
-\code{k} with the spending time at each analysis (see Details in help for \code{gsDesign}).}
+\item{lsTime}{Default is NULL in which case lower bound spending time is 
+determined by \code{timing}. Otherwise, this should be a vector of length 
+\code{k} with the spending time at each analysis
+(see Details section of \code{\link{gsDesign}}).}
+
+\item{testUpper}{Indicator of which analyses should include an upper
+(efficacy) bound.
+A single value of \code{TRUE} (default) indicates all analyses have an
+efficacy bound.
+Otherwise, a logical vector of length \code{k} indicating which analyses
+will have an efficacy bound.
+Overridden to all \code{TRUE} for \code{test.type} 1 and 2.
+Must be \code{TRUE} at the final analysis to achieve targeted power.
+At each analysis, at least one of \code{testUpper}, \code{testLower}, or
+\code{testHarm} must be \code{TRUE}.
+Where \code{testUpper} is \code{FALSE}, the upper bound is set to
+\code{+20} (effectively \code{Inf}) and displayed as \code{NA} in output.}
+
+\item{testLower}{Indicator of which analyses should include a lower
+(futility) bound.
+A single value of \code{TRUE} (default) indicates all analyses have a
+lower bound; \code{FALSE} indicates none.
+Otherwise, a logical vector of length \code{k}.
+Ignored for \code{test.type} 1 (one-sided, no lower bound).
+Overridden to all \code{TRUE} for \code{test.type} 2 (symmetric).
+For \code{test.type} 3--8, at least one analysis must be \code{TRUE}.
+Where \code{testLower} is \code{FALSE}, the lower bound is set to
+\code{-20} (effectively \code{-Inf}) and displayed as \code{NA} in output.}
+
+\item{testHarm}{Indicator of which analyses should include a harm bound.
+A single value of \code{TRUE} (default) indicates all analyses have a
+harm bound; \code{FALSE} indicates none.
+Otherwise, a logical vector of length \code{k}.
+Only used for \code{test.type} 7 or 8; at least one analysis must be
+\code{TRUE} for those types.
+Where \code{testHarm} is \code{FALSE}, the harm bound is set to
+\code{-20} (effectively \code{-Inf}) and displayed as \code{NA} in output.}
 
 \item{show_gsDesign}{Logical; for \code{print.gsSurv()}, include gsDesign details.}
 }
@@ -448,9 +501,9 @@ enrollment rate.
 
 When study duration (\code{T}) and follow-up duration (\code{minfup}) are
 fixed, \code{nSurv} applies exactly the Lachin and Foulkes (1986) method of
-computing sample size under the proportional hazards assumption when For
-this computation, enrollment rates are altered proportionately to those
-input in \code{gamma} to achieve the power of interest.
+computing sample size under the proportional hazards assumption. For this
+computation, enrollment rates are altered proportionately to those input in
+\code{gamma} to achieve the power of interest.
 
 Given the specified enrollment rate(s) input in \code{gamma}, \code{nSurv}
 may also be used to derive enrollment duration required for a trial to have
@@ -465,10 +518,20 @@ enrollment duration(s) specified in \code{R} are considered fixed and
 method will fail if the specified enrollment rates and durations either
 over-powers the trial with no additional follow-up or underpowers the trial
 with infinite follow-up. This method produces a corresponding error message
-in such cases.
+in such cases. For methods other than Lachin and Foulkes, these fixed-rate
+duration solves use the selected method for the fixed-design event
+calculation.
 
 The input to \code{gsSurv} is a combination of the input to \code{nSurv()}
 and \code{gsDesign()}.
+When \code{T = NULL} and \code{minfup} is specified, \code{gsSurv()}
+preserves the input accrual rate and minimum follow-up, applies the group
+sequential design, and solves the accrual duration needed for the final
+planned number of events.
+When both \code{T} and \code{minfup} are \code{NULL}, \code{gsSurv()}
+preserves the input accrual rate and duration, applies the group sequential
+design, and solves the follow-up duration needed for the final planned
+number of events.
 
 \code{nEventsIA()} is provided to compute the expected number of events at a
 given point in time given enrollment, event and censoring rates. The routine
@@ -577,7 +640,7 @@ gsSurv(
 nSurv(
   lambdaC = matrix(log(2) / c(6, 12, 18, 24), ncol = 2), hr = .5,
   eta = matrix(log(2) / c(40, 50, 45, 55), ncol = 2), S = 3,
-  gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), minfup = 12,
+  gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), T = 27, minfup = 12,
   alpha = .025, beta = .1, method = "BernsteinLagakos"
 )
 # Same assumptions for group sequential design
@@ -585,7 +648,7 @@ gsSurv(
   k = 4, sfu = gsDesign::sfHSD, sfupar = -4, sfl = gsDesign::sfPower, sflpar = .5,
   lambdaC = matrix(log(2) / c(6, 12, 18, 24), ncol = 2), hr = .5,
   eta = matrix(log(2) / c(40, 50, 45, 55), ncol = 2), S = 3,
-  gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), minfup = 12,
+  gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), T = 27, minfup = 12,
   alpha = .025, beta = .1, method = "BernsteinLagakos"
 ) |>
   print()
@@ -612,14 +675,23 @@ Follow-Up, Noncompliance, and Stratification. \emph{Biometrics}, 42,
 
 Schoenfeld D (1981), The Asymptotic Properties of Nonparametric Tests for
 Comparing Survival Distributions. \emph{Biometrika}, 68, 316-319.
+
+Freedman LS (1982), Tables of the Number of Patients Required in Clinical
+Trials Using the Logrank Test. \emph{Statistics in Medicine}, 1, 121-129.
 }
 \seealso{
 \code{\link[stats]{uniroot}}
 
-\code{\link{gsBoundSummary}}, \code{\link{xprint}},
-  \code{\link{gsSurvCalendar}}, \link{gsDesign-package},
-  \link{plot.gsDesign}, \code{\link{gsDesign}}, \code{\link{gsHR}},
-  \code{\link{nSurvival}}
+\code{vignette("gsSurvBasicExamples", package = "gsDesign")} for
+  basic survival sample size examples, \code{vignette("SurvivalOverview",
+  package = "gsDesign")} for method background, and
+  \code{vignette("SeqDesignSurvival", package = "gsDesign")} for a SAS PROC
+  SEQDESIGN translation example.
+
+  \code{\link{gsBoundSummary}}, \code{\link{xprint}},
+  \code{\link{gsSurvCalendar}}, \code{\link{gsSurvPower}},
+  \link{gsDesign-package}, \link{plot.gsDesign}, \code{\link{gsDesign}},
+  \code{\link{gsHR}}, \code{\link{nSurvival}}
 
 \code{\link[stats]{Normal}}
  \code{\link[xtable]{xtable}}

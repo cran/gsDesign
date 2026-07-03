@@ -72,9 +72,9 @@
 #'
 #' When study duration (\code{T}) and follow-up duration (\code{minfup}) are
 #' fixed, \code{nSurv} applies exactly the Lachin and Foulkes (1986) method of
-#' computing sample size under the proportional hazards assumption when For
-#' this computation, enrollment rates are altered proportionately to those
-#' input in \code{gamma} to achieve the power of interest.
+#' computing sample size under the proportional hazards assumption. For this
+#' computation, enrollment rates are altered proportionately to those input in
+#' \code{gamma} to achieve the power of interest.
 #'
 #' Given the specified enrollment rate(s) input in \code{gamma}, \code{nSurv}
 #' may also be used to derive enrollment duration required for a trial to have
@@ -89,10 +89,20 @@
 #' method will fail if the specified enrollment rates and durations either
 #' over-powers the trial with no additional follow-up or underpowers the trial
 #' with infinite follow-up. This method produces a corresponding error message
-#' in such cases.
+#' in such cases. For methods other than Lachin and Foulkes, these fixed-rate
+#' duration solves use the selected method for the fixed-design event
+#' calculation.
 #'
 #' The input to \code{gsSurv} is a combination of the input to \code{nSurv()}
 #' and \code{gsDesign()}.
+#' When \code{T = NULL} and \code{minfup} is specified, \code{gsSurv()}
+#' preserves the input accrual rate and minimum follow-up, applies the group
+#' sequential design, and solves the accrual duration needed for the final
+#' planned number of events.
+#' When both \code{T} and \code{minfup} are \code{NULL}, \code{gsSurv()}
+#' preserves the input accrual rate and duration, applies the group sequential
+#' design, and solves the follow-up duration needed for the final planned
+#' number of events.
 #'
 #' \code{nEventsIA()} is provided to compute the expected number of events at a
 #' given point in time given enrollment, event and censoring rates. The routine
@@ -117,15 +127,17 @@
 #'   vector implies a single stratum.
 #'   Note that rates corresponding the final time period are extended indefinitely.
 #' @param hr Hazard ratio (experimental/control) under the alternate hypothesis
-#'   (scalar).
+#'   (scalar, > 0, must differ from \code{hr0}). Both \code{hr < hr0}
+#'   (experimental is beneficial when lower hazard is better) and \code{hr > hr0}
+#'   (e.g., time-to-response or safety designs) are supported.
 #' @param hr0 Hazard ratio (experimental/control) under the null hypothesis
-#'   (scalar).
+#'   (scalar, > 0, must differ from \code{hr}).
 #' @param eta Scalar, vector or matrix of dropout hazard rates for the control
 #'   group; rows represent time periods while columns represent strata; if
 #'   entered as a scalar, rate is constant across strata and time periods; if
 #'   entered as a vector, rates are constant across strata.
 #' @param etaE Matrix dropout hazard rates for the experimental group specified
-#'   in like form as \code{eta}; if NULL, this is set equal to \code{eta}.
+#'   in like form as \code{eta}; if \code{NULL}, this is set equal to \code{eta}.
 #' @param gamma A scalar, vector or matrix of rates of entry by time period
 #'   (rows) and strata (columns); if entered as a scalar, rate is constant
 #'   across strata and time periods; if entered as a vector, rates are constant
@@ -136,7 +148,7 @@
 #'   specified (input \code{T=NULL}), the final enrollment period is extended as
 #'   long as needed; otherwise enrollment after \code{sum(R)} is 0.
 #' @param S A scalar or vector of durations of piecewise constant event rates
-#'   specified in rows of \code{lambda}, \code{eta} and \code{etaE}; this is NULL
+#'   specified in rows of \code{lambda}, \code{eta} and \code{etaE}; this is \code{NULL}
 #'   if there is a single event rate per stratum (exponential failure) or length
 #'   of the number of rows in \code{lambda} minus 1, otherwise.
 #'   The final time period is extended indefinitely for each stratum.
@@ -147,10 +159,10 @@
 #' @param ratio Randomization ratio of experimental treatment divided by
 #'   control; normally a scalar, but may be a vector with length equal to number
 #'   of strata.
-#' @param sided 1 for 1-sided testing, 2 for 2-sided testing.
+#' @param sided \code{1} for 1-sided testing, \code{2} for 2-sided testing.
 #' @param alpha Type I error rate. Default is 0.025 since 1-sided testing is
 #'   default.
-#' @param beta Type II error rate. Default is 0.10 (90\% power); NULL if power
+#' @param beta Type II error rate. Default is 0.10 (90\% power); \code{NULL} if power
 #'   is to be computed based on other input values.
 #' @param tol For cases when \code{T} or \code{minfup} values are derived
 #'   through root finding (\code{T} or \code{minfup} input as \code{NULL}),
@@ -161,19 +173,6 @@
 #'   Note: \code{"Schoenfeld"} and \code{"Freedman"} methods only support
 #'   superiority testing (\code{hr0 = 1}). \code{"Freedman"} does not support
 #'   stratified populations.
-#' @param k Number of analyses planned, including interim and final.
-#' @param test.type \code{1=}one-sided \cr \code{2=}two-sided symmetric \cr
-#'   \code{3=}two-sided, asymmetric, beta-spending with binding lower bound \cr
-#'   \code{4=}two-sided, asymmetric, beta-spending with non-binding lower bound
-#'   \cr \code{5=}two-sided, asymmetric, lower bound spending under the null
-#'   hypothesis with binding lower bound \cr \code{6=}two-sided, asymmetric,
-#'   lower bound spending under the null hypothesis with non-binding lower bound.
-#'   \cr See details, examples and manual.
-#' @param astar Normally not specified. If \code{test.type=5} or \code{6},
-#'   \code{astar} specifies the total probability of crossing a lower bound at
-#'   all analyses combined.  This will be changed to \eqn{1 - }\code{alpha} when
-#'   default value of 0 is used.  Since this is the expected usage, normally
-#'   \code{astar} is not specified by the user.
 #' @param timing Sets relative timing of interim analyses in \code{gsSurv}.
 #'   Default of 1 produces equally spaced analyses.  Otherwise, this is a vector
 #'   of length \code{k} or \code{k-1}.  The values should satisfy \code{0 <
@@ -181,46 +180,6 @@
 #'   \code{tEventsIA}, this is a scalar strictly between 0 and 1 that indicates
 #'   the targeted proportion of final planned events available at an interim
 #'   analysis.
-#' @param sfu A spending function or a character string indicating a boundary
-#'   type (that is, \dQuote{WT} for Wang-Tsiatis bounds, \dQuote{OF} for
-#'   O'Brien-Fleming bounds and \dQuote{Pocock} for Pocock bounds).  For
-#'   one-sided and symmetric two-sided testing is used to completely specify
-#'   spending (\code{test.type=1, 2}), \code{sfu}.  The default value is
-#'   \code{sfHSD} which is a Hwang-Shih-DeCani spending function.  See details,
-#'   \code{vignette("SpendingFunctionOverview")}, manual and examples.
-#' @param sfupar Real value, default is \eqn{-4} which is an
-#'   O'Brien-Fleming-like conservative bound when used with the default
-#'   Hwang-Shih-DeCani spending function. This is a real-vector for many spending
-#'   functions.  The parameter \code{sfupar} specifies any parameters needed for
-#'   the spending function specified by \code{sfu}; this will be ignored for
-#'   spending functions (\code{sfLDOF}, \code{sfLDPocock}) or bound types
-#'   (\dQuote{OF}, \dQuote{Pocock}) that do not require parameters.
-#'   Note that \code{sfupar} can be specified as a positive scalar for
-#'   \code{sfLDOF} for a generalized O'Brien-Fleming spending function.
-#' @param sfl Specifies the spending function for lower boundary crossing
-#'   probabilities when asymmetric, two-sided testing is performed
-#'   (\code{test.type = 3}, \code{4}, \code{5}, or \code{6}).  Unlike the upper
-#'   bound, only spending functions are used to specify the lower bound.  The
-#'   default value is \code{sfHSD} which is a Hwang-Shih-DeCani spending
-#'   function.  The parameter \code{sfl} is ignored for one-sided testing
-#'   (\code{test.type=1}) or symmetric 2-sided testing (\code{test.type=2}).  See
-#'   details, spending functions, manual and examples.
-#' @param sflpar Real value, default is \eqn{-2}, which, with the default
-#'   Hwang-Shih-DeCani spending function, specifies a less conservative spending
-#'   rate than the default for the upper bound.
-#' @param r Integer value (>= 1 and <= 80) controlling the number of numerical
-#'   integration grid points. Default is 18, as recommended by Jennison and
-#'   Turnbull (2000). Grid points are spread out in the tails for accurate
-#'   probability calculations. Larger values provide more grid points and greater
-#'   accuracy but slow down computation. Jennison and Turnbull (p. 350) note an
-#'   accuracy of \eqn{10^{-6}} with \code{r = 16}. This parameter is normally
-#'   not changed by users.
-#' @param usTime Default is NULL in which case upper bound spending time is
-#'   determined by \code{timing}. Otherwise, this should be a vector of length
-#'   \code{k} with the spending time at each analysis (see Details in help for \code{gsDesign}).
-#' @param lsTime Default is NULL in which case lower bound spending time is
-#'   determined by \code{timing}. Otherwise, this should be a vector of length
-#'   \code{k} with the spending time at each analysis (see Details in help for \code{gsDesign}).
 #' @param tIA Timing of an interim analysis; should be between 0 and
 #'   \code{y$T}.
 #' @param show_gsDesign Logical; for \code{print.gsSurv()}, include gsDesign details.
@@ -357,10 +316,16 @@
 #'
 #' @author Keaven Anderson \email{keaven_anderson@@merck.com}
 #'
-#' @seealso \code{\link{gsBoundSummary}}, \code{\link{xprint}},
-#'   \code{\link{gsSurvCalendar}}, \link{gsDesign-package},
-#'   \link{plot.gsDesign}, \code{\link{gsDesign}}, \code{\link{gsHR}},
-#'   \code{\link{nSurvival}}
+#' @seealso \code{vignette("gsSurvBasicExamples", package = "gsDesign")} for
+#'   basic survival sample size examples, \code{vignette("SurvivalOverview",
+#'   package = "gsDesign")} for method background, and
+#'   \code{vignette("SeqDesignSurvival", package = "gsDesign")} for a SAS PROC
+#'   SEQDESIGN translation example.
+#'
+#'   \code{\link{gsBoundSummary}}, \code{\link{xprint}},
+#'   \code{\link{gsSurvCalendar}}, \code{\link{gsSurvPower}},
+#'   \link{gsDesign-package}, \link{plot.gsDesign}, \code{\link{gsDesign}},
+#'   \code{\link{gsHR}}, \code{\link{nSurvival}}
 #'
 #' @references
 #' Kim KM and Tsiatis AA (1990), Study duration for clinical trials
@@ -373,6 +338,9 @@
 #'
 #' Schoenfeld D (1981), The Asymptotic Properties of Nonparametric Tests for
 #' Comparing Survival Distributions. \emph{Biometrika}, 68, 316-319.
+#'
+#' Freedman LS (1982), Tables of the Number of Patients Required in Clinical
+#' Trials Using the Logrank Test. \emph{Statistics in Medicine}, 1, 121-129.
 #'
 #' @keywords design
 #' @keywords survival
@@ -487,7 +455,7 @@
 #' nSurv(
 #'   lambdaC = matrix(log(2) / c(6, 12, 18, 24), ncol = 2), hr = .5,
 #'   eta = matrix(log(2) / c(40, 50, 45, 55), ncol = 2), S = 3,
-#'   gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), minfup = 12,
+#'   gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), T = 27, minfup = 12,
 #'   alpha = .025, beta = .1, method = "BernsteinLagakos"
 #' )
 #' # Same assumptions for group sequential design
@@ -495,7 +463,7 @@
 #'   k = 4, sfu = gsDesign::sfHSD, sfupar = -4, sfl = gsDesign::sfPower, sflpar = .5,
 #'   lambdaC = matrix(log(2) / c(6, 12, 18, 24), ncol = 2), hr = .5,
 #'   eta = matrix(log(2) / c(40, 50, 45, 55), ncol = 2), S = 3,
-#'   gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), minfup = 12,
+#'   gamma = matrix(c(3, 6, 5, 7), ncol = 2), R = c(5, 10), T = 27, minfup = 12,
 #'   alpha = .025, beta = .1, method = "BernsteinLagakos"
 #' ) |>
 #'   print()
@@ -535,9 +503,7 @@ nSurv <- function(
       stop("S must be a numeric vector of positive values")
     }
   }
-  if (is.null(R)) {
-    stop("R must be specified and cannot be NULL")
-  }
+  validate_survival_timing_inputs(R = R, T = T, minfup = minfup, call = "nSurv")
   if (is.null(beta) && (is.null(T) || is.null(minfup))) {
     stop("When beta is NULL, R, T, and minfup must all be specified")
   }
@@ -553,7 +519,19 @@ nSurv <- function(
   etaC <- matrix(eta, nrow = nlambda, ncol = nstrata)
   etaE <- matrix(etaE, nrow = nlambda, ncol = nstrata)
   if (!is.matrix(gamma)) gamma <- matrix(gamma)
-  if (is.null(minfup) || is.null(T)) {
+  if (is.null(minfup) && method != "LachinFoulkes") {
+    xx <- LFPWESolveFollowupDuration(
+      lambdaC = lambdaC, hr = hr, hr0 = hr0, etaC = etaC, etaE = etaE,
+      gamma = gamma, R = R, S = S, ratio = ratio,
+      alpha = alpha, sided = sided, beta = beta, tol = tol, method = method
+    )
+  } else if (is.null(T) && !is.null(minfup) && method != "LachinFoulkes") {
+    xx <- LFPWESolveAccrualDuration(
+      lambdaC = lambdaC, hr = hr, hr0 = hr0, etaC = etaC, etaE = etaE,
+      gamma = gamma, R = R, S = S, minfup = minfup, ratio = ratio,
+      alpha = alpha, sided = sided, beta = beta, tol = tol, method = method
+    )
+  } else if (is.null(minfup) || is.null(T)) {
     xx <- KT(
       lambdaC = lambdaC, hr = hr, hr0 = hr0, etaC = etaC, etaE = etaE,
       gamma = gamma, R = R, S = S, minfup = minfup, ratio = ratio,

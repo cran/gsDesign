@@ -18,6 +18,8 @@ gsDesign(
   sfupar = -4,
   sfl = sfHSD,
   sflpar = -2,
+  sfharm = sfHSD,
+  sfharmparam = -2,
   tol = 1e-06,
   r = 18,
   n.I = 0,
@@ -28,7 +30,10 @@ gsDesign(
   delta0 = 0,
   overrun = 0,
   usTime = NULL,
-  lsTime = NULL
+  lsTime = NULL,
+  testUpper = TRUE,
+  testLower = TRUE,
+  testHarm = TRUE
 )
 
 \method{xtable}{gsDesign}(
@@ -49,18 +54,22 @@ gsDesign(
 \code{4=}two-sided, asymmetric, beta-spending with non-binding lower bound
 \cr \code{5=}two-sided, asymmetric, lower bound spending under the null
 hypothesis with binding lower bound \cr \code{6=}two-sided, asymmetric,
-lower bound spending under the null hypothesis with non-binding lower bound.
+lower bound spending under the null hypothesis with non-binding lower bound
+\cr \code{7=}two-sided, asymmetric, with binding futility and binding harm bounds
+\cr \code{8=}two-sided, asymmetric, with non-binding futility and non-binding harm bounds.
 \cr See details, examples and manual.}
 
 \item{alpha}{Type I error, always one-sided. Default value is 0.025.}
 
 \item{beta}{Type II error, default value is 0.1 (90\% power).}
 
-\item{astar}{Normally not specified. If \code{test.type=5} or \code{6},
-\code{astar} specifies the total probability of crossing a lower bound at
-all analyses combined.  This will be changed to \eqn{1 - }\code{alpha} when
-default value of 0 is used.  Since this is the expected usage, normally
-\code{astar} is not specified by the user.}
+\item{astar}{Total spending for the lower (test.type 5 or 6) or harm
+(test.type 7 or 8) bound under the null hypothesis. Default is 0.
+For \code{test.type} 5 or 6, \code{astar} specifies the total probability
+of crossing a lower bound at all analyses combined.
+For \code{test.type} 7 or 8, \code{astar} specifies the total probability
+of crossing the harm bound at all analyses combined under the null hypothesis.
+If \code{astar = 0}, it will be changed to \eqn{1 - }\code{alpha}.}
 
 \item{delta}{Effect size for theta under alternative hypothesis. This can be
 set to the standardized effect size to generate a sample size if
@@ -108,6 +117,13 @@ details, spending functions, manual and examples.}
 Hwang-Shih-DeCani spending function, specifies a less conservative spending
 rate than the default for the upper bound.}
 
+\item{sfharm}{A spending function for the harm bound, used with
+\code{test.type = 7} or \code{test.type = 8}.
+Default is \code{sfHSD}. See \code{\link{spendingFunction}} for details.}
+
+\item{sfharmparam}{Real value, default is \eqn{-2}. Parameter for the harm
+bound spending function \code{sfharm}.}
+
 \item{tol}{Tolerance for error (default is 0.000001). Normally this will not
 be changed by the user.  This does not translate directly to number of
 digits of accuracy, so use extra decimal places.}
@@ -153,11 +169,46 @@ that are not included in each interim analysis.}
 
 \item{usTime}{Default is NULL in which case upper bound spending time is 
 determined by \code{timing}. Otherwise, this should be a vector of length 
-\code{k} with the spending time at each analysis (see Details).}
+\code{k} with the spending time at each analysis
+(see Details section of \code{\link{gsDesign}}).}
 
 \item{lsTime}{Default is NULL in which case lower bound spending time is 
 determined by \code{timing}. Otherwise, this should be a vector of length 
-\code{k} with the spending time at each analysis (see Details).}
+\code{k} with the spending time at each analysis
+(see Details section of \code{\link{gsDesign}}).}
+
+\item{testUpper}{Indicator of which analyses should include an upper
+(efficacy) bound.
+A single value of \code{TRUE} (default) indicates all analyses have an
+efficacy bound.
+Otherwise, a logical vector of length \code{k} indicating which analyses
+will have an efficacy bound.
+Overridden to all \code{TRUE} for \code{test.type} 1 and 2.
+Must be \code{TRUE} at the final analysis to achieve targeted power.
+At each analysis, at least one of \code{testUpper}, \code{testLower}, or
+\code{testHarm} must be \code{TRUE}.
+Where \code{testUpper} is \code{FALSE}, the upper bound is set to
+\code{+20} (effectively \code{Inf}) and displayed as \code{NA} in output.}
+
+\item{testLower}{Indicator of which analyses should include a lower
+(futility) bound.
+A single value of \code{TRUE} (default) indicates all analyses have a
+lower bound; \code{FALSE} indicates none.
+Otherwise, a logical vector of length \code{k}.
+Ignored for \code{test.type} 1 (one-sided, no lower bound).
+Overridden to all \code{TRUE} for \code{test.type} 2 (symmetric).
+For \code{test.type} 3--8, at least one analysis must be \code{TRUE}.
+Where \code{testLower} is \code{FALSE}, the lower bound is set to
+\code{-20} (effectively \code{-Inf}) and displayed as \code{NA} in output.}
+
+\item{testHarm}{Indicator of which analyses should include a harm bound.
+A single value of \code{TRUE} (default) indicates all analyses have a
+harm bound; \code{FALSE} indicates none.
+Otherwise, a logical vector of length \code{k}.
+Only used for \code{test.type} 7 or 8; at least one analysis must be
+\code{TRUE} for those types.
+Where \code{testHarm} is \code{FALSE}, the harm bound is set to
+\code{-20} (effectively \code{-Inf}) and displayed as \code{NA} in output.}
 
 \item{x}{An \R object of class found among \code{methods(xtable)}.  See
     below on how to write additional method functions for \code{xtable}.}
@@ -247,7 +298,14 @@ design input. If \code{nSurvival} is used to compute \code{n.fix}, then
 \code{nSurv}. Note that if you use \code{gsSurv} for time-to-event sample
 size, this is not needed and a more complete output summary is given.}
 \item{endpoint}{As input.} \item{delta1}{As input.} \item{delta0}{As input.}
-\item{overrun}{As input.} \item{usTime}{As input.} \item{lsTime}{As input.} \item{upper}{Upper bound spending function,
+\item{overrun}{As input.} \item{usTime}{As input.} \item{lsTime}{As input.}
+\item{testUpper}{Logical vector of length \code{k} indicating which
+analyses have an efficacy (upper) bound.}
+\item{testLower}{Logical vector of length \code{k} indicating which
+analyses have a futility (lower) bound.}
+\item{testHarm}{Logical vector of length \code{k} indicating which
+analyses have a harm bound (only for \code{test.type} 7 or 8).}
+\item{upper}{Upper bound spending function,
 boundary and boundary crossing probabilities under the NULL and alternate
 hypotheses. See \code{vignette("SpendingFunctionOverview")} and manual for further
 details.} \item{lower}{Lower bound spending function, boundary and boundary

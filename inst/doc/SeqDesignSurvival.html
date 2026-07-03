@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Reproducing SAS PROC SEQDESIGN survival designs in gsDesign</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Reproducing SAS PROC SEQDESIGN survival
+designs in gsDesign</h1>
+
+
+
+<style>table > caption { caption-side: top; caption-location: top; }</style>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(gsDesign)</span></code></pre></div>
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>This vignette emphasizes numerical reproduction of SAS PROC SEQDESIGN
+survival sample size outputs in gsDesign when design assumptions are
+matched. It is primarily about translating a SAS design specification to
+<code>gsSurv()</code>, not about post-design power sensitivity
+calculations. For an introductory survival sample size workflow that is
+not tied to SAS output, see
+<code>vignette(&quot;gsSurvBasicExamples&quot;)</code>. For the reverse question,
+where enrollment, dropout, analysis timing, and hazard ratio assumptions
+are fixed and the goal is to compute achieved power, see
+<code>vignette(&quot;gsSurvPower&quot;)</code>.</p>
+<p>We first reproduce the SAS fractional-time table to printed
+precision. We then show options that may lead to confusion when
+translating SAS PROC SEQDESIGN calls to gsDesign, including the event
+formula, alpha convention, and accrual and follow-up assumptions. The
+examples below touch three common survival design questions:</p>
+<ul>
+<li>Fix the enrollment pattern and duration, specify information
+fractions, and reproduce the sample size and event targets implied by
+the design.</li>
+<li>Fix enrollment rates over time and minimum follow-up, then solve the
+enrollment duration needed to power the trial.</li>
+<li>Fix enrollment rates and enrollment duration, then vary minimum
+follow-up to evaluate power. This is often a sensitivity question rather
+than a reliable sample size solver, since plausible follow-up durations
+may leave the trial consistently overpowered or underpowered.</li>
+</ul>
+<div id="starting-point-sas-proc-seqdesign-survival-example" class="section level3">
+<h3>Starting point: SAS PROC SEQDESIGN survival example</h3>
+<p>Consider the example described in the SAS Documentation: <a href="https://support.sas.com/documentation/cdl/en/statug/68162/HTML/default/statug_seqdesign_examples14.htm">Computing
+Sample Size for Survival Data with Uniform Accrual</a>. The first PROC
+SEQDESIGN call in that example does not specify <code>ACCTIME</code>;
+SAS therefore derives a range of possible accrual times. The comparison
+below uses the subsequent SAS call with <code>ACCTIME=18</code>, which
+fixes the maximum sample size at <code>15 * 18 = 270</code> subjects and
+asks SAS to solve the follow-up time needed for the target power. The
+SAS survival sample size model uses the Schoenfeld formula for the
+targeted event counts. The computed sample size and event counts at each
+analysis are continuous values, not rounded to integers.</p>
+<pre class="sas"><code>proc seqdesign; /* Group sequential design procedure */
+    ErrorSpend: design /* Label for this design block */
+                nstages=4 /* Total analyses including final */
+                method=errfuncobf /* Lan-DeMets O&#39;Brien-Fleming spending */
+                alt=twosided /* Two-sided alternative hypothesis */
+                stop=reject /* Early stop only for efficacy */
+                alpha=0.05 /* Total two-sided Type I error */
+                beta=0.10 /* Type II error (90% power) */
+                ;
+    samplesize model= /* Survival model */
+        twosamplesurvival( /* Two-sample survival endpoint */
+        nullhazard = 0.03466 /* Control hazard under H0 */
+        hazard     = 0.01733 /* Experimental hazard under H1 */
+        accrual    = uniform /* Uniform enrollment */
+        accrate    = 15 /* Subjects enrolled per time unit */
+        acctime    = 18 /* Accrual duration in time units */
+    );
+run;</code></pre>
+<p><strong>SAS assumptions summary:</strong></p>
+<ul>
+<li>4-stage group sequential design</li>
+<li>Lan-DeMets O’Brien-Fleming error spending function</li>
+<li>Two-sided symmetric test, total alpha = 0.05</li>
+<li>90% power (beta = 0.10)</li>
+<li>Equally spaced information fractions: 0.25, 0.50, 0.75, 1.00</li>
+<li>Schoenfeld formula for required number of events</li>
+<li>Fixed accrual rate and duration, so the maximum sample size is <span class="math inline">\(N = \text{ACCRATE} \times \text{ACCTIME} = 15
+\times 18 = 270\)</span></li>
+<li>Study duration <span class="math inline">\(T\)</span> solved to
+achieve the required events</li>
+<li>Hazard ratio <span class="math inline">\(HR = 0.01733 / 0.03466 =
+0.5\)</span></li>
+</ul>
+<p>SAS does produce a sample size in this example. In the “Sample Size
+Summary” table for the <code>ACCTIME=18</code> case, it reports
+<code>Max Sample Size = 270</code>,
+<code>Follow-up Time = 7.133226</code>, and
+<code>Total Time = 25.13323</code>. The maximum sample size is not
+calculated from the event formula; it is implied directly by the fixed
+accrual rate and accrual duration:
+<code>15 subjects/time unit * 18 time units = 270 subjects</code>.</p>
+<p>The fractional-time design reports analyses at information fractions
+0.25, 0.50, 0.75, and 1.00. We focus on that design, where the analysis
+times are not rounded.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sas_fractional <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">Analysis =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">Events =</span> <span class="fu">c</span>(<span class="fl">22.26962</span>, <span class="fl">44.53924</span>, <span class="fl">66.80886</span>, <span class="fl">89.07847</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">Calendar_time =</span> <span class="fu">c</span>(<span class="fl">11.2631</span>, <span class="fl">16.2875</span>, <span class="fl">20.4926</span>, <span class="fl">25.13323</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">N =</span> <span class="fu">c</span>(<span class="fl">168.95</span>, <span class="fl">244.31</span>, <span class="fl">270.00</span>, <span class="fl">270.00</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  <span class="at">Upper_Z =</span> <span class="fu">c</span>(<span class="fl">4.33263</span>, <span class="fl">2.96333</span>, <span class="fl">2.35902</span>, <span class="fl">2.01409</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>)</span></code></pre></div>
+<p>The rest of this vignette identifies the key assumptions in each
+system and explains why alternative parameter translations can produce
+different results. For additional background on the time-to-event
+methods in gsDesign, including the default Lachin-Foulkes calculations,
+see <code>vignette(&quot;SurvivalOverview&quot;)</code>.</p>
+</div>
+</div>
+<div id="key-differences-sas-seqdesign-vs.-r-gsdesign" class="section level2">
+<h2>Key differences: SAS SEQDESIGN vs. R gsDesign</h2>
+<p>There are three practical translation points that affect the output
+from the example above.</p>
+<div id="event-formula" class="section level3">
+<h3>1. Event formula</h3>
+<ul>
+<li><strong>SAS:</strong> <span class="citation">Schoenfeld
+(1981)</span>. Uses only the null-hypothesis variance.</li>
+<li><strong>gsDesign:</strong> <span class="citation">Lachin and Foulkes
+(1986)</span> by default. Use <code>method = &quot;Schoenfeld&quot;</code> to
+match the SAS event formula. The default Lachin-Foulkes method is
+slightly more conservative for this example, so matching the event
+formula matters for numerical reproduction.</li>
+</ul>
+</div>
+<div id="alpha-handling-in-gsdesign-and-gssurv" class="section level3">
+<h3>2. Alpha handling in <code>gsDesign()</code> and
+<code>gsSurv()</code></h3>
+<p><code>gsDesign()</code> stores and spends the
+<strong>one-sided</strong> Type I error. Thus, for a symmetric two-sided
+design (<code>test.type = 2</code>), <code>alpha = 0.025</code> means
+0.025 in each tail, or 0.05 total two-sided Type I error.</p>
+<p><code>gsSurv()</code> follows the same convention internally. If a
+user prefers to enter the total two-sided alpha,
+<code>alpha = 0.05, sided = 2</code> is equivalent to
+<code>alpha = 0.025, sided = 1</code> for this example because
+<code>gsSurv()</code> passes <code>alpha / sided</code> to
+<code>gsDesign()</code>.</p>
+<p>Here we use <code>test.type = 2</code> and <code>alpha = 0.025</code>
+to make the symmetric two-sided <code>gsDesign()</code> object match the
+SAS two-sided total alpha of 0.05.</p>
+</div>
+<div id="accrual-duration-and-follow-up-time" class="section level3">
+<h3>3. Accrual duration and follow-up time</h3>
+<p>With <code>ACCTIME=18</code>, SAS fixes the accrual duration and
+total maximum sample size and solves for the additional follow-up time.
+To match this in <code>gsSurv()</code>, set both <code>T = NULL</code>
+and <code>minfup = NULL</code>. This tells <code>gsSurv()</code> to keep
+the input accrual rate and accrual duration fixed, then solve the
+follow-up duration needed for the final group sequential event
+requirement.</p>
+<p>This is a common source of apparent disagreement. For a
+fixed-duration survival design, <code>T</code> is the total study
+duration and <code>minfup</code> is the minimum follow-up after
+enrollment closes. Specifying both can therefore change which quantity
+<code>gsSurv()</code> solves for. The SAS comparison fixes accrual at 18
+time units and lets the total time be derived.</p>
+<p>The translation used below is summarized as follows:</p>
+<table>
+<caption>Translation from the SAS PROC SEQDESIGN example to gsDesign
+inputs.</caption>
+<colgroup>
+<col width="16%" />
+<col width="28%" />
+<col width="23%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Quantity</th>
+<th align="left">SAS</th>
+<th align="left">gsDesign</th>
+<th align="left">Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Two-sided Type I error</td>
+<td align="left">alpha = 0.05 total</td>
+<td align="left">alpha = 0.025 per tail</td>
+<td align="left">gsDesign stores and spends one-sided alpha</td>
+</tr>
+<tr class="even">
+<td align="left">Symmetric two-sided design</td>
+<td align="left">Early stop to reject either side</td>
+<td align="left">test.type = 2</td>
+<td align="left">Mirrors the upper and lower efficacy boundaries</td>
+</tr>
+<tr class="odd">
+<td align="left">Analysis timing input</td>
+<td align="left">Information fractions 0.25, 0.50, 0.75, 1.00</td>
+<td align="left">gsSurv(timing = c(.25, .50, .75, 1))</td>
+<td align="left">Uses the SAS fractional information schedule</td>
+</tr>
+<tr class="even">
+<td align="left">Event formula</td>
+<td align="left">Schoenfeld log-rank information</td>
+<td align="left">method = “Schoenfeld”</td>
+<td align="left">Avoids Lachin-Foulkes default event calculation</td>
+</tr>
+<tr class="odd">
+<td align="left">Accrual duration</td>
+<td align="left">ACCTIME = 18</td>
+<td align="left">R = 18</td>
+<td align="left">Keeps the same fixed accrual duration</td>
+</tr>
+<tr class="even">
+<td align="left">Total study duration</td>
+<td align="left">Total Time = 25.13323</td>
+<td align="left">T = NULL</td>
+<td align="left">Lets gsSurv() solve total time from fixed accrual</td>
+</tr>
+<tr class="odd">
+<td align="left">Follow-up after accrual</td>
+<td align="left">Derived as 7.133226</td>
+<td align="left">minfup = NULL</td>
+<td align="left">Lets gsSurv() solve the follow-up duration</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="reproducing-the-fractional-time-design-with-gssurv" class="section level2">
+<h2>Reproducing the fractional-time design with
+<code>gsSurv()</code></h2>
+<div id="gssurv-with-aligned-parameters" class="section level3">
+<h3><code>gsSurv()</code> with aligned parameters</h3>
+<p>Let’s start our work with gsDesign by defining parameters to match
+the SAS fractional-time design:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>alpha_sas <span class="ot">&lt;-</span> <span class="fl">0.05</span> <span class="co"># Two-sided total alpha (SAS convention)</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>alpha_gsdesign <span class="ot">&lt;-</span> alpha_sas <span class="sc">/</span> <span class="dv">2</span> <span class="co"># gsDesign uses one-sided alpha</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fl">0.10</span> <span class="co"># 1 - power = 0.10 -&gt; 90% power</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>lambdaC <span class="ot">&lt;-</span> <span class="fl">0.03466</span> <span class="co"># Control hazard rate</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>lambdaE <span class="ot">&lt;-</span> <span class="fl">0.01733</span> <span class="co"># Experimental hazard rate</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>HR <span class="ot">&lt;-</span> lambdaE <span class="sc">/</span> lambdaC <span class="co"># = 0.5</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>timing <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.25</span>, <span class="fl">0.50</span>, <span class="fl">0.75</span>, <span class="fl">1.00</span>) <span class="co"># Equally spaced information fractions</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>accrate <span class="ot">&lt;-</span> <span class="dv">15</span> <span class="co"># Uniform accrual rate (subjects per time unit)</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>accrual_duration <span class="ot">&lt;-</span> <span class="dv">18</span> <span class="co"># Accrual duration (time units)</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>sas_total_time <span class="ot">&lt;-</span> <span class="fl">25.13323</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>sas_followup_time <span class="ot">&lt;-</span> sas_total_time <span class="sc">-</span> accrual_duration</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>N <span class="ot">&lt;-</span> accrate <span class="sc">*</span> accrual_duration</span></code></pre></div>
+<p>Instead of starting with a call to <code>gsDesign::gsDesign()</code>,
+we begin with <code>gsDesign::gsSurv()</code>. The <code>gsSurv()</code>
+function combines <code>nSurv()</code> with <code>gsDesign()</code>
+(group sequential boundaries) in one call. It is the standard gsDesign
+function for designing time-to-event trials.</p>
+<p>The call below uses the same two-sided symmetric structure as
+SAS:</p>
+<ul>
+<li><code>test.type = 2</code> for symmetric two-sided boundaries;</li>
+<li><code>alpha = 0.025</code>, the one-sided alpha corresponding to
+SAS’s total two-sided alpha of 0.05;</li>
+<li><code>method = &quot;Schoenfeld&quot;</code> for the SAS event formula;</li>
+<li><code>T = NULL</code> and <code>minfup = NULL</code> so the accrual
+rate and accrual duration remain fixed while <code>gsSurv()</code>
+solves the follow-up duration.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>des_2 <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">4</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">test.type =</span> <span class="dv">2</span>, <span class="co"># Symmetric two-sided design</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">alpha =</span> alpha_gsdesign, <span class="co"># One-sided alpha; SAS total alpha is 2 * this</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">beta =</span> <span class="fl">0.10</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF,</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="at">lambdaC =</span> <span class="fl">0.03466</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="at">hr =</span> <span class="fl">0.5</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  <span class="at">eta =</span> <span class="dv">0</span>, <span class="co"># Assume no dropout</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="at">gamma =</span> accrate,</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="at">R =</span> accrual_duration,</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="at">T =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="at">minfup =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>  <span class="at">ratio =</span> <span class="dv">1</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;Schoenfeld&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>)</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>des_2</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt; Group sequential design (method=Schoenfeld; k=4 analyses; Two-sided symmetric)</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt; HR=0.500 vs HR0=1.000 | alpha=0.025 (sided=2) | power=90.0%</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; N=270.0 subjects | D=89.1 events | T=25.1 study duration | accrual=18.0 Accrual duration | minfup=7.1 minimum follow-up | ratio=1 randomization ratio (experimental/control)</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="co">#&gt; Spending functions:</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a><span class="co">#&gt;   Bounds derived using a  Lan-DeMets O&#39;Brien-Fleming approximation spending function (no parameters).</span></span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="co">#&gt; Analysis summary:</span></span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a><span class="co">#&gt; Method: Schoenfeld </span></span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt;    Analysis              Value Efficacy Futility</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="co">#&gt;   IA 1: 25%                  Z   4.3326  -4.3326</span></span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt;      N: 170        p (1-sided)   0.0000   0.0000</span></span>
+<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a><span class="co">#&gt;  Events: 23       ~HR at bound   0.1594   6.2728</span></span>
+<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a><span class="co">#&gt;   Month: 11   P(Cross) if HR=1   0.0000   0.0000</span></span>
+<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a><span class="co">#&gt;             P(Cross) if HR=0.5   0.0035   0.0000</span></span>
+<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="co">#&gt;   IA 2: 50%                  Z   2.9631  -2.9631</span></span>
+<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a><span class="co">#&gt;      N: 246        p (1-sided)   0.0015   0.0015</span></span>
+<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a><span class="co">#&gt;  Events: 45       ~HR at bound   0.4115   2.4302</span></span>
+<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a><span class="co">#&gt;   Month: 16   P(Cross) if HR=1   0.0015   0.0015</span></span>
+<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a><span class="co">#&gt;             P(Cross) if HR=0.5   0.2579   0.0000</span></span>
+<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a><span class="co">#&gt;   IA 3: 75%                  Z   2.3590  -2.3590</span></span>
+<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a><span class="co">#&gt;      N: 272        p (1-sided)   0.0092   0.0092</span></span>
+<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a><span class="co">#&gt;  Events: 67       ~HR at bound   0.5615   1.7811</span></span>
+<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a><span class="co">#&gt;   Month: 20   P(Cross) if HR=1   0.0096   0.0096</span></span>
+<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a><span class="co">#&gt;             P(Cross) if HR=0.5   0.6853   0.0000</span></span>
+<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a><span class="co">#&gt;       Final                  Z   2.0141  -2.0141</span></span>
+<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a><span class="co">#&gt;      N: 272        p (1-sided)   0.0220   0.0220</span></span>
+<span id="cb5-46"><a href="#cb5-46" tabindex="-1"></a><span class="co">#&gt;  Events: 90       ~HR at bound   0.6526   1.5323</span></span>
+<span id="cb5-47"><a href="#cb5-47" tabindex="-1"></a><span class="co">#&gt;   Month: 25   P(Cross) if HR=1   0.0250   0.0250</span></span>
+<span id="cb5-48"><a href="#cb5-48" tabindex="-1"></a><span class="co">#&gt;             P(Cross) if HR=0.5   0.9000   0.0000</span></span>
+<span id="cb5-49"><a href="#cb5-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-50"><a href="#cb5-50" tabindex="-1"></a><span class="co">#&gt; Key inputs (names preserved):</span></span>
+<span id="cb5-51"><a href="#cb5-51" tabindex="-1"></a><span class="co">#&gt;                                desc    item value input</span></span>
+<span id="cb5-52"><a href="#cb5-52" tabindex="-1"></a><span class="co">#&gt;                     Accrual rate(s)   gamma    15    15</span></span>
+<span id="cb5-53"><a href="#cb5-53" tabindex="-1"></a><span class="co">#&gt;            Accrual rate duration(s)       R    18    18</span></span>
+<span id="cb5-54"><a href="#cb5-54" tabindex="-1"></a><span class="co">#&gt;              Control hazard rate(s) lambdaC 0.035 0.035</span></span>
+<span id="cb5-55"><a href="#cb5-55" tabindex="-1"></a><span class="co">#&gt;             Control dropout rate(s)     eta     0     0</span></span>
+<span id="cb5-56"><a href="#cb5-56" tabindex="-1"></a><span class="co">#&gt;        Experimental dropout rate(s)    etaE     0  etaE</span></span>
+<span id="cb5-57"><a href="#cb5-57" tabindex="-1"></a><span class="co">#&gt;  Event and dropout rate duration(s)       S  NULL     S</span></span></code></pre></div>
+<p><strong>Observations:</strong></p>
+<p>Using <code>gsSurv()</code> with parameters that align with SAS
+settings, the event counts, sample size, and analysis times reproduce
+the SAS fractional-time output to the printed precision available. The
+final follow-up duration is 7.13321, giving total study duration
+25.13321. Small fifth-decimal differences in Z-boundary comparisons may
+reflect limited SAS printed precision unless the SAS output is rerun
+with more digits.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>gs_fractional <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="at">Analysis =</span> <span class="dv">1</span><span class="sc">:</span>k,</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">Events_SAS =</span> sas_fractional<span class="sc">$</span>Events,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">Events_gsDesign =</span> des_2<span class="sc">$</span>n.I,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">Time_SAS =</span> sas_fractional<span class="sc">$</span>Calendar_time,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">Time_gsDesign =</span> des_2<span class="sc">$</span>T,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="at">N_SAS =</span> sas_fractional<span class="sc">$</span>N,</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>  <span class="at">N_gsDesign =</span> <span class="fu">rowSums</span>(des_2<span class="sc">$</span>eNC) <span class="sc">+</span> <span class="fu">rowSums</span>(des_2<span class="sc">$</span>eNE),</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>  <span class="at">Z_SAS =</span> sas_fractional<span class="sc">$</span>Upper_Z,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="at">Z_gsDesign =</span> des_2<span class="sc">$</span>upper<span class="sc">$</span>bound</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="fu">round</span>(gs_fractional, <span class="dv">5</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Fractional-time SAS output compared with gsSurv().&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Fractional-time SAS output compared with gsSurv().</caption>
+<colgroup>
+<col width="9%" />
+<col width="11%" />
+<col width="16%" />
+<col width="9%" />
+<col width="14%" />
+<col width="7%" />
+<col width="11%" />
+<col width="8%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Analysis</th>
+<th align="right">Events_SAS</th>
+<th align="right">Events_gsDesign</th>
+<th align="right">Time_SAS</th>
+<th align="right">Time_gsDesign</th>
+<th align="right">N_SAS</th>
+<th align="right">N_gsDesign</th>
+<th align="right">Z_SAS</th>
+<th align="right">Z_gsDesign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">22.26962</td>
+<td align="right">22.2696</td>
+<td align="right">11.26310</td>
+<td align="right">11.26306</td>
+<td align="right">168.95</td>
+<td align="right">168.9459</td>
+<td align="right">4.33263</td>
+<td align="right">4.33263</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">44.53924</td>
+<td align="right">44.5392</td>
+<td align="right">16.28750</td>
+<td align="right">16.28746</td>
+<td align="right">244.31</td>
+<td align="right">244.3119</td>
+<td align="right">2.96333</td>
+<td align="right">2.96313</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">66.80886</td>
+<td align="right">66.8088</td>
+<td align="right">20.49260</td>
+<td align="right">20.49260</td>
+<td align="right">270.00</td>
+<td align="right">270.0000</td>
+<td align="right">2.35902</td>
+<td align="right">2.35904</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">89.07847</td>
+<td align="right">89.0784</td>
+<td align="right">25.13323</td>
+<td align="right">25.13321</td>
+<td align="right">270.00</td>
+<td align="right">270.0000</td>
+<td align="right">2.01409</td>
+<td align="right">2.01409</td>
+</tr>
+</tbody>
+</table>
+<p>The final event count is 89.07847 in both systems. The
+<code>print()</code> and <code>gsBoundSummary()</code> methods display
+rounded integer sample sizes and events, but the object retains the
+fractional values shown above.</p>
+<p>If the follow-up time is fixed instead, <code>gsSurv()</code> can
+answer a different sample size question: keeping enrollment rates and
+minimum follow-up fixed, how long must enrollment continue to power the
+trial? The translation is <code>T = NULL</code> with <code>minfup</code>
+set to the fixed follow-up time. In this SAS example, the solution
+returns the same accrual duration because the fixed follow-up time is
+the one SAS solved from the fixed-accrual design:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>des_fixed_followup <span class="ot">&lt;-</span> <span class="fu">gsSurv</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">k =</span> <span class="dv">4</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">test.type =</span> <span class="dv">2</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">alpha =</span> alpha_gsdesign,</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="at">beta =</span> <span class="fl">0.10</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="at">sfu =</span> sfLDOF,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="at">timing =</span> <span class="fu">c</span>(.<span class="dv">25</span>, .<span class="dv">50</span>, .<span class="dv">75</span>, <span class="dv">1</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="at">lambdaC =</span> <span class="fl">0.03466</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="at">hr =</span> <span class="fl">0.5</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">eta =</span> <span class="dv">0</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">gamma =</span> accrate,</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">R =</span> accrual_duration,</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">T =</span> <span class="cn">NULL</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">minfup =</span> sas_followup_time,</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">ratio =</span> <span class="dv">1</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">&quot;Schoenfeld&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>fixed_followup_check <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="at">Quantity =</span> <span class="fu">c</span>(</span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>    <span class="st">&quot;Final study duration&quot;</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>    <span class="st">&quot;Accrual duration&quot;</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    <span class="st">&quot;Final events&quot;</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    <span class="st">&quot;Final N&quot;</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  ),</span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  <span class="at">Solved_followup =</span> <span class="fu">c</span>(</span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>    des_2<span class="sc">$</span>T[k],</span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>    <span class="fu">sum</span>(des_2<span class="sc">$</span>R),</span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>    des_2<span class="sc">$</span>n.I[k],</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>    <span class="fu">sum</span>(des_2<span class="sc">$</span>eNC[k, ] <span class="sc">+</span> des_2<span class="sc">$</span>eNE[k, ])</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>  ),</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>  <span class="at">Specified_followup =</span> <span class="fu">c</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>    des_fixed_followup<span class="sc">$</span>T[k],</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a>    <span class="fu">sum</span>(des_fixed_followup<span class="sc">$</span>R),</span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>    des_fixed_followup<span class="sc">$</span>n.I[k],</span>
+<span id="cb7-36"><a href="#cb7-36" tabindex="-1"></a>    <span class="fu">sum</span>(des_fixed_followup<span class="sc">$</span>eNC[k, ] <span class="sc">+</span> des_fixed_followup<span class="sc">$</span>eNE[k, ])</span>
+<span id="cb7-37"><a href="#cb7-37" tabindex="-1"></a>  )</span>
+<span id="cb7-38"><a href="#cb7-38" tabindex="-1"></a>)</span>
+<span id="cb7-39"><a href="#cb7-39" tabindex="-1"></a>fixed_followup_check[<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(fixed_followup_check[<span class="sc">-</span><span class="dv">1</span>], round, <span class="at">digits =</span> <span class="dv">5</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb7-42"><a href="#cb7-42" tabindex="-1"></a>  fixed_followup_check,</span>
+<span id="cb7-43"><a href="#cb7-43" tabindex="-1"></a>  <span class="at">caption =</span> <span class="st">&quot;Both fixed-accrual translations produce the same final design.&quot;</span></span>
+<span id="cb7-44"><a href="#cb7-44" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption>Both fixed-accrual translations produce the same final
+design.</caption>
+<thead>
+<tr class="header">
+<th align="left">Quantity</th>
+<th align="right">Solved_followup</th>
+<th align="right">Specified_followup</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Final study duration</td>
+<td align="right">25.13321</td>
+<td align="right">25.13322</td>
+</tr>
+<tr class="even">
+<td align="left">Accrual duration</td>
+<td align="right">18.00000</td>
+<td align="right">17.99999</td>
+</tr>
+<tr class="odd">
+<td align="left">Final events</td>
+<td align="right">89.07840</td>
+<td align="right">89.07840</td>
+</tr>
+<tr class="even">
+<td align="left">Final N</td>
+<td align="right">270.00003</td>
+<td align="right">269.99988</td>
+</tr>
+</tbody>
+</table>
+<p>A third use case is to keep both the enrollment rates and enrollment
+duration fixed, then vary minimum follow-up and evaluate power. That is
+useful for sensitivity analysis, but it is not always a stable sample
+size workflow: for some assumptions the trial remains overpowered or
+underpowered for all plausible follow-up durations. Use
+<code>gsSurvPower()</code> when the design quantities are fixed and the
+question is achieved power.</p>
+</div>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-LachinFoulkes" class="csl-entry">
+Lachin, John M., and Mary A. Foulkes. 1986. <span>“Evaluation of Sample
+Size and Power for Analyses of Survival with Allowance for Nonuniform
+Patient Entry, Losses to Follow-up, Noncompliance, and
+Stratification.”</span> <em>Biometrics</em> 42: 507–19.
+</div>
+<div id="ref-Schoenfeld1981" class="csl-entry">
+Schoenfeld, David. 1981. <span>“The Asymptotic Properties of
+Nonparametric Tests for Comparing Survival Distributions.”</span>
+<em>Biometrika</em> 68 (1): 316–19.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

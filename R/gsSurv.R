@@ -1,15 +1,17 @@
 # gsSurv roxy [sinew] ----
 #' @rdname nSurv
+#' @inheritParams gsDesign
 #' @export
 # gsSurv function [sinew] ----
 gsSurv <- function(
   k = 3, test.type = 4, alpha = 0.025, sided = 1,
   beta = 0.1, astar = 0, timing = 1, sfu = sfHSD, sfupar = -4,
-  sfl = sfHSD, sflpar = -2, r = 18,
+  sfl = sfHSD, sflpar = -2, sfharm = sfHSD, sfharmparam = -2, r = 18,
   lambdaC = log(2) / 6, hr = .6, hr0 = 1, eta = 0, etaE = NULL,
   gamma = 1, R = 12, S = NULL, T = 18, minfup = 6, ratio = 1,
   tol = .Machine$double.eps^0.25,
   usTime = NULL, lsTime = NULL,
+  testUpper = TRUE, testLower = TRUE, testHarm = TRUE,
   method = c("LachinFoulkes", "Schoenfeld", "Freedman", "BernsteinLagakos")
 ) { # KA: usTime and lsTime added 10/8/2017
   method <- match.arg(method)
@@ -25,9 +27,64 @@ gsSurv <- function(
   if (!is.numeric(ratio) || length(ratio) != 1 || ratio <= 0) {
     stop("ratio must be a single positive scalar")
   }
-  # If both gamma and R are provided (non-NULL) and T is NULL, set T to force solving for accrual rate
-  # This matches gsDesign::gsSurv behavior which keeps R fixed and solves for gamma
-  if (is.null(T) && !is.null(minfup) &&
+  validate_survival_timing_inputs(R = R, T = T, minfup = minfup, call = "gsSurv")
+  solve_followup <- is.null(T) && is.null(minfup)
+  if (solve_followup) {
+    if (is.null(beta)) {
+      stop("When beta is NULL, T and minfup cannot both be NULL")
+    }
+    if (sum(R) == Inf) {
+      stop("Enrollment duration must be specified as finite")
+    }
+
+    target_n <- accrual_total(gamma, R)
+
+    fixed_accrual_difference <- function(followup) {
+      trial_T <- sum(R) + followup
+      x_candidate <- nSurv(
+        lambdaC = lambdaC, hr = hr, hr0 = hr0, eta = eta, etaE = etaE,
+        gamma = gamma, R = R, S = S, T = trial_T, minfup = followup,
+        ratio = ratio, alpha = alpha, beta = beta, sided = sided,
+        tol = tol, method = method
+      )
+      y_candidate <- gsDesign(
+        k = k, test.type = test.type, alpha = alpha / sided,
+        beta = beta, astar = astar, n.fix = x_candidate$d,
+        timing = timing, sfu = sfu, sfupar = sfupar, sfl = sfl,
+        sflpar = sflpar, sfharm = sfharm, sfharmparam = sfharmparam,
+        tol = tol, delta1 = log(hr), delta0 = log(hr0),
+        usTime = usTime, lsTime = lsTime, testUpper = testUpper,
+        testLower = testLower, testHarm = testHarm
+      )
+      z_candidate <- gsnSurv(x_candidate, y_candidate$n.I[k])
+      z_candidate$n - target_n
+    }
+
+    left <- fixed_accrual_difference(.01)
+    right <- fixed_accrual_difference(10000)
+    if (left < 0) {
+      stop(paste(
+        "With T = NULL and minfup = NULL, trial is over-powered for any",
+        "follow-up duration. Reduce accrual rates (gamma), increase beta,",
+        "or adjust assumptions."
+      ))
+    }
+    if (right > 0) {
+      stop(paste(
+        "With T = NULL and minfup = NULL, trial is under-powered for any",
+        "follow-up duration. Increase accrual rates (gamma), decrease beta,",
+        "or adjust assumptions."
+      ))
+    }
+
+    minfup <- stats::uniroot(
+      fixed_accrual_difference, interval = c(.01, 10000), tol = tol
+    )$root
+    T <- sum(R) + minfup
+  }
+  # Preserve the historical Lachin-Foulkes default: with fixed follow-up and
+  # T = NULL, keep R fixed and vary the accrual rate.
+  if (method == "LachinFoulkes" && is.null(T) && !is.null(minfup) &&
     !is.null(R) && length(R) > 0 &&
     !is.null(gamma) && length(gamma) > 0) {
     T <- sum(R) + minfup
@@ -40,10 +97,12 @@ gsSurv <- function(
   y <- gsDesign(
     k = k, test.type = test.type, alpha = alpha / sided,
     beta = beta, astar = astar, n.fix = x$d, timing = timing,
-    sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar, tol = tol,
+    sfu = sfu, sfupar = sfupar, sfl = sfl, sflpar = sflpar,
+    sfharm = sfharm, sfharmparam = sfharmparam, tol = tol,
     delta1 = log(hr), delta0 = log(hr0),
-    usTime = usTime, lsTime = lsTime
-  ) # KA: usTime and lsTime added 10/8/2017
+    usTime = usTime, lsTime = lsTime,
+    testUpper = testUpper, testLower = testLower, testHarm = testHarm
+  )
 
   z <- gsnSurv(x, y$n.I[k])
   eDC <- NULL
@@ -75,6 +134,7 @@ gsSurv <- function(
   y$etaC <- z$etaC
   y$etaE <- z$etaE
   y$variable <- x$variable
+  if (solve_followup) y$variable <- "Follow-up duration"
   y$tol <- tol
   y$method <- x$method
   y$call <- match.call()
@@ -188,23 +248,43 @@ print.gsSurv <- function(x, digits = 3, show_gsDesign = FALSE, show_strata = TRU
     "2" = "Two-sided symmetric",
     "3" = "Two-sided asymmetric with binding futility",
     "4" = "Two-sided asymmetric with non-binding futility",
-    "5" = "Two-sided asymmetric with binding harm bound",
-    "6" = "Two-sided asymmetric with non-binding harm bound",
+    "5" = "Two-sided asymmetric with binding futility [H0 spending]",
+    "6" = "Two-sided asymmetric with non-binding futility [H0 spending]",
+    "7" = "Two-sided asymmetric with binding futility and harm bounds",
+    "8" = "Two-sided asymmetric with non-binding futility and harm bounds",
     paste("Test type", x$test.type)
   )
 
+  is_power_calc <- isTRUE(x$variable == "Power") && !is.null(x$hr1)
+
   # Summary header
-  cat(
-    "Group sequential design ",
-    "(method=", x$method, "; k=", x$k, " analyses; ", test_type_desc, ")\n",
-    sep = ""
-  )
-  cat(
-    sprintf(
-      "HR=%.3f vs HR0=%.3f | alpha=%.3f (sided=%d) | power=%.1f%%\n",
-      x$hr, x$hr0, x$alpha, x$sided, (1 - x$beta) * 100
+  x_sided <- if (!is.null(x$sided)) x$sided else if (x$test.type == 1) 1L else 2L
+
+  if (is_power_calc) {
+    cat("Power computation for group sequential design\n")
+    cat(
+      "(method=", x$method, "; k=", x$k, " analyses; ", test_type_desc, ")\n",
+      sep = ""
     )
-  )
+    cat(
+      sprintf(
+        "Assumed HR=%.3f | Design HR=%.3f | HR0=%.3f | alpha=%.4f (sided=%d) | power=%.1f%%\n",
+        x$hr, x$hr1, x$hr0, x$alpha * x_sided, x_sided, (1 - x$beta) * 100
+      )
+    )
+  } else {
+    cat(
+      "Group sequential design ",
+      "(method=", x$method, "; k=", x$k, " analyses; ", test_type_desc, ")\n",
+      sep = ""
+    )
+    cat(
+      sprintf(
+        "HR=%.3f vs HR0=%.3f | alpha=%.3f (sided=%d) | power=%.1f%%\n",
+        x$hr, x$hr0, x$alpha, x_sided, (1 - x$beta) * 100
+      )
+    )
+  }
 
   # Get final analysis values
   final_n <- sum((x$eNC + x$eNE)[x$k, ])
