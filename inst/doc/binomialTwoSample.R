@@ -1,4 +1,4 @@
-## ----include=FALSE--------------------------------------
+## ----include=FALSE------------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -10,18 +10,18 @@ knitr::opts_chunk$set(
   out.width = "80%"
 )
 
-## ----message = FALSE, warning = FALSE-------------------
+## ----message = FALSE, warning = FALSE-----------------------------------------
 library(gsDesign)
 library(ggplot2)
 library(tidyr)
 library(gt)
 library(dplyr)
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 nBinomial(p1 = 0.2, p2 = 0.1, ratio = 2, alpha = 0.025, beta = 0.15) |> ceiling()
 nBinomial(p1 = 0.1, p2 = 0.2, ratio = 0.5, alpha = 0.025, beta = 0.15) |> ceiling()
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 scale <- c("Difference", "RR", "OR")
 tibble(scale, "Sample size" = c(
   nBinomial(p1 = 0.2, p2 = 0.1, ratio = 0.5, alpha = 0.025, beta = 0.15, scale = scale[1]) |> ceiling(),
@@ -33,21 +33,21 @@ tibble(scale, "Sample size" = c(
     subtitle = "alpha = 0.025, beta = 0.15, pE = 0.2, pC = 0.1"
   )
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 testBinomial(x1 = 20, n1 = 30, x2 = 10, n2 = 30)
 testBinomial(x1 = 20, n1 = 30, x2 = 10, n2 = 30, scale = "RR")
 testBinomial(x1 = 20, n1 = 30, x2 = 10, n2 = 30, scale = "OR")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 testBinomial(x1 = 10, n1 = 30, x2 = 20, n2 = 30)
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 testBinomial(x1 = 10, n1 = 30, x2 = 20, n2 = 30) |> pnorm(lower.tail = TRUE)
 testBinomial(x1 = 10, n1 = 30, x2 = 20, n2 = 30, adj = 1) |> pnorm(lower.tail = TRUE)
 testBinomial(x1 = 10, n1 = 30, x2 = 20, n2 = 30, chisq = 1) |>
   pchisq(df = 1, lower.tail = FALSE) / 2
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 p1 <- 20 / 30
 p2 <- 10 / 30
 rd <- p1 - p2
@@ -69,10 +69,10 @@ rbind(
   ) |>
   fmt_number(columns = c(lower, upper, Effect), n_sigfig = 3)
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 ciBinomial(x1 = 10, n1 = 30, x2 = 20, n2 = 30)
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 tibble(
   Design = c("Superiority", "Non-inferiority", "Super-superiority"),
   `p1 (pE)` = c(0.2, 0.2, 0.2),
@@ -98,20 +98,20 @@ tibble(
   ) |>
   tab_footnote("Randomization ratio is 2:1 (Experimental:Control) with assumed control failure rate p1 = 0.2 and experimental rate 0.1.")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 testBinomial(x1 = 18, n1 = 30, x2 = 10, n2 = 30, delta0 = 0) # superiority
 testBinomial(x1 = 18, n1 = 30, x2 = 10, n2 = 30, delta0 = -0.02) # non-inferiority
 testBinomial(x1 = 18, n1 = 30, x2 = 10, n2 = 30, delta0 = 0.02) # super-superiority
 ciBinomial(x1 = 18, n1 = 30, x2 = 10, n2 = 30) # CI
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 simBinomial(p1 = 0.2, p2 = 0.1, n1 = 30, n2 = 30, nsim = 10)
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 z <- simBinomial(p1 = 0.15, p2 = 0.15, n1 = 30, n2 = 30, nsim = 1000000)
 mean(z > qnorm(0.975)) # Type I error rate
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 zcut <- quantile(z, 0.975)
 tibble("Z cutoff" = zcut, "p cutoff" = pnorm(zcut, lower.tail = FALSE)) |>
   gt() |>
@@ -121,12 +121,12 @@ tibble("Z cutoff" = zcut, "p cutoff" = pnorm(zcut, lower.tail = FALSE)) |>
   ) |>
   tab_footnote("The Z cutoff is the quantile of the simulated Z-values at 0.975 using p1 = p2 = 0.15.")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 z <- simBinomial(p1 = 0.2, p2 = 0.1, n1 = 30, n2 = 30, nsim = 1000000)
 cat("Power with asymptotic cutoff ", mean(z > qnorm(0.975)))
 cat("\nPower with exact cutoff", mean(z > zcut))
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 ptab <- tibble(
   Scale = c("Risk-difference", "Odds-ratio"),
   n = c(525, 489),
@@ -145,7 +145,7 @@ ptab |>
   tab_footnote("Power based on 100,000 simulated trials and nominal alpha = 0.025 test; 2 x simulation error = 0.002") |>
   tab_footnote("Power based on Z-test for risk-difference with no continuity correction.", location = cells_column_labels("Power"))
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 binomialPowerTable(
   pC = seq(0.1, 0.2, 0.02), delta = 0, delta0 = 0, n = 70, failureEndpoint = TRUE,
   ratio = 1, alpha = 0.025, simulation = TRUE, nsim = 1e6, adj = 0
@@ -155,7 +155,7 @@ binomialPowerTable(
   fmt_number(columns = "Type I error", n_sigfig = 3) |>
   tab_header("Type I error is not controlled with nominal p = 0.025 cutoff")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 binomialPowerTable(
   pC = seq(0.1, 0.2, 0.02), delta = 0, delta0 = 0, n = 70, failureEndpoint = TRUE,
   ratio = 1, alpha = 0.023, simulation = TRUE, nsim = 1e6, adj = 0
@@ -165,7 +165,7 @@ binomialPowerTable(
   fmt_number(columns = "Type I error", n_sigfig = 3) |>
   tab_header("Type I error is controlled at 0.025 with nominal p = 0.023 cutoff")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 power_table_asymptotic <- binomialPowerTable(
   pC = seq(0.1, 0.2, 0.025),
   delta = seq(0.15, 0.25, 0.02),
@@ -174,7 +174,7 @@ power_table_asymptotic <- binomialPowerTable(
   alpha = 0.023
 )
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 power_table_simulation <- binomialPowerTable(
   pC = seq(0.1, 0.2, 0.025),
   delta = seq(0.15, 0.25, 0.02),
@@ -185,7 +185,7 @@ power_table_simulation <- binomialPowerTable(
   nsim = 1000000
 )
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 rbind(
   power_table_asymptotic |> mutate(Method = "Asymptotic"),
   power_table_simulation |> mutate(Method = "Simulation")
@@ -206,7 +206,7 @@ rbind(
   coord_cartesian(ylim = c(0.2, 0.8)) +
   ggtitle("Power for Binomial Two Arm Trial Design with n = 70")
 
-## -------------------------------------------------------
+## -----------------------------------------------------------------------------
 # Transform table with values from Power to a wide format with
 # Put "Control group rate" (pC) in rows and Treatment effect (delta) in columns
 # Put a spanner label over columns after first column with label "Treatment effect (delta)"
